@@ -1,23 +1,26 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators/lib/decorators';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-input/paper-textarea.js';
-import '@polymer/iron-icons/iron-icons.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@unicef-polymer/etools-dialog/etools-dialog.js';
-import '../../../../common-elements/list-tab-elements/list-header/list-header';
-import '../../../../common-elements/list-tab-elements/list-element/list-element';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import './other-recommendations-dialog';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../../../../../types/global';
 import {checkNonField} from '../../../../mixins/error-handler';
+import {getHeadingLabel} from '../../../../mixins/permission-controller';
+import {getTableRowIndexText} from '../../../../utils/utils';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @polymer
@@ -25,10 +28,15 @@ import {checkNonField} from '../../../../mixins/error-handler';
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
  */
-class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
-  static get template() {
+@customElement('other-recommendations')
+export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(LitElement)) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles} ${tabLayoutStyles}
+      ${sharedStyles}
       <style>
         :host {
           .repeatable-item-container[without-line] {
@@ -48,127 +56,61 @@ class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(Polymer
 
       <etools-content-panel
         class="content-section clearfix"
-        panel-title="[[getLabel('other_recommendations', basePermissionPath)]]"
+        .panelTitle="${this.getLabel('other_recommendations', this.optionsData)}"
         list
       >
         <div slot="panel-btns">
-          <div hidden$="[[!_canBeChanged(basePermissionPath)]]">
-            <paper-icon-button class="panel-button" on-tap="openAddDialog" icon="add-box"> </paper-icon-button>
-            <paper-tooltip offset="0">Add</paper-tooltip>
+          <div ?hidden="${!this._canBeChanged(this.optionsData)}">
+            <sl-tooltip content="Add">
+              <etools-icon-button class="panel-button" @click="${this.openAddDialog}" name="add-box">
+              </etools-icon-button>
+            </sl-tooltip>
           </div>
         </div>
 
-        <list-header
-          id="list-header"
-          no-ordered
-          no-additional
-          data="[[columns]]"
-          base-permission-path="[[basePermissionPath]]"
-        >
-        </list-header>
-
-        <template is="dom-repeat" items="[[dataItems]]" filter="_showItems">
-          <list-element
-            class="list-element"
-            data="[[item]]"
-            base-permission-path="[[basePermissionPath]]"
-            item-index="[[index]]"
-            headings="[[columns]]"
-            no-additional
-            multiline
-            no-animation
+        <etools-data-table-header no-collapse no-title>
+          <etools-data-table-column class="col-3">Recommendation Number</etools-data-table-column>
+          <etools-data-table-column class="col-9"
+            >${getHeadingLabel(
+              this.optionsData,
+              'other_recommendations.description',
+              'Description'
+            )}</etools-data-table-column
           >
-            <div slot="hover" class="edit-icon-slot" hidden$="[[!_canBeChanged(basePermissionPath)]]">
-              <paper-icon-button icon="icons:create" class="edit-icon" on-tap="openEditDialog"></paper-icon-button>
-              <paper-icon-button icon="icons:delete" class="edit-icon" on-tap="openDeleteDialog"></paper-icon-button>
-            </div>
-          </list-element>
-        </template>
+        </etools-data-table-header>
 
-        <template is="dom-if" if="[[!dataItems.length]]">
-          <list-element class="list-element" data="[[emptyObj]]" headings="[[columns]]" no-additional no-animation>
-          </list-element>
-        </template>
-      </etools-content-panel>
-      <etools-dialog
-        theme="confirmation"
-        size="md"
-        keep-dialog-open
-        opened="{{confirmDialogOpened}}"
-        on-confirm-btn-clicked="removeItem"
-        disable-confirm-btn="{{requestInProcess}}"
-        ok-btn-text="Delete"
-        openFlag="confirmDialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        [[deleteTitle]]
-      </etools-dialog>
-      <etools-dialog
-        no-padding
-        keep-dialog-open
-        size="md"
-        opened="{{dialogOpened}}"
-        dialog-title="[[dialogTitle]]"
-        ok-btn-text="[[confirmBtnText]]"
-        show-spinner="{{requestInProcess}}"
-        disable-confirm-btn="{{requestInProcess}}"
-        on-confirm-btn-clicked="_addItemFromDialog"
-        openFlag="dialogOpened"
-        on-close="_resetDialogOpenedFlag"
-      >
-        <div class="repeatable-item-container" without-line>
-          <div class="repeatable-item-content">
-            <div class="group">
-              <div class="input-container input-container-l">
-                <!-- Description -->
-                <paper-textarea
-                  class$="[[_setRequired('other_recommendations.description', basePermissionPath)]] 
-                              fixed-width validate-input"
-                  value="{{editedItem.description}}"
-                  allowed-pattern="[\\d\\s]"
-                  label="[[getLabel('other_recommendations.description', basePermissionPath)]]"
-                  placeholder="[[getPlaceholderText('other_recommendations.description',
-                                          basePermissionPath)]]"
-                  required$="[[_setRequired('other_recommendations.description', basePermissionPath)]]"
-                  disabled$="[[requestInProcess]]"
-                  max-rows="4"
-                  invalid="[[_checkInvalid(errors.0.description)]]"
-                  error-message="[[errors.0.description]]"
-                  on-focus="_resetFieldError"
-                  on-tap="_resetFieldError"
-                >
-                </paper-textarea>
+        ${(this.dataItems || []).map(
+          (item, index) => html`
+            <etools-data-table-row no-collapse secondary-bg-on-hover>
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-3">${getTableRowIndexText(index)}</span>
+                <span class="col-data col-9">${item.description}</span>
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
+                  <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
+                  <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
+                </div>
               </div>
-            </div>
+            </etools-data-table-row>
+          `
+        )}
+        <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
+          <div slot="row-data" class="layout-horizontal editable-row">
+            <span class="col-data col-3">–</span>
+            <span class="col-data col-9">–</span>
           </div>
-        </div>
-      </etools-dialog>
+        </etools-data-table-row>
+      </etools-content-panel>
     `;
   }
 
-  @property({type: Array, notify: true})
-  dataItems: [] = [];
+  @property({type: Array})
+  dataItems: GenericObject[] = [];
 
   @property({type: String})
   mainProperty = 'other_recommendations';
 
   @property({type: Object})
   itemModel: GenericObject = {description: ''};
-
-  @property({type: Array})
-  columns: GenericObject[] = [
-    {
-      size: 25,
-      name: 'finding',
-      label: 'Recommendation Number'
-    },
-    {
-      size: 75,
-      label: 'Description',
-      labelPath: 'other_recommendations.description',
-      path: 'description'
-    }
-  ];
 
   @property({type: Object})
   addDialogTexts: GenericObject = {title: 'Add New Recommendation'};
@@ -179,13 +121,60 @@ class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(Polymer
   @property({type: String})
   deleteTitle = 'Are you sure that you want to delete this Recommendation?';
 
-  static get observers() {
-    return [
-      'resetDialog(dialogOpened)',
-      'resetDialog(confirmDialogOpened)',
-      '_errorHandler(errorObject.other_recommendations)',
-      '_checkNonField(errorObject.other_recommendations)'
-    ];
+  connectedCallback() {
+    super.connectedCallback();
+    this.dialogKey = 'other-recommendations-dialog';
+
+    this.addEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.addEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
+    this.removeEventListener('show-add-dialog', this.openAddEditDialog as any);
+    this.removeEventListener('show-edit-dialog', this.openAddEditDialog as any);
+  }
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject?.other_recommendations, this.errorObject);
+      this._checkNonField(this.errorObject?.other_recommendations);
+    }
+  }
+
+  openAddEditDialog() {
+    openDialog({
+      dialog: this.dialogKey,
+      dialogData: {
+        opener: this,
+        optionsData: this.optionsData,
+        editedItem: this.editedItem,
+        dialogTitle: this.dialogTitle,
+        confirmBtnText: this.confirmBtnText
+      }
+    }).then(() => (this.isAddDialogOpen = false));
+  }
+
+  openConfirmDeleteDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.deleteTitle,
+        confirmBtnText: 'Delete',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.removeItem();
+      }
+      setTimeout(() => {
+        this.isConfirmDialogOpen = false;
+      }, 1000);
+    });
   }
 
   _checkNonField(error) {
@@ -198,12 +187,4 @@ class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(Polymer
       fireEvent(this, 'toast', {text: `Other Recommendations: ${nonField}`});
     }
   }
-
-  _checkInvalid(value) {
-    return !!value;
-  }
 }
-
-window.customElements.define('other-recommendations', OtherRecommendations);
-
-export {OtherRecommendations as OtherRecommendationsEl};

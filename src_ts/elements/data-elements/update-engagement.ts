@@ -1,50 +1,68 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import get from 'lodash-es/get';
 import {getEndpoint} from '../config/endpoints-controller';
-import {updateCollection} from '../mixins/permission-controller';
-import {GenericObject} from '../../types/global';
-import {EtoolsRequestConfig, sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {addAllowedActions} from '../mixins/permission-controller';
+import {GenericObject} from '@unicef-polymer/etools-types';
+import {RequestConfig, sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
+import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
+import {
+  getActionPointOptions,
+  getEngagementAttachmentOptions,
+  getEngagementOptions,
+  getEngagementReportAttachmentsOptions,
+  updateCurrentEngagement,
+  updateEngagementAllOptions
+} from '../../redux/actions/engagement';
+import {capitalizeFirstLetter, getValueFromResponse} from '../utils/utils';
+import {EngagementState} from '../../redux/reducers/engagement';
 
-class UpdateEngagement extends PolymerElement {
-  @property({type: Object, observer: '_engagementChanged'})
+/**
+ * main menu
+ * @LitElement
+ * @customElement
+ */
+@customElement('update-engagement')
+export class UpdateEngagement extends LitElement {
+  @property({type: Object})
   updatedEngagementData!: GenericObject;
 
-  @property({type: Object, notify: true})
-  engagement!: GenericObject;
-
-  @property({type: String, notify: true})
-  basePermissionPath!: string;
-
-  @property({type: Boolean, notify: true})
+  @property({type: Boolean})
   quietAdding!: boolean;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   errorObject = {};
 
-  @property({type: Object, notify: true})
-  optionRequests: GenericObject = {};
-
-  @property({type: Boolean, notify: true})
+  @property({type: Boolean})
   forceOptionsUpdate!: boolean;
 
   @property({type: Object})
-  requestOptions!: EtoolsRequestConfig;
+  requestOptions!: RequestConfig;
 
   @property({type: Object})
   postData!: GenericObject;
 
-  @property({type: String, notify: true})
+  @property({type: String})
   actionUrl = '';
 
   @property({type: Object})
   lastData!: GenericObject;
 
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('updatedEngagementData')) {
+      this._engagementChanged(this.updatedEngagementData);
+    }
+  }
+
   _handleResponse(data) {
+    data.loadedTimestamp = new Date().getTime();
+    getStore().dispatch(updateCurrentEngagement(data));
     if (this.requestOptions.method === 'POST' || this.forceOptionsUpdate) {
       this.lastData = data;
       this.forceOptionsUpdate = false;
+      fireEvent(this, 'force-options-changed', String(this.forceOptionsUpdate).toLowerCase());
       this._finishPostResponse();
       return;
     } else if (this.actionUrl) {
@@ -55,55 +73,11 @@ class UpdateEngagement extends PolymerElement {
     this.finishResponse(data);
   }
 
-  _handleOptionsResponse(data) {
-    const collectionName = `engagement_${this.lastData.id}`;
-    updateCollection(collectionName, data.actions);
-
-    this.optionRequests.options = true;
-    this.finishOptionsResponse(this.lastData);
-  }
-
-  _handleDataOptionsResponse(postfix, requestName) {
-    return (data) => {
-      const actions = get(data, 'actions', {});
-      const name = get(data, 'name', '');
-      // postfix = _.get(data, 'srcElement.dataset.pathPostfix'),
-      // requestName = _.get(data, 'srcElement.dataset.requestName');
-
-      const collectionName = `engagement_${this.lastData.id}_${postfix}`;
-      updateCollection(collectionName, actions || {}, name);
-      this[requestName] = '';
-
-      this.optionRequests[requestName] = true;
-      this.finishOptionsResponse(this.lastData);
-    };
-  }
-
-  finishOptionsResponse(data) {
-    if (
-      !this.optionRequests.options ||
-      !this.optionRequests.apOptions ||
-      !this.optionRequests.attachments ||
-      !this.optionRequests.reportAttachments
-    ) {
-      return;
-    }
-
-    this.finishResponse(data);
-  }
-
   finishResponse(data) {
-    this.optionRequests = {};
-    this.engagement = data;
-
-    this.basePermissionPath = '';
-    this.basePermissionPath = `engagement_${this.engagement.id}`;
-
-    fireEvent(this, 'engagement-updated', {success: true, data});
     fireEvent(this, 'global-loading', {type: 'update-engagement', saved: true});
     fireEvent(this, 'global-loading', {type: 'update-permissions'});
 
-    let action;
+    let action = 'saved';
     if (this.requestOptions.method === 'PATCH') {
       action = 'saved';
     } else if (data.status === 'report_submitted') {
@@ -118,7 +92,9 @@ class UpdateEngagement extends PolymerElement {
       fireEvent(this, 'toast', {text: `Engagement ${action !== 'saved' ? '' : 'data '}has been ${action}!`});
     } else {
       this.quietAdding = false;
+      fireEvent(this, 'quiet-adding-changed', String(this.quietAdding).toLowerCase());
     }
+    fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
   }
 
   _finishPostResponse() {
@@ -132,51 +108,45 @@ class UpdateEngagement extends PolymerElement {
       fireEvent(this, 'global-loading', {type: 'finalize-engagement', saved: true});
     } else if (~this.actionUrl.indexOf('cancel')) {
       fireEvent(this, 'global-loading', {type: 'cancel-engagement'});
+    } else if (~this.actionUrl.indexOf('send_back')) {
+      fireEvent(this, 'global-loading', {type: 'send-back-engagement'});
     } else {
       fireEvent(this, 'global-loading', {type: 'update-engagement', saved: true});
     }
     this.actionUrl = '';
 
-    const optionsEndpoint = getEndpoint('engagementInfo', {
-      id: this.updatedEngagementData.id,
-      type: this.updatedEngagementData.engagement_type
-    });
+    Promise.allSettled([
+      getEngagementOptions(this.updatedEngagementData.id, this.updatedEngagementData.engagement_type),
+      getEngagementAttachmentOptions(this.updatedEngagementData.id),
+      getEngagementReportAttachmentsOptions(this.updatedEngagementData.id),
+      getActionPointOptions(this.updatedEngagementData.id)
+    ])
+      .then((response: any[]) => {
+        this._handleOptionsResponse(this.formatResponse(response));
+      })
+      .finally(() => {
+        fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
+        fireEvent(this, 'global-loading', {active: false});
+      });
+  }
 
-    sendRequest({
-      method: 'OPTIONS',
-      endpoint: optionsEndpoint
-    })
-      .then(this._handleOptionsResponse.bind(this))
-      .catch(this._handleOptionsError.bind(this));
+  _handleOptionsResponse(data) {
+    getStore().dispatch(updateEngagementAllOptions(data));
+    this.finishResponse(this.lastData);
+  }
 
-    const attachmentsEndpoint = getEndpoint('attachments', {id: this.updatedEngagementData.id});
-    sendRequest({
-      method: 'OPTIONS',
-      endpoint: attachmentsEndpoint
-    })
-      .then(this._handleDataOptionsResponse('attachments', 'attachments'))
-      .catch(this._handleDataOptionsResponse('attachments', 'attachments'));
-
-    const reportAttachmentsEndpoint = getEndpoint('reportAttachments', {id: this.updatedEngagementData.id});
-    sendRequest({
-      method: 'OPTIONS',
-      endpoint: reportAttachmentsEndpoint
-    })
-      .then(this._handleDataOptionsResponse('report_attachments', 'reportAttachments'))
-      .catch(this._handleDataOptionsResponse('report_attachments', 'reportAttachments'));
-
-    const apBaseUrl = getEndpoint('engagementInfo', {id: this.updatedEngagementData.id, type: 'engagements'}).url;
-    sendRequest({
-      method: 'OPTIONS',
-      endpoint: {
-        url: `${apBaseUrl}action-points/`
-      }
-    })
-      .then(this._handleDataOptionsResponse('ap', 'apOptions'))
-      .catch(this._handleDataOptionsResponse('ap', 'apOptions'));
+  private formatResponse(response: any[]) {
+    const resp: Partial<EngagementState> = {};
+    resp.options = addAllowedActions(getValueFromResponse(response[0]) || {});
+    resp.attachmentOptions = getValueFromResponse(response[1]) || {};
+    resp.reportAttachmentOptions = getValueFromResponse(response[2]) || {};
+    resp.apOptions = getValueFromResponse(response[3]) || {};
+    return resp;
   }
 
   _handleError(error) {
+    fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
+
     if (this.requestOptions.method === 'PATCH') {
       fireEvent(this, 'global-loading', {type: 'update-engagement'});
     } else if (this.requestOptions.method === 'POST' && ~this.actionUrl.indexOf('submit')) {
@@ -185,38 +155,117 @@ class UpdateEngagement extends PolymerElement {
       fireEvent(this, 'global-loading', {type: 'finalize-engagement'});
     } else if (this.requestOptions.method === 'POST' && ~this.actionUrl.indexOf('cancel')) {
       fireEvent(this, 'global-loading', {type: 'cancel-engagement'});
+    } else if (this.requestOptions.method === 'POST' && ~this.actionUrl.indexOf('send_back')) {
+      fireEvent(this, 'global-loading', {type: 'send-back-engagement'});
     }
 
     this.actionUrl = '';
+    let serverErrorText = '';
 
     let {status, response} = (error || {}) as any;
-    if (typeof response === 'string') {
-      try {
+    try {
+      if (typeof response === 'string') {
         response = JSON.parse(response);
-      } catch (e) {
-        response = {};
+      } else {
+        if (!this.toastWillBeDisplayedInsideComponent(response)) {
+          const msgArr = [];
+          this.getMesageFromError(response, msgArr);
+          if (msgArr && msgArr.length) {
+            serverErrorText = msgArr.join('\n');
+          } else {
+            serverErrorText = 'An error occured. Please try again';
+          }
+        }
       }
+    } catch (e) {
+      response = {};
     }
 
     if (status === 400) {
-      this.set('errorObject', response);
+      this.errorObject = response;
+      if (serverErrorText) {
+        fireEvent(this, 'toast', {text: serverErrorText});
+      }
     } else if (status === 413) {
       this.errorObject = {};
       fireEvent(this, 'toast', {text: `Error: Exceeded the maximum size of uploaded file.`});
     } else {
-      this.errorObject = {};
+      this.errorObject = Object.keys(response || {}).length ? response : {error: ''};
       fireEvent(this, 'toast', {text: 'Can not save engagement data. Please try again later!'});
     }
-
-    fireEvent(this, 'engagement-updated');
+    fireEvent(this, 'error-changed', this.errorObject);
 
     if (this.quietAdding) {
       this.quietAdding = false;
+      fireEvent(this, 'quiet-adding-changed', String(this.quietAdding).toLowerCase());
     }
   }
 
+  toastWillBeDisplayedInsideComponent(obj: GenericObject) {
+    const errProperties = [
+      'engagement_attachments',
+      'report_attachments',
+      'specific_procedures',
+      'staff_members',
+      'key_internal_controls',
+      'financial_finding_set',
+      'financial_findings',
+      'audited_expenditure',
+      'findings',
+      'other_recommendations',
+      'internal_controls',
+      'total_amount_tested',
+      'total_amount_of_ineligible_expenditure'
+    ];
+    if (typeof obj === 'object' && Object.keys(obj).some((key) => errProperties.includes(key))) {
+      // toast will be displayed inside the component, avoid to duplicate it here
+      return true;
+    }
+    return false;
+  }
+
+  getMsgKey(key: string) {
+    if (typeof key === 'string') {
+      const arrKey = key
+        .split('_')
+        .map((x: string) => capitalizeFirstLetter(x))
+        .join(' ');
+      return arrKey;
+    }
+    return key;
+  }
+
+  getMesageFromError(obj: GenericObject, arr: any[], index?: number) {
+    Object.keys(obj).forEach((key) => {
+      if (Array.isArray(obj[key])) {
+        arr.push(`${this.getMsgKey(key)}: ${Array.from(obj[key]).join(', ')}`);
+      } else if (typeof obj[key] === 'string') {
+        arr.push(`${this.getMsgKey(key)}: ${obj[key]}`);
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        if (typeof index === 'undefined') {
+          arr.push(key);
+          index = arr.length - 1;
+        } else {
+          arr[index - 1] += `.${key}`;
+        }
+        this.getMesageFromError(obj[key], arr, index);
+      } else {
+        if (typeof index !== 'undefined') {
+          arr[index - 1] += `: ${obj[key]}`;
+        }
+      }
+    });
+  }
+
+  _errorObjIsNested(obj) {
+    if (typeof obj !== 'object') {
+      return false;
+    }
+    return Object.keys(obj || {}).some((prop) => typeof obj[prop] !== 'string');
+  }
+
   _handleOptionsError() {
-    this.basePermissionPath = 'not_found';
+    // this.basePermissionPath = 'not_found';
     this.finishResponse(this.lastData);
     fireEvent(this, 'toast', {text: 'Can not update permissions data. Please reload the page!'});
   }
@@ -232,29 +281,26 @@ class UpdateEngagement extends PolymerElement {
       // Prepare submit request. Save submit url, update engagement data at first
       const url = getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url;
       this.actionUrl = url + engagementInfo.submit;
-      // this.requestOptions.method = 'PATCH';
-      this.set('requestOptions', {
+      this.requestOptions = {
         method: 'PATCH',
         endpoint: {
           url
         },
         body: engagementInfo.data
-      });
+      };
       this._saveEngagement();
     } else if (this.actionUrl && ~this.actionUrl.indexOf('submit')) {
       // Finish data updating, run submitting if submit url has been saved
-      fireEvent(this, 'engagement-updated', {success: true, data: engagementInfo});
-
       fireEvent(this, 'global-loading', {type: 'submit-engagement', active: true, message: 'Submitting engagement...'});
       fireEvent(this, 'global-loading', {type: 'update-engagement'});
       // this.requestOptions.method = 'POST';
-      this.set('requestOptions', {
+      this.requestOptions = {
         method: 'POST',
         endpoint: {
           url: this.actionUrl
         },
         body: this.postData
-      });
+      };
 
       this._performUpdate();
     } else if (engagementInfo.finalize) {
@@ -272,13 +318,13 @@ class UpdateEngagement extends PolymerElement {
 
       this.actionUrl = url;
       this.postData = engagementInfo.data;
-      this.set('requestOptions', {
+      this.requestOptions = {
         method: 'POST',
         endpoint: {
           url
         },
         body: this.postData
-      });
+      };
       this._performUpdate();
     } else if (engagementInfo.cancel) {
       // Run finalizing
@@ -288,25 +334,45 @@ class UpdateEngagement extends PolymerElement {
         engagementInfo.cancel;
       this.actionUrl = url;
       this.postData = engagementInfo.data;
-      this.set('requestOptions', {
+      this.requestOptions = {
         method: 'POST',
         endpoint: {
           url
         },
         body: this.postData
+      };
+      this._performUpdate();
+    } else if (engagementInfo.send_back) {
+      // Run finalizing
+      fireEvent(this, 'global-loading', {
+        type: 'send-back-engagement',
+        active: true,
+        message: 'Send Back engagement...'
       });
+      const url =
+        getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url +
+        engagementInfo.send_back;
+      this.actionUrl = url;
+      this.postData = engagementInfo.data;
+      this.requestOptions = {
+        method: 'POST',
+        endpoint: {
+          url
+        },
+        body: this.postData
+      };
       this._performUpdate();
     } else {
       // Simple engagement data updating
       const url = getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url;
       this.actionUrl = '';
-      this.set('requestOptions', {
+      this.requestOptions = {
         method: 'PATCH',
         endpoint: {
           url
         },
         body: engagementInfo.data
-      });
+      };
       this._saveEngagement();
     }
   }
@@ -326,4 +392,3 @@ class UpdateEngagement extends PolymerElement {
     sendRequest(this.requestOptions).then(this._handleResponse.bind(this)).catch(this._handleError.bind(this));
   }
 }
-window.customElements.define('update-engagement', UpdateEngagement);

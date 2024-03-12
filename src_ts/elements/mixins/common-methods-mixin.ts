@@ -1,23 +1,26 @@
-import {PolymerElement} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
+import {LitElement} from 'lit';
+import {property} from 'lit/decorators.js';
 import clone from 'lodash-es/clone';
 import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
 import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
-import {readonlyPermission, isRequired, getFieldAttribute, getChoices} from './permission-controller';
-import {setStaticData, getStaticData} from './static-data-controller';
-import {Constructor, GenericObject} from '../../types/global';
+import {readonlyPermission, isRequired, getOptionsChoices, getCollection} from './permission-controller';
+import {GenericObject} from '../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject, checkNonField} from './error-handler';
-import {getProperty, setProperty} from '../utils/utils';
+import {AnyObject, Constructor} from '@unicef-polymer/etools-types';
+import get from 'lodash-es/get';
+import {getBodyDialog} from '../utils/utils';
 
 /**
  * @polymer
  * @mixinFunction
  */
-function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
+function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
   class CommonMethodsMixinClass extends baseClass {
+    [x: string]: any;
+
     @property({type: Boolean})
     requestInProcess!: boolean;
 
@@ -27,14 +30,20 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
     @property({type: Object})
     errors!: GenericObject;
 
+    @property({type: Object})
+    errorObject!: GenericObject;
+
     @property({type: Boolean})
     dialogOpened = false;
 
     @property({type: String})
     errorBaseText!: string;
 
-    @property({type: Boolean})
-    confirmDialogOpened = false;
+    @property({type: Object})
+    engagementData!: AnyObject;
+
+    @property({type: Object})
+    optionsData!: AnyObject;
 
     _resetFieldError(event) {
       if (!event || !event.target) {
@@ -43,18 +52,19 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
 
       const field = event.target.getAttribute('field');
       if (field) {
-        this.set(`errors.${field}`, false);
+        this.errors[field] = false;
+        this.requestUpdate();
       }
 
       event.target.invalid = false;
     }
 
-    isReadOnly(field, basePermissionPath, inProcess?) {
-      if (!basePermissionPath || inProcess) {
+    isReadOnly(field: string, permissions: AnyObject, inProcess?: boolean) {
+      if (!permissions || inProcess) {
         return true;
       }
 
-      let readOnly = readonlyPermission(`${basePermissionPath}.${field}`);
+      let readOnly = readonlyPermission(field, permissions);
       if (readOnly === null) {
         readOnly = true;
       }
@@ -62,46 +72,77 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return readOnly;
     }
 
-    _setRequired(field, basePermissionPath) {
-      if (!basePermissionPath) {
+    _setRequired(field: string, permissions: AnyObject) {
+      if (!permissions) {
         return false;
       }
 
-      const required = isRequired(`${basePermissionPath}.${field}`);
+      const required = isRequired(field, permissions);
 
       return required ? 'required' : false;
     }
 
-    _resetDialogOpenedFlag(event) {
-      this.set(event.currentTarget.getAttribute('openFlag'), false);
-    }
-
-    _errorHandler(errorData) {
-      if (!errorData || !Object.keys(errorData).length) {
+    _errorHandler(componentError, allErrors) {
+      if (!allErrors || !Object.keys(allErrors).length) {
         return false;
       }
-      if (this.requestInProcess) {
-        this.requestInProcess = false;
+      // hide requestInProcess if has error, even if they are not coming form the current control
+      this.requestInProcess = false;
+
+      this.closeDialogLoading();
+
+      if (!componentError || !Object.keys(componentError).length) {
+        return false;
       }
-      this.set('errors', clone(refactorErrorObject(errorData)));
+      this.errors = clone(refactorErrorObject(componentError));
       if (this.tabTexts && this.tabTexts.fields.some((field) => !!this.errors[field])) {
         fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       }
     }
 
-    _complexErrorHandler(errorData) {
+    closeDialogLoading(dialogKey = this.dialogKey) {
+      // dialogKey is defined in TableElementsMixin
+      if (!dialogKey) {
+        return;
+      }
+      // close dialog if opened on data changed (ex: after saving)
+      const dialogEl = getBodyDialog(dialogKey);
+      if (dialogEl) {
+        (dialogEl as any).requestInProcess = false;
+      }
+    }
+
+    closeEditDialog(dialogKey = this.dialogKey) {
+      if (!dialogKey) {
+        return;
+      }
+      // close dialog if opened on data changed (ex: after saving)
+      const dialogEl = getBodyDialog(dialogKey);
+      if (dialogEl) {
+        (dialogEl as any)._onClose();
+      }
+    }
+
+    _complexErrorHandler(componentError, allErrors) {
       this.requestInProcess = false;
-      if (!errorData) {
+
+      if (!allErrors || !Object.keys(allErrors).length) {
+        return false;
+      }
+      // hide requestInProcess if has error, even if they are not coming form the current control
+      this.closeDialogLoading();
+
+      if (!componentError || !Object.keys(componentError).length) {
         return false;
       }
 
-      const data = refactorErrorObject(errorData);
-      const nonField = checkNonField(errorData);
+      const data = refactorErrorObject(componentError);
+      const nonField = checkNonField(componentError);
 
       if (!this.dialogOpened && isString(data)) {
         fireEvent(this, 'toast', {text: `${this.errorBaseText}${data}`});
       } else {
-        this.set('errors', data);
+        this.errors = data;
       }
 
       if (nonField) {
@@ -109,44 +150,28 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       }
     }
 
-    _setField(event: any): void {
-      const valuePath: string = event.target.dataset?.valuePath || '';
-      const fieldPath: string = event.target.dataset?.fieldPath || '';
-      const value = getProperty(event, valuePath);
-      setProperty(this, fieldPath, value);
-      this.notifyPath(fieldPath);
-    }
-
-    _basePathChanged() {
-      this.updateStyles();
-    }
-
-    _dataChanged() {
-      if (this.dialogOpened) {
-        this.requestInProcess = false;
-        this.dialogOpened = false;
-      }
-      if (this.confirmDialogOpened) {
-        this.requestInProcess = false;
-        this.confirmDialogOpened = false;
-      }
-    }
-
-    getLabel(path, base) {
-      if (!base) {
+    getLabel(path: string, options: AnyObject) {
+      if (!options) {
         return '';
       }
-      return (
-        getFieldAttribute(`${base}.${path}`, 'label', 'POST') || getFieldAttribute(`${base}.${path}`, 'label', 'GET')
-      );
+      const actions = get(options, 'actions') || {};
+      let label = get(actions, `POST.${path}.label`) || get(actions, `GET.${path}.label`);
+
+      if (!label && path.includes('.')) {
+        const labelObj = getCollection(path, actions, 'GET') || getCollection(path, actions, 'POST');
+        if (labelObj) {
+          label = labelObj.label || '';
+        }
+      }
+      return label;
     }
 
-    getDisplayName(path, base, value) {
-      if (!base) {
+    getDisplayName(path: string, options: AnyObject, value: string) {
+      if (!options) {
         return '';
       }
 
-      const choices = this._getSavedChoices(`${base}.${path}`);
+      const choices = getOptionsChoices(options, path);
       if (!choices) {
         return '';
       }
@@ -157,19 +182,28 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return choice && choice.display_name ? choice.display_name : '';
     }
 
-    getMaxLength(path, base) {
-      if (!base) {
+    getMaxLength(path, options: AnyObject) {
+      if (!options) {
         return '';
       }
-      return getFieldAttribute(`${base}.${path}`, 'max_length', 'GET');
+      return get(options, `GET.${path}.max_length`);
     }
 
-    getPlaceholderText(path, base, datepicker) {
-      if (readonlyPermission(`${base}.${path}`)) {
+    getNumericPlaceholderText(path, options: AnyObject) {
+      if (readonlyPermission(path, options)) {
+        return '0';
+      }
+
+      const label = this.getLabel(path, options);
+      return `Enter ${label}`;
+    }
+
+    getPlaceholderText(path, options: AnyObject, datepicker?) {
+      if (readonlyPermission(path, options)) {
         return '–';
       }
 
-      const label = this.getLabel(path, base);
+      const label = this.getLabel(path, options);
       const prefix = datepicker ? 'Select' : 'Enter';
       return `${prefix} ${label}`;
     }
@@ -178,28 +212,12 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return '–';
     }
 
-    _getSavedChoices(path) {
-      if (!path) {
-        return;
-      }
-
-      let choices = getStaticData(`${path}_choices`);
-      if (!choices) {
-        choices = getChoices(path);
-      }
-
-      if (choices instanceof Array) {
-        setStaticData(`${path}_choices`, choices);
-        return choices;
-      }
-    }
-
     _setReadonlyFieldClass(data) {
       return !data || !data.id ? 'no-data-fetched' : '';
     }
 
-    _showPrefix(path, base, value, readonly) {
-      return (!readonlyPermission(`${base}.${path}`) && !readonly) || !!value;
+    _showPrefix(path: string, engagementOptions: AnyObject, value, readonly) {
+      return (!readonlyPermission(path, engagementOptions) && !readonly) || !!value;
     }
 
     getTooltipText(selectedValues, options, field) {
@@ -225,6 +243,16 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
       return ['audit', 'sa'].includes(type);
     }
 
+    getFileNameFromURL(url: string) {
+      if (!url) {
+        return '';
+      }
+      const urlSplit = url.split('?');
+      if (urlSplit.length) {
+        return urlSplit.shift()!.split('/').pop();
+      }
+    }
+
     isJSONObj(str) {
       let json;
       try {
@@ -233,6 +261,11 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         return false;
       }
       return isObject(json);
+    }
+
+    _updatePath(path: string) {
+      history.pushState(window.history.state, '', path);
+      window.dispatchEvent(new CustomEvent('popstate'));
     }
 
     handleUsersNoLongerAssignedToCurrentCountry = (availableUsers: any[], savedUsers: any[]) => {
@@ -251,14 +284,7 @@ function CommonMethodsMixin<T extends Constructor<PolymerElement>>(baseClass: T)
         }
       }
     };
-
-    dateHasChanged(e: CustomEvent) {
-      const selDate = e.detail.date;
-      // @ts-ignore
-      this.set('data.' + e.target.getAttribute('property-name'), selDate);
-    }
   }
-
   return CommonMethodsMixinClass;
 }
 

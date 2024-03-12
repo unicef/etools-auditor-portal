@@ -1,29 +1,39 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators';
+import {LitElement, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {getEndpoint} from '../config/endpoints-controller';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {GenericObject} from '../../types/global.js';
+import {getStore} from '@unicef-polymer/etools-utils/dist/store.util';
+import {setEngagementError} from '../../redux/actions/engagement';
 
-class AddNewEngagement extends PolymerElement {
+@customElement('add-new-engagement')
+export class AddNewEngagement extends LitElement {
   @property({type: Object})
   newEngagementData!: GenericObject;
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   errorObject = {};
 
   @property({type: String})
   endpointName = '';
 
-  static get observers() {
-    return ['_newEngagementChanged(newEngagementData, endpointName)'];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('newEngagementData') || changedProperties.has('endpointName')) {
+      this._newEngagementChanged(this.newEngagementData, this.endpointName);
+    }
   }
 
   _handleResponse(data) {
-    fireEvent(this, 'engagement-created', {success: true, data});
+    fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
+    fireEvent(this, 'engagement-created', {success: true, data: data});
   }
 
   _handleError(error) {
+    fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
+
     let {status, response} = error;
     if (typeof response === 'string') {
       try {
@@ -34,9 +44,9 @@ class AddNewEngagement extends PolymerElement {
     }
 
     if (status === 400) {
-      this.set('errorObject', response);
+      getStore().dispatch(setEngagementError(response));
     } else if (status === 413) {
-      this.set('errorObject', {});
+      this.errorObject = {};
       fireEvent(this, 'toast', {
         text: `Error: Exceeded the maximum size of uploaded file(s).`
       });
@@ -68,5 +78,3 @@ class AddNewEngagement extends PolymerElement {
     sendRequest(options).then(this._handleResponse.bind(this)).catch(this._handleError.bind(this));
   }
 }
-
-window.customElements.define('add-new-engagement', AddNewEngagement);

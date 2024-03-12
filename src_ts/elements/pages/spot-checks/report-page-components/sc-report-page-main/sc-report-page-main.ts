@@ -1,71 +1,79 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import '../../../../common-elements/engagement-report-components/send-back-comment/send-back-comment';
 import '../overview-element/overview-element';
 import '../summary-findings-element/summary-findings-element';
 import '../internal-controls/internal-controls';
-import {property} from '@polymer/decorators/lib/decorators';
 import {GenericObject} from '../../../../../types/global';
-
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import concat from 'lodash-es/concat';
 import isNull from 'lodash-es/isNull';
 // eslint-disable-next-line
-import {AssignEngagementEl} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
+import {AssignEngagement} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import {SummaryFindingsElement} from '../summary-findings-element/summary-findings-element';
-import {InternalControlsElement} from '../internal-controls/internal-controls';
+import {InternalControls} from '../internal-controls/internal-controls';
 import {OverviewElement} from '../overview-element/overview-element';
 
 /**
- * @polymer
+ * @LitElement
  */
-class ScReportPageMain extends PolymerElement {
-  static get template() {
+@customElement('sc-report-page-main')
+export class ScReportPageMain extends LitElement {
+  render() {
     // language=HTML
     return html`
+      ${sharedStyles}
+      <send-back-comments
+        ?hidden="${!this.showSendBackComments}"
+        .comments="${this.engagement.send_back_comment}"
+      ></send-back-comments>
+
       <assign-engagement
         id="assignEngagement"
-        data="{{engagement}}"
-        audit-type="Spot Check"
-        error-object="{{errorObject}}"
-        original-data="[[originalData]]"
-        base-permission-path="{{permissionBase}}"
+        .data="${this.engagement}"
+        .originalData="${this.originalData}"
+        .errorObject="${this.errorObject}"
+        audit-type="Audit"
+        .optionsData="${this.optionsData}"
       >
       </assign-engagement>
 
       <overview-element
         id="overviewEngagement"
-        data="{{engagement}}"
-        original-data="[[originalData]]"
-        error-object="{{errorObject}}"
-        base-permission-path="{{permissionBase}}"
+        .data="${this.engagement}"
+        .originalData="${this.originalData}"
+        .errorObject="${this.errorObject}"
+        .optionsData="${this.optionsData}"
       >
       </overview-element>
 
       <summary-findings-element
         id="findingsHighPriority"
-        data-items="{{engagement.findings}}"
-        error-object="{{errorObject}}"
-        original-data="[[originalData.findings]]"
-        priority="{{priorities.high}}"
-        base-permission-path="{{permissionBase}}"
+        .dataItems="${this.getFindingsDataFiltered(this.engagement.findings, this.priorities.high.value)}"
+        .errorObject="${this.errorObject}"
+        .originalData="${this.getFindingsDataFiltered(this.originalData.findings, this.priorities.high.value)}"
+        .priority="${this.priorities.high}"
+        .optionsData="${this.optionsData}"
       >
       </summary-findings-element>
 
       <summary-findings-element
         id="findingsLowPriority"
-        data-items="{{engagement.findings}}"
-        error-object="{{errorObject}}"
-        original-data="[[originalData.findings]]"
-        priority="{{priorities.low}}"
-        base-permission-path="{{permissionBase}}"
+        .dataItems="${this.getFindingsDataFiltered(this.engagement.findings, this.priorities.low.value)}"
+        .errorObject="${this.errorObject}"
+        .originalData="${this.getFindingsDataFiltered(this.originalData.findings, this.priorities.low.value)}"
+        .priority="${this.priorities.low}"
+        .optionsData="${this.optionsData}"
       >
       </summary-findings-element>
 
       <internal-controls
         id="internalControls"
-        error-object="{{errorObject}}"
-        data="{{engagement.internal_controls}}"
-        original-data="[[originalData.internal_controls]]"
-        base-permission-path="{{permissionBase}}"
+        .errorObject="${this.errorObject}"
+        .data="${this.engagement.internal_controls}"
+        .originalData="${this.originalData?.internal_controls}"
+        .optionsData="${this.optionsData}"
       >
       </internal-controls>
     `;
@@ -83,13 +91,23 @@ class ScReportPageMain extends PolymerElement {
     }
   };
 
-  @property({type: Object, notify: true})
+  @property({type: Object})
   engagement: GenericObject = {};
 
+  @property({type: Object})
+  optionsData: GenericObject = {};
+
+  @property({type: Object})
+  originalData: GenericObject = {};
+
+  @property({type: Object})
+  errorObject: GenericObject = {};
+
+  @property({type: Boolean})
+  showSendBackComments = false;
+
   validate(forSave) {
-    const assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement')! as AssignEngagementEl).validate(
-      forSave
-    );
+    const assignTabValid = (this.shadowRoot!.querySelector('#assignEngagement')! as AssignEngagement).validate(forSave);
 
     return assignTabValid;
   }
@@ -107,18 +125,20 @@ class ScReportPageMain extends PolymerElement {
 
   getInternalControlsData() {
     const internalControlsData = (
-      this.shadowRoot!.querySelector('#internalControls') as InternalControlsElement
+      this.shadowRoot!.querySelector('#internalControls') as InternalControls
     ).getInternalControlsData();
     return !isNull(internalControlsData) ? internalControlsData : null;
   }
 
+  getFindingsDataFiltered(findings: any[], priority: string) {
+    return (findings || []).filter((item) => item.priority === priority);
+  }
+
   getAssignVisitData() {
-    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagementEl).getAssignVisitData() || null;
+    return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagement).getAssignVisitData() || null;
   }
 
   getOverviewData() {
     return (this.shadowRoot!.querySelector('#overviewEngagement') as OverviewElement).getOverviewData() || null;
   }
 }
-
-window.customElements.define('sc-report-page-main', ScReportPageMain);

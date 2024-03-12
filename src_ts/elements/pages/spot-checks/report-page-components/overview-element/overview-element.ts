@@ -1,18 +1,20 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@polymer/paper-input/paper-input';
-import '@unicef-polymer/etools-date-time/datepicker-lite';
-import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 
 import DateMixin from '../../../../mixins/date-mixin';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
+import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {property} from '@polymer/decorators/lib/decorators';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../../types/global';
-
 import pickBy from 'lodash-es/pickBy';
 
 /**
@@ -21,91 +23,98 @@ import pickBy from 'lodash-es/pickBy';
  * @appliesMixin DateMixin
  * @appliesMixin CommonMethodsMixin
  */
-class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
-  static get template() {
-    // language=HTML
+@customElement('overview-element')
+export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMixin(LitElement))) {
+  static get styles() {
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${tabLayoutStyles} ${moduleStyles}
+      ${sharedStyles}
 
       <etools-content-panel class="content-section clearfx" panel-title="Overview">
-        <div class="row-h group">
-          <div class="input-container">
+        <div class="layout-horizontal">
+          <div class="col col-4">
             <datepicker-lite
               id="dateFaceStartInput"
-              label="[[getLabel('face_form_start_date', basePermissionPath)]]"
-              value="[[data.face_form_start_date]]"
+              label="${this.getLabel('face_form_start_date', this.optionsData)}"
+              .value="${this.data?.face_form_start_date}"
               selected-date-display-format="D MMM YYYY"
-              readonly$="[[isReadOnly('face_form_start_date', basePermissionPath)]]"
+              ?readonly="${this.isReadOnly('face_form_start_date', this.optionsData)}"
               fire-date-has-changed
               property-name="face_form_start_date"
-              on-date-has-changed="dateHasChanged"
+              @date-has-changed="${({detail}: CustomEvent) =>
+                this.dateHasChanged(detail, 'face_form_start_date', this.data)}"
             >
             </datepicker-lite>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <datepicker-lite
               id="dateFaceEndInput"
-              value="[[data.face_form_end_date]]"
-              label="[[getLabel('face_form_end_date', basePermissionPath)]]"
+              .value="${this.data?.face_form_end_date}"
+              label="${this.getLabel('face_form_end_date', this.optionsData)}"
               selected-date-display-format="D MMM YYYY"
-              readonly$="[[isReadOnly('face_form_end_date', basePermissionPath)]]"
+              readonly="${this.isReadOnly('face_form_end_date', this.optionsData)}"
               fire-date-has-changed
               property-name="face_form_end_date"
-              on-date-has-changed="dateHasChanged"
+              @date-has-changed="${({detail}: CustomEvent) =>
+                this.dateHasChanged(detail, 'face_form_end_date', this.data)}"
             >
             </datepicker-lite>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <!-- Total Value of Selected FACE Forms -->
-            <etools-currency-amount-input
-              value="{{data.total_value}}"
+            <etools-currency
+              class="w100"
+              .value="${this.data?.total_value}"
               currency="$"
-              label="[[getLabel('total_value', basePermissionPath)]]"
-              placeholder="[[getPlaceholderText('total_value', basePermissionPath)]]"
+              label="${this.getLabel('total_value', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
               readonly
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
         </div>
 
-        <div class="row-h group">
-          <div class="input-container">
-            <etools-currency-amount-input
-              class$="[[_setRequired('total_amount_tested', basePermissionPath)]]"
-              value="{{data.total_amount_tested}}"
+        <div class="layout-horizontal">
+          <div class="col col-4">
+            <etools-currency
+              class="w100 ${this._setRequired('total_amount_tested', this.optionsData)}"
+              .value="${this.data?.total_amount_tested}"
               currency="$"
-              label="[[getLabel('total_amount_tested', basePermissionPath)]]"
-              placeholder="[[getPlaceholderText('total_amount_tested', basePermissionPath)]]"
-              required$="[[_setRequired('total_amount_tested', basePermissionPath)]]"
-              readonly$="[[isReadOnly('total_amount_tested', basePermissionPath)]]"
-              invalid="{{_checkInvalid(errors.total_amount_tested)}}"
-              error-message="{{errors.total_amount_tested}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              label="${this.getLabel('total_amount_tested', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('total_amount_tested', this.optionsData)}"
+              ?required="${this._setRequired('total_amount_tested', this.optionsData)}"
+              ?readonly="${this.isReadOnly('total_amount_tested', this.optionsData)}"
+              ?invalid="${this._checkInvalid(this.errors?.total_amount_tested)}"
+              .errorMessage="${this.errors?.total_amount_tested}"
+              @value-changed="${({detail}: CustomEvent) =>
+                this.numberChanged(detail, 'total_amount_tested', this.data)}"
+              @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
-          <div class="input-container">
-            <etools-currency-amount-input
-              class$="[[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
-              value="{{data.total_amount_of_ineligible_expenditure}}"
+          <div class="col col-4">
+            <etools-currency
+              class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
+              .value="${this.data?.total_amount_of_ineligible_expenditure}"
               currency="$"
-              label="[[getLabel('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
-              placeholder="[[getPlaceholderText('total_amount_of_ineligible_expenditure',
-                                          basePermissionPath)]]"
-              required$="[[_setRequired('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
-              readonly$="[[isReadOnly('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
-              invalid="{{_checkInvalid(errors.total_amount_of_ineligible_expenditure)}}"
-              error-message="{{errors.total_amount_of_ineligible_expenditure}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('total_amount_of_ineligible_expenditure', this.optionsData)}"
+              ?required="${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
+              ?readonly="${this.isReadOnly('total_amount_of_ineligible_expenditure', this.optionsData)}"
+              ?invalid="${this._checkInvalid(this.errors?.total_amount_of_ineligible_expenditure)}"
+              .errorMessage="${this.errors?.total_amount_of_ineligible_expenditure}"
+              @value-changed="${({detail}: CustomEvent) =>
+                this.numberChanged(detail, 'total_amount_of_ineligible_expenditure', this.data)}"
+              @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
         </div>
       </etools-content-panel>
@@ -120,11 +129,8 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
   @property({type: Object})
   errorObject!: GenericObject;
 
-  @property({type: String, observer: '_basePathChanged'})
-  basePermissionPath = '';
-
-  @property({type: Array})
-  errors!: any[];
+  @property({type: Object})
+  errors!: GenericObject;
 
   @property({type: Boolean})
   datepickerModal = false;
@@ -141,8 +147,12 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
     ]
   };
 
-  static get observers() {
-    return ['_errorHandler(errorObject)'];
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject, this.errorObject);
+    }
   }
 
   getOverviewData() {
@@ -158,6 +168,3 @@ class OverviewElement extends CommonMethodsMixin(DateMixin(PolymerElement)) {
     return !!value;
   }
 }
-
-window.customElements.define('overview-element', OverviewElement);
-export {OverviewElement};

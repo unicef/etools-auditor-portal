@@ -1,26 +1,39 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dropdown/etools-dropdown';
-import '@polymer/paper-input/paper-textarea';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {getChoices, isRequired} from '../../../mixins/permission-controller';
-import {property} from '@polymer/decorators';
+import {getOptionsChoices, isRequired} from '../../../mixins/permission-controller';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import find from 'lodash-es/find';
 import {GenericObject, ValueAndDisplayName} from '../../../../types/global';
-import {EtoolsDropdownEl} from '@unicef-polymer/etools-dropdown/etools-dropdown';
-import {PaperTextareaElement} from '@polymer/paper-input/paper-textarea';
+import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
+import {EtoolsTextarea} from '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import isEmpty from 'lodash-es/isEmpty';
 
-class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
+/**
+ * @LitEelement
+ * @customElement
+ * @appliesMixin CommonMethodsMixinLit
+ */
+
+@customElement('primary-risk-element')
+export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         etools-content-panel.overal-risks {
           margin: 20px 0;
@@ -32,52 +45,53 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
         }
       </style>
 
-      <etools-content-panel panel-title="{{riskData.header}}" class="overal-risks">
-        <div class="repeatable-item-content">
-          <div class="row-h group">
-            <div class="input-container">
-              <!-- Risk Assessment -->
+      <etools-content-panel .panelTitle="${this.riskData.header}" class="overal-risks">
+        <div class="layout-horizontal">
+          <div class="col col-4">
+            <!-- Risk Assessment -->
 
-              <etools-dropdown
-                id="riskAssessmentInput"
-                class="validate-input required"
-                selected="{{primaryArea.risk.value.value}}"
-                label="Risk Assessment"
-                placeholder="Select Risk Assessment"
-                options="[[riskOptions]]"
-                option-label="display_name"
-                option-value="value"
-                required
-                readonly$="[[isDisabled]]"
-                invalid="{{errors.children.0.blueprints.0.risk.value}}"
-                error-message="{{errors.children.0.blueprints.0.risk.value}}"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-                hide-search
-              >
-              </etools-dropdown>
-            </div>
+            <etools-dropdown
+              id="riskAssessmentInput"
+              class="w100 validate-input required"
+              .selected="${this.primaryArea?.risk?.value?.value}"
+              label="Risk Assessment"
+              placeholder="Select Risk Assessment"
+              .options="${this.riskOptions}"
+              option-label="display_name"
+              option-value="value"
+              required
+              ?readonly="${this.isDisabled}"
+              ?invalid="${this.errors?.children[0]?.blueprints[0]?.risk?.value}"
+              .errorMessage="${this.errors?.children[0].blueprints[0].risk.value}"
+              @focus="${this._resetFieldError}"
+              trigger-value-change-event
+              @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                this.primaryArea.risk.value = detail.selectedItem?.value ? {value: detail.selectedItem.value} : null;
+              }}"
+              hide-search
+            >
+            </etools-dropdown>
           </div>
+        </div>
 
-          <div class="row-h group">
-            <div class="input-container input-container-l">
-              <!-- Brief Justification -->
-              <paper-textarea
-                id="briefJustification"
-                class="validate-input required"
-                value="{{primaryArea.risk.extra.comments}}"
-                label="Brief Justification for Rating (main internal control gaps)"
-                placeholder="Enter Brief Justification"
-                required
-                readonly$="[[isDisabled]]"
-                max-rows="4"
-                invalid="{{errors.children.0.blueprints.0.risk.extra}}"
-                error-message="{{errors.children.0.blueprints.0.risk.extra}}"
-                on-focus="_resetFieldError"
-                on-tap="_resetFieldError"
-              >
-              </paper-textarea>
-            </div>
+        <div class="layout-horizontal">
+          <div class="col col-12">
+            <!-- Brief Justification -->
+            <etools-textarea
+              id="briefJustification"
+              class="w100 validate-input required"
+              .value="${this.primaryArea.risk.extra.comments}"
+              label="Brief Justification for Rating (main internal control gaps)"
+              placeholder="Enter Brief Justification"
+              required
+              ?readonly="${this.isDisabled}"
+              max-rows="4"
+              ?invalid="${this.errors?.children[0]?.blueprints[0]?.risk?.extra}"
+              .errorMessage="${this.errors?.children[0]?.blueprints[0]?.risk.extra}"
+              @focus="${this._resetFieldError}"
+              @value-changed="${({detail}: CustomEvent) => (this.primaryArea.risk.extra.comments = detail.value)}"
+            >
+            </etools-textarea>
           </div>
         </div>
       </etools-content-panel>
@@ -96,9 +110,6 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
     fields: ['overall_risk_assessment']
   };
 
-  @property({type: String})
-  basePermissionPath!: string;
-
   @property({type: Object})
   riskData!: GenericObject;
 
@@ -114,23 +125,27 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
   @property({type: Boolean})
   dialogOpened!: boolean;
 
-  static get observers() {
-    return [
-      '_setValues(riskData, riskOptions)',
-      'updateStyles(basePermissionPath)',
-      '_complexErrorHandler(errorObject.overall_risk_assessment)'
-    ];
-  }
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
 
-  connectedCallback() {
-    super.connectedCallback();
-
-    this._populateRiskOptions();
+    if (
+      changedProperties.has('riskData') ||
+      changedProperties.has('riskOptions') ||
+      changedProperties.has('optionsData')
+    ) {
+      this._setValues(this.riskData);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._complexErrorHandler(this.errorObject.overall_risk_assessment, this.errorObject);
+    }
   }
 
   _setValues(data) {
+    if (!this.optionsData || !this.riskData) {
+      return;
+    }
     this._populateRiskOptions();
-    this.isDisabled = this.isReadOnly('test_subject_areas', this.basePermissionPath);
+    this.isDisabled = this.isReadOnly('test_subject_areas', this.optionsData);
 
     if (!data) {
       return;
@@ -147,36 +162,37 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       extra = JSON.parse(String(extra));
     }
 
-    this.set(
-      'primaryArea.risk.value',
-      find(this.riskOptions, (risk: ValueAndDisplayName) => risk.value === this.riskData.blueprints[0].risk.value)
+    this.primaryArea.risk.value = find(
+      this.riskOptions,
+      (risk: ValueAndDisplayName) => risk.value === this.riskData.blueprints[0].risk.value
     );
-    this.set('primaryArea.risk.extra', extra);
+    this.primaryArea.risk.extra = extra;
+    this.primaryArea = {...this.primaryArea};
   }
 
   _populateRiskOptions() {
     if (!this.riskOptions) {
-      const riskOptions = getChoices(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk.value`) || [];
-      this.set('riskOptions', riskOptions);
+      const riskOptions = getOptionsChoices(this.optionsData, 'overall_risk_assessment.blueprints.risk.value') || [];
+      this.riskOptions = riskOptions;
     }
   }
 
   validate(forSave) {
     if (this.primaryArea.risk.extra.comments && !this.primaryArea.risk.value) {
-      this.set('errors', {children: [{blueprints: [{risk: {value: 'Field is required'}}]}]});
+      this.errors = {children: [{blueprints: [{risk: {value: 'Field is required'}}]}]};
       fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
       return false;
     }
-    if (!this.basePermissionPath || forSave) {
+    if (!this.optionsData || forSave) {
       return true;
     }
-    const required = isRequired(`${this.basePermissionPath}.overall_risk_assessment.blueprints.risk`);
+    const required = isRequired('overall_risk_assessment.blueprints.risk', this.optionsData);
     if (!required) {
       return true;
     }
 
     const riskValid = (this.shadowRoot!.querySelector('#riskAssessmentInput') as EtoolsDropdownEl).validate();
-    const commentsValid = (this.shadowRoot!.querySelector('#briefJustification') as PaperTextareaElement).validate();
+    const commentsValid = (this.shadowRoot!.querySelector('#briefJustification') as EtoolsTextarea).validate();
     const valid = riskValid && commentsValid;
 
     const errors = {
@@ -185,15 +201,15 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
           blueprints: [
             {
               risk: {
-                value: !riskValid ? 'Field is required' : false,
-                extra: !commentsValid ? 'Field is required' : false
+                value: !riskValid ? 'Please, select Risk Assessment' : false,
+                extra: !commentsValid ? 'Please, enter Brief Justification' : false
               }
             }
           ]
         }
       ]
     };
-    this.set('errors', errors);
+    this.errors = errors;
     if (!valid) {
       fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
     }
@@ -210,7 +226,7 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
       ? JSON.parse(this.primaryArea.risk.extra)
       : this.primaryArea.risk.extra;
 
-    let originalExtra = get(this, 'originalData.blueprints[0].risk.extra');
+    let originalExtra = get(this.originalData, 'blueprints[0].risk.extra');
     if (this.isJSONObj(originalExtra)) {
       originalExtra = JSON.parse(String(originalExtra));
     }
@@ -243,7 +259,6 @@ class PrimaryRiskElement extends CommonMethodsMixin(PolymerElement) {
     if (this.dialogOpened) {
       return;
     }
-    this._errorHandler(errorData);
+    this._errorHandler(errorData, errorData);
   }
 }
-window.customElements.define('primary-risk-element', PrimaryRiskElement);

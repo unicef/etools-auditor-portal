@@ -1,247 +1,207 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/app-route/app-route';
-import '@polymer/paper-tabs/paper-tabs';
-import '@polymer/iron-icons/iron-icons';
-import '@polymer/iron-pages/iron-pages';
-import '@polymer/paper-input/paper-textarea';
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-modules-common/dist/layout/etools-tabs';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 
-import '@unicef-polymer/etools-content-panel/etools-content-panel';
-import '@unicef-polymer/etools-dialog/etools-dialog';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
+import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 
-import {sharedStyles} from '../../styles/shared-styles';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles';
-import {tabInputsStyles} from '../../styles/tab-inputs-styles';
-import '../../data-elements/engagement-info-data';
 import '../../data-elements/update-engagement';
 import '../../common-elements/pages-header-element/pages-header-element';
 import '../../common-elements/engagement-overview-components/engagement-info-details/engagement-info-details';
 import '../../common-elements/engagement-overview-components/partner-details-tab/partner-details-tab';
-// eslint-disable-next-line
 import '../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import '../../common-elements/follow-up-components/follow-up-main/follow-up-main';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../common-elements/status-tab-element/status-tab-element';
 import './report-page-components/audit-report-page-main/audit-report-page-main';
-import {property} from '@polymer/decorators/lib/decorators';
+import '../../common-elements/engagement-cancel/engagement-cancel-dialog';
 import {GenericObject} from '../../../types/global';
 import EngagementMixin from '../../mixins/engagement-mixin';
-import {setStaticData, getStaticData} from '../../mixins/static-data-controller';
+import {RootState, store} from '../../../redux/store';
+import {connect} from 'pwa-helpers/connect-mixin';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
-import {getChoices} from '../../mixins/permission-controller';
 
 import assign from 'lodash-es/assign';
 import isNull from 'lodash-es/isNull';
+import {isActiveTab, pageIsNotCurrentlyActive} from '../../utils/utils';
+import get from 'lodash-es/get';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {AnyObject} from '@unicef-polymer/etools-types';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
  * @customElement
- * @polymer
- * @appliesMixin CommonMethodsMixin
+ * @mixinFunction
  * @appliesMixin EngagementMixin
+ * @appliesMixin CommonMethodsMixin
  */
-class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement)) {
-  static get template() {
-    // language=HTML
+@customElement('audits-page-main')
+export class AuditsPageMain extends connect(store)(CommonMethodsMixin(EngagementMixin(LitElement))) {
+  static get styles() {
+    return [moduleStyles, mainPageStyles, tabInputsStyles];
+  }
+
+  render() {
+    if (!this.engagementIsLoaded(this.engagement)) {
+      return html``;
+    }
+
     return html`
-      ${sharedStyles} ${moduleStyles} ${mainPageStyles} ${tabInputsStyles}
+      ${sharedStyles}
       <style>
         .repeatable-item-container {
           margin-bottom: 0 !important;
         }
+        .cancellation-tab {
+          --etools-icon-font-size: var(--etools-font-size-70, 70px);
+        }
       </style>
 
-      <app-route route="{{route}}" pattern="/:id/:tab" data="{{routeData}}"> </app-route>
-
-      <engagement-info-data engagement-id="{{engagementId}}" engagement-type="audits" engagement-info="{{engagement}}">
-      </engagement-info-data>
-
       <update-engagement
-        updated-engagement-data="{{updatedEngagement}}"
-        quiet-adding="{{quietAdding}}"
-        force-options-update="{{forceOptionsUpdate}}"
-        engagement="{{engagement}}"
-        error-object="{{errorObject}}"
-        base-permission-path="{{permissionBase}}"
+        .updatedEngagementData="${this.updatedEngagement}"
+        .quietAdding="${this.quietAdding}"
+        @quiet-adding-changed="${(e: CustomEvent) => (this.quietAdding = e.detail === 'true')}"
+        .forceOptionsUpdate="${this.forceOptionsUpdate}"
+        @force-options-changed="${(e: CustomEvent) => (this.forceOptionsUpdate = e.detail === 'true')}"
+        .errorObject="${this.errorObject}"
+        @error-changed="${(e: CustomEvent) => (this.errorObject = e.detail)}"
       >
       </update-engagement>
 
-      <template is="dom-if" if="{{engagement.id}}" restamp>
-        <pages-header-element
-          show-export-button
-          hide-print-button
-          export-links="[[_setExportLinks(engagement)]]"
-          engagement="[[engagement]]"
-          page-title="[[engagement.partner.name]] - Audit"
-        >
-        </pages-header-element>
+      ${this.engagement?.id
+        ? html`
+            <pages-header-element
+              show-export-button
+              hide-print-button
+              .exportLinks="${this._setExportLinks(this.engagement)}"
+              .engagement="${this.engagement}"
+              pageTitle="${this.engagement.partner.name} - Audit"
+            >
+            </pages-header-element>
 
-        <div class="tab-selector">
-          <paper-tabs
-            attr-for-selected="name"
-            noink
-            bottom-item
-            role="tablist"
-            tabindex="0"
-            selected="{{tab}}"
-            id="pageTabs"
-          >
-            <paper-tab name="overview">
-              <span class="tab-content">Engagement Overview</span>
-            </paper-tab>
+            <div class="tab-selector">
+              <etools-tabs-lit
+                .tabs="${this.tabsList}"
+                .activeTab="${this.tab}"
+                @sl-tab-show="${(e: CustomEvent) => {
+                  if (this.tab !== e.detail.name) {
+                    this._tabChanged(e.detail.name, this.tab);
+                    this.tab = e.detail.name;
+                  }
+                }}"
+                id="pageTabs"
+              ></etools-tabs-lit>
+            </div>
 
-            <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
-              <paper-tab name="report">
-                <span class="tab-content">Report</span>
-              </paper-tab>
-            </template>
+            <div class="view-container">
+              <div id="pageContent">
+                <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
+                  ${this._showCancellationReason(this.engagement)
+                    ? html`<etools-content-panel class="cancellation-tab" panel-title="">
+                        <div slot="panel-btns" class="bookmark">
+                          <etools-icon name="bookmark"></etools-icon>
+                        </div>
 
-            <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
-              <paper-tab name="follow-up">
-                <span class="tab-content">Follow-Up</span>
-              </paper-tab>
-            </template>
+                        <div class="cancellation-title">Cancellation Note</div>
+                        <div class="cancellation-text">${this.engagement.cancel_comment}</div>
+                      </etools-content-panel>`
+                    : ``}
 
-            <paper-tab name="attachments"><span class="tab-content">Attachments</span></paper-tab>
-          </paper-tabs>
-        </div>
-
-        <div class="view-container">
-          <div id="pageContent">
-            <iron-pages id="info-tabs" selected="{{tab}}" attr-for-selected="name">
-              <div name="overview">
-                <template is="dom-if" if="{{_showCancellationReason(engagement)}}">
-                  <etools-content-panel class="cancellation-tab" panel-title="">
-                    <div slot="panel-btns" class="bookmark">
-                      <iron-icon icon="bookmark"></iron-icon>
-                    </div>
-
-                    <div class="cancellation-title">Cancellation Note</div>
-                    <div class="cancellation-text">[[engagement.cancel_comment]]</div>
-                  </etools-content-panel>
-                </template>
-
-                <engagement-info-details
-                  id="engagementDetails"
-                  data="{{engagement}}"
-                  original-data="[[originalData]]"
-                  error-object="{{errorObject}}"
-                  base-permission-path="{{permissionBase}}"
-                >
-                </engagement-info-details>
-
-                <partner-details-tab
-                  id="partnerDetails"
-                  original-data="[[originalData]]"
-                  engagement="{{engagement}}"
-                  error-object="{{errorObject}}"
-                  base-permission-path="{{permissionBase}}"
-                >
-                </partner-details-tab>
-
-                <engagement-staff-members-tab
-                  id="staffMembers"
-                  engagement="{{engagement}}"
-                  error-object="{{errorObject}}"
-                  base-permission-path="{{permissionBase}}"
-                >
-                </engagement-staff-members-tab>
-              </div>
-
-              <template is="dom-if" if="{{_showReportTabs(permissionBase, engagement)}}" restamp>
-                <div name="report">
-                  <audit-report-page-main
-                    id="report"
-                    original-data="[[originalData]]"
-                    error-object="{{errorObject}}"
-                    engagement="{{engagement}}"
-                    permission-base="{{permissionBase}}"
+                  <engagement-info-details
+                    id="engagementDetails"
+                    .data="${this.engagement}"
+                    .originalData="${this.originalData}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
                   >
-                  </audit-report-page-main>
-                </div>
-              </template>
+                  </engagement-info-details>
 
-              <template is="dom-if" if="{{_showFollowUpTabs(permissionBase)}}" restamp>
-                <div name="follow-up">
-                  <follow-up-main
-                    id="follow-up"
-                    original-data="[[originalData]]"
-                    error-object="{{errorObject}}"
-                    engagement="{{engagement}}"
-                    permission-base="{{permissionBase}}"
+                  <partner-details-tab
+                    .originalData="${this.originalData}"
+                    id="partnerDetails"
+                    .engagement="${this.engagement}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
                   >
-                  </follow-up-main>
+                  </partner-details-tab>
+
+                  <engagement-staff-members-tab
+                    id="staffMembers"
+                    .engagement="${this.engagement}"
+                    .optionsData="${this.engagementOptions}"
+                    .errorObject="${this.errorObject}"
+                  >
+                  </engagement-staff-members-tab>
                 </div>
-              </template>
 
-              <div name="attachments">
-                <file-attachments-tab
-                  id="engagement_attachments"
-                  data-base-path="[[permissionBase]]"
-                  path-postfix="attachments"
-                  base-id="[[engagement.id]]"
-                  error-object="{{errorObject}}"
-                  error-property="engagement_attachments"
-                  endpoint-name="attachments"
-                >
-                </file-attachments-tab>
+                ${this._showReportTabs(this.engagementOptions, this.engagement)
+                  ? html`<div name="report" ?hidden="${!isActiveTab(this.tab, 'report')}">
+                      <audit-report-page-main
+                        id="report"
+                        .originalData="${this.originalData}"
+                        .engagement="${this.engagement}"
+                        .errorObject="${this.errorObject}"
+                        .optionsData="${this.engagementOptions}"
+                        ?showSendBackComments="${this._showSendBackComments(this.engagement)}"
+                      >
+                      </audit-report-page-main>
+                    </div>`
+                  : ``}
+                ${this._showFollowUpTabs(this.apOptions)
+                  ? html`<div name="follow-up" ?hidden="${!isActiveTab(this.tab, 'follow-up')}">
+                      <follow-up-main
+                        id="follow-up"
+                        .originalData="${this.originalData}"
+                        .errorObject="${this.errorObject}"
+                        .engagement="${this.engagement}"
+                        .optionsData="${this.engagementOptions}"
+                        .apOptionsData="${this.apOptions}"
+                      >
+                      </follow-up-main>
+                    </div>`
+                  : ``}
 
-                <template is="dom-if" if="{{hasReportAccess(permissionBase, engagement)}}" restamp>
+                <div name="attachments" ?hidden="${!isActiveTab(this.tab, 'attachments')}">
                   <file-attachments-tab
-                    id="report_attachments"
-                    is-report-tab="true"
-                    data-base-path="[[permissionBase]]"
-                    path-postfix="report_attachments"
-                    base-id="[[engagement.id]]"
-                    error-object="{{errorObject}}"
-                    error-property="report_attachments"
-                    endpoint-name="reportAttachments"
+                    id="engagement_attachments"
+                    .optionsData="${this.attachmentOptions}"
+                    .engagement="${this.engagement}"
+                    .errorObject="${this.errorObject}"
+                    .isUnicefUser="${this.user?.is_unicef_user}"
+                    error-property="engagement_attachments"
+                    endpoint-name="attachments"
                   >
                   </file-attachments-tab>
-                </template>
-              </div>
-            </iron-pages>
-          </div>
 
-          <div id="sidebar">
-            <status-tab-element engagement-data="[[engagement]]" permission-base="[[permissionBase]]">
-            </status-tab-element>
-          </div>
-        </div>
-
-        <etools-dialog
-          no-padding
-          keep-dialog-open
-          size="md"
-          opened="{{dialogOpened}}"
-          dialog-title="Cancellation of Engagement"
-          ok-btn-text="Continue"
-          on-confirm-btn-clicked="_cancelEngagement"
-          openFlag="dialogOpened"
-          on-close="_resetDialogOpenedFlag"
-        >
-          <div class="row-h repeatable-item-container" without-line>
-            <div class="repeatable-item-content">
-              <div class="row-h group">
-                <div class="input-container input-container-l">
-                  <paper-textarea
-                    id="cancellationReasonInput"
-                    class="required"
-                    label="Cancellation Reason"
-                    placeholder="Enter reason of cancellation"
-                    required
-                    max-rows="4"
-                    error-message="This field is required."
-                    on-focus="_resetFieldError"
-                    on-tap="_resetFieldError"
-                  >
-                  </paper-textarea>
+                  ${this.hasReportAccess(this.engagementOptions, this.engagement)
+                    ? html`<file-attachments-tab
+                        id="report_attachments"
+                        is-report-tab="true"
+                        .optionsData="${this.reportAttachmentOptions}"
+                        .engagement="${this.engagement}"
+                        .errorObject="${this.errorObject}"
+                        error-property="report_attachments"
+                        endpoint-name="reportAttachments"
+                      >
+                      </file-attachments-tab>`
+                    : ``}
                 </div>
               </div>
+
+              <div id="sidebar">
+                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
+                </status-tab-element>
+              </div>
             </div>
-          </div>
-        </etools-dialog>
-      </template>
+          `
+        : ``}
     `;
   }
 
@@ -249,38 +209,45 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
   engagement: GenericObject = {};
 
   @property({type: Array})
-  tabsList: string[] = ['overview', 'report', 'attachments', 'follow-up'];
+  tabsList: AnyObject[] = [];
 
   @property({type: String})
-  engagementPrefix = '/audits';
+  engagementPrefix = 'audits';
 
-  static get observers() {
-    return [
-      '_routeConfig(route)',
-      '_checkAvailableTab(engagement, permissionBase, route)',
-      '_setPermissionBase(engagement.id)',
-      '_tabChanged(tab)'
-    ];
+  stateChanged(state: RootState) {
+    if (pageIsNotCurrentlyActive(get(state, 'app.routeDetails.routeName'), 'audits')) {
+      this.resetEngagementDataIfNeeded();
+      return;
+    }
+    this.setEngagementDataFromRedux(state);
+
+    if (state.app.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
+      this.onDetailPageRouteChanged(state.app.routeDetails);
+    }
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this._infoLoaded = this._infoLoaded.bind(this);
-    this._engagementUpdated = this._engagementUpdated.bind(this);
-    // dci not found
-    // this._mainActionActivated = this._mainActionActivated.bind(this);
-    this.addEventListener('engagement-info-loaded', this._infoLoaded);
-    this.addEventListener('engagement-updated', this._engagementUpdated);
-    // dci not found
-    // this.addEventListener('main-action-activated', this._mainActionActivated);
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (
+      changedProperties.has('engagementOptions') ||
+      changedProperties.has('engagement') ||
+      changedProperties.has('user')
+    ) {
+      this.onEngagementLoaded();
+    }
   }
 
-  disconnectedCallback(): void {
-    super.disconnectedCallback();
-    this.removeEventListener('engagement-info-loaded', this._infoLoaded);
-    this.removeEventListener('engagement-updated', this._engagementUpdated);
-    // dci not found
-    // this.removeEventListener('main-action-activated', this._mainActionActivated);
+  onEngagementLoaded() {
+    if (this.engagementOptions && this.engagement && this.user) {
+      this.tabsList = [
+        {tab: 'overview', tabLabel: 'Engagement Overview'},
+        {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
+        {tab: 'follow-up', hidden: !this._showFollowUpTabs(this.apOptions), tabLabel: 'Follow-Up'},
+        {tab: 'attachments', tabLabel: 'Attachments'}
+      ];
+      this.setFileTypes(this.attachmentOptions, this.reportAttachmentOptions);
+    }
   }
 
   _validateEngagement() {
@@ -290,10 +257,25 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
     }
     const reportValid = this.getElement('#report').validate();
     if (!reportValid) {
-      this.set('tab', 'report');
+      this.tab = 'report';
+      fireEvent(this, 'toast', {text: 'Fill report before submiting!'});
       return false;
     }
     return true;
+  }
+
+  _openCancelOrSendBackDialog(action: string) {
+    openDialog({
+      dialog: 'engagement-cancel-dialog',
+      dialogData: {
+        action: action,
+        reasonText: action === 'send_back' ? this.engagement.send_back_comment : ''
+      }
+    }).then(({confirmed, response}) => {
+      if (confirmed) {
+        this._cancelOrSendBackEngagement(action, response);
+      }
+    });
   }
 
   customDataPrepare(data) {
@@ -305,7 +287,7 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
     assign(data, followUpData);
 
     // Report Data
-    const hasReport = this.hasReportAccess(this.permissionBase, this.engagement);
+    const hasReport = this.hasReportAccess(this.engagementOptions, this.engagement);
     if (!hasReport) {
       return data;
     }
@@ -341,22 +323,9 @@ class AuditsPageMain extends CommonMethodsMixin(EngagementMixin(PolymerElement))
 
     const reportValid = reportTab.validate('forSave');
     if (!reportValid) {
-      this.set('tab', 'report');
+      this.tab = 'report';
       return false;
     }
     return true;
   }
-
-  infoLoaded() {
-    if (getStaticData('audit_opinions')) {
-      return;
-    }
-    const auditOpinions = getChoices(`engagement_${this.engagement.id}.audit_opinion`);
-    if (!auditOpinions) {
-      return;
-    }
-    setStaticData('audit_opinions', auditOpinions);
-  }
 }
-
-window.customElements.define('audits-page-main', AuditsPageMain);

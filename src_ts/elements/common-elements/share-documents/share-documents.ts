@@ -1,220 +1,194 @@
-import {PolymerElement, html} from '@polymer/polymer';
-import {property} from '@polymer/decorators';
-import '@polymer/paper-checkbox/paper-checkbox.js';
-import '@polymer/paper-tooltip/paper-tooltip.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/polymer/lib/elements/dom-repeat';
-import '../list-tab-elements/list-header/list-header';
-import '../simple-list-item/simple-list-item';
-import {PaperCheckboxElement} from '@polymer/paper-checkbox/paper-checkbox';
-
+import {LitElement, html, PropertyValues} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import {EtoolsCheckbox} from '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
+import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {GenericObject} from '../../../types/global';
 import clone from 'lodash-es/clone';
 import remove from 'lodash-es/remove';
 import uniqBy from 'lodash-es/uniqBy';
 import isEmpty from 'lodash-es/isEmpty';
-import {sharedStyles} from '../../styles/shared-styles';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
 import {moduleStyles} from '../../styles/module-styles';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
+import {connect} from 'pwa-helpers/connect-mixin';
+import {RootState, store} from '../../../redux/store';
+import DateMixin from '../../mixins/date-mixin';
 import {getEndpoint} from '../../config/endpoints-controller';
 import TableElementsMixin from '../../mixins/table-elements-mixin';
-import {getStaticData} from '../../mixins/static-data-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {sendRequest} from '@unicef-polymer/etools-ajax/etools-ajax-request';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 
 /**
- * @polymer
+ * @LitElement
  * @customElement
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  */
-class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElement)) {
-  static get template() {
+@customElement('share-documents')
+export class ShareDocuments extends connect(store)(TableElementsMixin(CommonMethodsMixin(DateMixin(LitElement)))) {
+  static get styles() {
+    return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
+  }
+  render() {
     return html`
-      ${sharedStyles} ${moduleStyles} ${tabInputsStyles}
+      ${sharedStyles}
       <style>
-          :host {
-            overflow: hidden;
-          }
-          :host .modal-pad, :host .subtitle {
-            padding: 16px 24px;
-            display: block;
-          }
-          :host .subtitle {
-            background-color: #eee;
-          }
-          :host etools-dropdown{
-            padding: 0 24px;
-          }
-          .content-wrapper {
-            padding-bottom: 8px;
-          }
-          list-header {
-            background-color: var(--hover-block-bg-color, #f3eee9);
-            padding-left: 56px;
-            --list-header-custom-style: {
-                height: 48px;
-                line-height: 48px;
-                flex-shrink: 0;
-            }
-          }
-          simple-list-item {
-            --hover-style: {
-                background-color: transparent;
-            };
-          }
-          .right {
-            text-align: right;
-          }
-          .row-data > * {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            padding-right: 10px;
-          }
-          .row-data > paper-checkbox {
-            padding-right: 14px;
-          }
-          a {
-            padding-left: 5px;
-            color: #09f;
-            text-decoration: none;
-          }
-          .repeatable-item-container.list-items {
-            padding: 0;
-            max-height: 365px;
-            overflow: auto;
-          }
-          .doc-type {
-            flex: 0 0 calc(27% - -2px);
-          }
-          .document-link {
-            flex: 0 0 33%;
-          }
-          .pd {
-            flex: 0 0 14%;
-          }
-
+        ${dataTableStylesLit}
+        :host {
+          overflow: hidden;
+        }
+        :host .modal-pad,
+        :host .subtitle {
+          padding: 16px 24px;
+          display: block;
+        }
+        :host .subtitle {
+          background-color: #eee;
+        }
+        :host etools-dropdown {
+          padding: 0 24px;
+        }
+        .content-wrapper {
+          padding-bottom: 8px;
+        }
+        etools-data-table-header {
+          --list-bg-color: #f3eee9;
+        }
+        .row-data > * {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          padding-right: 10px;
+        }
+        .row-data > etools-checkbox {
+          padding-right: 14px;
+        }
+        a {
+          padding-left: 5px;
+          color: #09f;
+          text-decoration: none;
+          line-height: 15px;
+        }
+        .repeatable-item-container.list-items {
+          padding: 0;
+          max-height: 365px;
+          overflow: auto;
+        }
       </style>
 
       <div>
-        <div class="subtitle" without-line>
-          Showing documents for [[partnerName]]
-        </div>
+        <div class="subtitle" without-line>Showing documents for ${this.partnerName}</div>
 
         <div class="row-h repeatable-item-container" without-line>
-          <div class="layout horizontal">
-            <etools-dropdown class="validate-input w40"
-                    selected="{{selectedFiletype}}"
-                    label="[[getLabel('file_type', basePermissionPath)]]"
-                    placeholder="Select"
-                    options="[[fileTypes]]"
-                    enable-none-option
-                    dynamic-align>
+          <div class="layout-horizontal w50">
+            <etools-dropdown
+              class="validate-input"
+              .selected="${this.selectedFiletype}"
+              label="${this.getLabel('file_type', this.optionsData)}"
+              placeholder="Select"
+              .options="${this.fileTypes}"
+              option-label="label"
+              option-value="value"
+              trigger-value-change-event
+              @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                this.selectedFiletype = detail.selectedItem ? detail.selectedItem.value : null;
+                this._filterByFileType(this.selectedFiletype);
+              }}"
+              enable-none-option
+              dynamic-align
+            >
             </etools-dropdown>
           </div>
         </div>
-        <div class="layout vertical">
-          <list-header data="[[headingColumns]]"
-                      order-by="{{orderBy}}"
-                      on-order-changed="_orderChanged"
-                      base-permission-path="[[dataBasePath]]">
-          </list-header>
-          <template is="dom-if" if="[[!attachmentsList.length]]">
-            <span class="modal-pad">There are no attachments for this partner. </span>
-          </template>
-          <template is="dom-if" if="[[attachmentsList.length]]">
-            <div class="row-h repeatable-item-container list-items">
 
-              <template is="dom-repeat"
-                        items="[[attachmentsList]]">
-                <simple-list-item>
-                  <div class="row-data">
-                    <paper-checkbox on-tap="_toggleChecked">
-                    </paper-checkbox>
-                    <span class="pd">
-                      [[_getReferenceNumber(item.agreement_reference_number)]]
-                    </span>
-                    <span class="doc-type">[[item.file_type]]</span>
-                    <div class="document-link">
-                      <div class="wrap-text">
-                        <iron-icon icon="icons:attachment"
-                                  class="download-icon">
-                        </iron-icon>
-                        <a href$="[[item.file_link]]"
-                          class="truncate" 
-                          title$="[[item.filename]]"
-                          target="_blank">[[item.filename]]
-                        </a>
-                      </div>
+          <etools-data-table-header no-collapse no-title>
+            <etools-data-table-column class="col-3">Agreement Ref</etools-data-table-column>
+            <etools-data-table-column class="col-3">Document Type</etools-data-table-column>
+            <etools-data-table-column class="col-4">Document</etools-data-table-column>
+            <etools-data-table-column class="col-2">Date Uploaded</etools-data-table-column>
+          </etools-data-table-header>
+          ${
+            !this.attachmentsList || !this.attachmentsList.length
+              ? html`<span class="modal-pad">There are no attachments for this partner. </span>`
+              : html` ${this.attachmentsList.map(
+                  (item) => html` <etools-data-table-row no-collapse secondary-bg-on-hover>
+                    <div slot="row-data" class="layout-horizontal row-data">
+                      <span class="col-data col-3">
+                        <etools-checkbox @click="${(e) => this._toggleChecked(e, item.id)}"></etools-checkbox>
+                        <span class="pd"> ${this._getReferenceNumber(item.agreement_reference_number)} </span>
+                      </span>
+                      <span class="col-data col-3">${item.file_type}</span>
+                      <span class="col-data col-4 wrap-text">
+                        <etools-icon name="attachment" class="download-icon"> </etools-icon>
+                        <a href="${item.file_link}" title="${item.filename}" target="_blank">${item.filename} </a>
+                      </span>
+                      <span class="col-data col-2">
+                        <span>${this.prettyDate(String(item.created), '') || '–'}</span>
+                      </span>
                     </div>
-                    <span class="w12">[[item.created]]</span>
-                  </div>
-
-                </simple-list-item>
-              </template>
+                  </etools-data-table-row>`
+                )}`
+          }
+          <etools-data-table-row no-collapse ?hidden="${this.attachmentsList?.length}">
+            <div slot="row-data" class="layout-horizontal editable-row">
+              <span class="col-data col-3">–</span>
+              <span class="col-data col-3">–</span>
+              <span class="col-data col-4">–</span>
+              <span class="col-data col-2">–</span>
             </div>
-          </template>
+          </etools-data-table-row>
         </div>
       </div>
-    </div>
-      `;
+    `;
   }
 
-  @property({type: Boolean, notify: true, reflectToAttribute: true})
-  shareParams!: boolean;
+  @property({type: Object, reflect: true})
+  shareParams!: GenericObject;
 
-  @property({type: String, observer: '_handlePartnerChanged'})
+  @property({type: String})
   partnerName!: string;
 
-  @property({type: String, observer: '_filterByFileType'})
+  @property({type: String})
   selectedFiletype = '';
 
   @property({type: Array})
   selectedAttachments: GenericObject[] = [];
 
-  @property({type: Array, computed: '_getFileTypesFromStatic(partnerName)', notify: true})
-  fileTypes!: GenericObject[];
-
   @property({type: Array})
-  headingColumns: GenericObject[] = [
-    {
-      size: 18,
-      label: 'Agreement Ref',
-      name: 'ref',
-      ordered: 'asc'
-    },
-    {
-      size: 30,
-      label: 'Document Type',
-      noOrder: true,
-      class: 'no-order'
-    },
-    {
-      size: 28,
-      label: 'Document',
-      noOrder: true,
-      class: 'no-order'
-    },
-    {
-      size: 20,
-      label: 'Date Uploaded',
-      noOrder: true,
-      class: 'no-order right'
-    }
-  ];
-
-  @property({type: Boolean, reflectToAttribute: true, notify: true})
-  confirmDisabled!: boolean;
+  fileTypes!: GenericObject[];
 
   @property({type: Array})
   attachmentsList!: GenericObject;
 
   @property({type: Array})
   originalList!: GenericObject;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('partnerName')) {
+      this._handlePartnerChanged(this.partnerName);
+    }
+    if (changedProperties.has('selectedFiletype')) {
+      this._filterByFileType(this.selectedFiletype);
+    }
+  }
+
+  stateChanged(state: RootState) {
+    if (state.commonData.loadedTimestamp && !this.fileTypes) {
+      const fileTypes = (state.commonData.staticDropdown.attachment_types || [])
+        .filter((val) => !isEmpty(val))
+        .map((typeStr) => ({label: typeStr, value: typeStr}));
+      this.fileTypes = uniqBy(fileTypes, 'label');
+    }
+  }
 
   _handlePartnerChanged(partnerName) {
     if (!partnerName) {
@@ -233,66 +207,32 @@ class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElemen
 
     sendRequest(options)
       .then((resp) => {
-        this.set('attachmentsList', resp);
-        this.set('originalList', resp);
+        this.attachmentsList = resp;
+        this.originalList = resp;
       })
       .catch((err) => fireEvent(this, 'toast', {text: `Error fetching documents for ${partner}: ${err}`}));
-  }
-
-  _getFileTypesFromStatic() {
-    const fileTypes = getStaticData('staticDropdown')
-      .attachment_types.filter((val) => !isEmpty(val))
-      .map((typeStr) => ({label: typeStr, value: typeStr}));
-    const uniques = uniqBy(fileTypes, 'label');
-    return uniques;
   }
 
   _getReferenceNumber(refNumber) {
     return refNumber || 'n/a';
   }
 
-  _toggleChecked(e) {
-    const {id} = e.model.item;
-    const isChecked = (e.target as PaperCheckboxElement).checked;
+  _toggleChecked(e, id) {
+    const isChecked = (e.target as EtoolsCheckbox).checked;
     if (isChecked) {
-      this.push('selectedAttachments', {attachment: id});
+      this.selectedAttachments.push({attachment: id});
     } else {
       const cloned = clone(this.selectedAttachments);
       remove(cloned, {attachment: id});
-      this.set('selectedAttachments', cloned);
+      this.selectedAttachments = cloned;
     }
 
     this.updateShareParams();
   }
 
   updateShareParams() {
-    this.set('shareParams', {
-      attachments: this.selectedAttachments
-    });
-    if (this.selectedAttachments.length) {
-      this.set('confirmDisabled', false);
-    } else {
-      this.set('confirmDisabled', true);
-    }
-  }
-
-  _orderChanged({detail}) {
-    const newOrder = detail.item.ordered === 'desc' ? 'asc' : 'desc';
-    this.set(`headingColumns.${detail.index}.ordered`, newOrder);
-    this._handleSort(newOrder);
-  }
-
-  _handleSort(sortOrder) {
-    const sorted = this.attachmentsList.slice(0).sort((a, b) => {
-      if (a.agreement_reference_number > b.agreement_reference_number) {
-        return sortOrder === 'asc' ? -1 : 1;
-      } else if (a.agreement_reference_number < b.agreement_reference_number) {
-        return sortOrder === 'asc' ? 1 : -1;
-      } else {
-        return 0;
-      }
-    });
-    this.set('attachmentsList', sorted);
+    this.shareParams = {attachments: this.selectedAttachments};
+    fireEvent(this, 'share-params-changed', this.shareParams);
   }
 
   _filterByFileType(selectedFileType) {
@@ -301,13 +241,11 @@ class ShareDocuments extends TableElementsMixin(CommonMethodsMixin(PolymerElemen
     }
     if (selectedFileType === null) {
       // resets list when doc-type filter is cleared
-      this.set('attachmentsList', this.originalList);
+      this.attachmentsList = this.originalList;
       return;
     }
     const file_type = selectedFileType.toLowerCase();
     const newFilteredList = this.originalList.filter((row) => row.file_type.toLowerCase() === file_type);
-    this.set('attachmentsList', newFilteredList);
+    this.attachmentsList = newFilteredList;
   }
 }
-window.customElements.define('share-documents', ShareDocuments);
-export {ShareDocuments as ShareDocumentsEl};

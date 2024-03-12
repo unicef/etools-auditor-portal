@@ -1,243 +1,251 @@
-import {PolymerElement, html} from '@polymer/polymer/polymer-element';
-
-import '@polymer/iron-icon/iron-icon.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/polymer/lib/elements/dom-if';
-import '@polymer/paper-input/paper-input.js';
-import '@unicef-polymer/etools-content-panel/etools-content-panel.js';
-import '@unicef-polymer/etools-currency-amount-input/etools-currency-amount-input.js';
-import '@unicef-polymer/etools-dropdown/etools-dropdown.js';
-import '@polymer/paper-input/paper-textarea.js';
+import {LitElement, PropertyValues, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
+import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
+import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
+import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import pickBy from 'lodash-es/pickBy';
 import each from 'lodash-es/each';
 
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {getChoices} from '../../../mixins/permission-controller';
+import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
+import {getOptionsChoices} from '../../../mixins/permission-controller';
 
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {property} from '@polymer/decorators';
+import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../types/global';
+import {AnyObject} from '@unicef-polymer/etools-types';
 
 /**
- * @polymer
+ * @LitEelement
  * @customElement
  * @appliesMixin CommonMethodsMixin
  */
-class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
-  static get template() {
+@customElement('follow-up-financial-findings')
+export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMixin(LitElement)) {
+  static get styles() {
+    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+  }
+
+  render() {
     return html`
-      ${tabInputsStyles} ${moduleStyles}
+      ${sharedStyles}
       <style>
         :host {
           position: relative;
           margin-bottom: 24px;
           display: block;
         }
-        paper-input {
-          --paper-input-prefix: {
-            margin-right: 5px;
-            color: var(--gray-dark);
-          }
-        }
       </style>
 
       <etools-content-panel panel-title="Financial Findings">
-        <template is="dom-if" if="[[showFields(engagement.engagement_type, 'audit')]]" restamp>
-          <div class="row-h group">
-            <div class="input-container">
-              <!-- Audit Opinion -->
-              <etools-dropdown
-                id="test"
-                selected="{{engagement.audit_opinion}}"
-                label="[[getLabel('audit_opinion', basePermissionPath)]]"
-                placeholder="[[getReadonlyPlaceholder(engagement)]]"
-                options="[[auditOpinionChoices]]"
-                option-label="display_name"
-                option-value="value"
-                readonly
-              >
-              </etools-dropdown>
-            </div>
-          </div>
-        </template>
+        ${this.showFields(this.engagement.engagement_type, 'audit')
+          ? html`<div class="layout-horizontal">
+              <div class="col col-4">
+                <!-- Audit Opinion -->
+                <etools-dropdown
+                  id="test"
+                  .selected="${this.engagement.audit_opinion}"
+                  label="${this.getLabel('audit_opinion', this.optionsData)}"
+                  placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                  .options="${this.auditOpinionChoices}"
+                  option-label="display_name"
+                  option-value="value"
+                  readonly
+                >
+                </etools-dropdown>
+              </div>
+            </div>`
+          : ``}
 
-        <div class="row-h group">
+        <div class="layout-horizontal">
           <!--Audit engagement fields-->
-          <template is="dom-if" if="[[showFields(engagement.engagement_type, 'audit')]]" restamp>
-            <div class="input-container">
-              <!-- Audited expenditure (USD)-->
-              <etools-currency-amount-input
-                value="{{engagement.audited_expenditure}}"
-                currency="$"
-                label$="[[getLabel('audited_expenditure', basePermissionPath)]]"
-                placeholder$="[[getReadonlyPlaceholder(engagement)]]"
-                readonly
-              >
-              </etools-currency-amount-input>
-            </div>
-
-            <div class="input-container">
-              <!-- Financial Findings (USD)-->
-              <etools-currency-amount-input
-                value="{{engagement.financial_findings}}"
-                currency="$"
-                label$="[[getLabel('financial_findings', basePermissionPath)]]"
-                placeholder$="[[getReadonlyPlaceholder(engagement)]]"
-                readonly
-              >
-              </etools-currency-amount-input>
-            </div>
-          </template>
+          ${this.showFields(this.engagement.engagement_type, 'audit')
+            ? html`<div class="col col-4">
+                  <!-- Audited expenditure (USD)-->
+                  <etools-currency
+                    .value="${this.engagement.audited_expenditure}"
+                    currency="$"
+                    label="${this.getLabel('audited_expenditure', this.optionsData)}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    readonly
+                  >
+                  </etools-currency>
+                </div>
+                <div class="col col-4">
+                  <!-- Financial Findings (USD)-->
+                  <etools-currency
+                    .value="${this.engagement.financial_findings}"
+                    currency="$"
+                    label="${this.getLabel('financial_findings', this.optionsData)}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    readonly
+                  >
+                  </etools-currency>
+                </div>`
+            : ``}
 
           <!--Spot-Check engagement fields-->
-          <template is="dom-if" if="[[showFields(engagement.engagement_type, 'sc')]]" restamp>
-            <div class="input-container">
-              <!-- Total amount tested-->
-              <etools-currency-amount-input
-                value="{{engagement.total_amount_tested}}"
-                currency="$"
-                label$="[[getLabel('total_amount_tested', basePermissionPath)]]"
-                placeholder$="[[getReadonlyPlaceholder(engagement)]]"
-                readonly
-              >
-              </etools-currency-amount-input>
-            </div>
+          ${this.showFields(this.engagement.engagement_type, 'sc')
+            ? html`<div class="col col-4">
+                  <!-- Total amount tested-->
+                  <etools-currency
+                    .value="${this.engagement.total_amount_tested}"
+                    currency="$"
+                    label="${this.getLabel('total_amount_tested', this.optionsData)}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    readonly
+                  >
+                  </etools-currency>
+                </div>
 
-            <div class="input-container">
-              <!-- Total amount of ineligible expenditure-->
-              <etools-currency-amount-input
-                value="{{engagement.total_amount_of_ineligible_expenditure}}"
-                currency="$"
-                label$="[[getLabel('total_amount_of_ineligible_expenditure', basePermissionPath)]]"
-                placeholder$="[[getReadonlyPlaceholder(engagement)]]"
-                readonly
-              >
-              </etools-currency-amount-input>
-            </div>
-          </template>
+                <div class="col col-4">
+                  <!-- Total amount of ineligible expenditure-->
+                  <etools-currency
+                    .value="${this.engagement.total_amount_of_ineligible_expenditure}"
+                    currency="$"
+                    label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    readonly
+                  >
+                  </etools-currency>
+                </div>`
+            : ``}
 
           <!--  -->
-          <div class="input-container">
+          <div class="col col-4">
             <!--Amount refunded -->
-            <etools-currency-amount-input
-              class$="[[_setRequired('amount_refunded', basePermissionPath)]]
+            <etools-currency
+              class="${this._setRequired('amount_refunded', this.optionsData)}
                                     validate-input"
-              value="{{engagement.amount_refunded}}"
+              .value="${this.engagement.amount_refunded}"
               currency="$"
-              label$="[[getLabel('amount_refunded', basePermissionPath)]]"
-              placeholder$="[[getPlaceholderText('amount_refunded', basePermissionPath)]]"
-              required$="[[_setRequired('amount_refunded', basePermissionPath)]]"
-              readonly$="[[isReadOnly('amount_refunded', basePermissionPath)]]"
-              invalid$="{{errors.amount_refunded}}"
-              error-message="{{errors.amount_refunded}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              label="${this.getLabel('amount_refunded', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('amount_refunded', this.optionsData)}"
+              ?required="${this._setRequired('amount_refunded', this.optionsData)}"
+              ?readonly="${this.isReadOnly('amount_refunded', this.optionsData)}"
+              ?invalid="${this.errors?.amount_refunded}"
+              .errorMessage="${this.errors?.amount_refunded}"
+              @value-changed="${({detail}: CustomEvent) => {
+                this.numberChanged(detail, 'amount_refunded', this.engagement);
+              }}"
+              @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
         </div>
 
-        <div class="row-h group">
-          <div class="input-container">
+        <div class="layout-horizontal">
+          <div class="col col-4">
             <!--Additional supporting documentation provided -->
-            <etools-currency-amount-input
-              class$="[[_setRequired('additional_supporting_documentation_provided', basePermissionPath)]]
+            <etools-currency
+              class="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}
                                         validate-input"
-              value="{{engagement.additional_supporting_documentation_provided}}"
+              .value="${this.engagement.additional_supporting_documentation_provided}"
               currency="$"
-              label$="[[getLabel('additional_supporting_documentation_provided', basePermissionPath)]]"
-              placeholder$="[[getPlaceholderText('additional_supporting_documentation_provided',
-                                            basePermissionPath)]]"
-              required$="[[_setRequired('additional_supporting_documentation_provided',
-                                        basePermissionPath)]]"
-              readonly$="[[isReadOnly('additional_supporting_documentation_provided',
-                                        basePermissionPath)]]"
-              invalid$="{{errors.additional_supporting_documentation_provided}}"
-              error-message="{{errors.additional_supporting_documentation_provided}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              label="${this.getLabel('additional_supporting_documentation_provided', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('additional_supporting_documentation_provided', this.optionsData)}"
+              ?required="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}"
+              ?readonly="${this.isReadOnly('additional_supporting_documentation_provided', this.optionsData)}"
+              ?invalid="${this.errors?.additional_supporting_documentation_provided}"
+              .errorMessage="${this.errors?.additional_supporting_documentation_provided}"
+              @value-changed="${({detail}: CustomEvent) => {
+                this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement);
+              }}"
+              @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <!-- Justification provided and accepted -->
-            <etools-currency-amount-input
-              class$="[[_setRequired('justification_provided_and_accepted', basePermissionPath)]]
+            <etools-currency
+              class="${this._setRequired('justification_provided_and_accepted', this.optionsData)}
                                     validate-input"
-              value="{{engagement.justification_provided_and_accepted}}"
+              .value="${this.engagement.justification_provided_and_accepted}"
               currency="$"
-              label$="[[getLabel('justification_provided_and_accepted', basePermissionPath)]]"
-              placeholder$="[[getPlaceholderText('justification_provided_and_accepted',
-                                            basePermissionPath)]]"
-              required$="[[_setRequired('justification_provided_and_accepted', basePermissionPath)]]"
-              readonly$="[[isReadOnly('justification_provided_and_accepted', basePermissionPath)]]"
-              invalid$="{{errors.justification_provided_and_accepted}}"
-              error-message="{{errors.justification_provided_and_accepted}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              label="${this.getLabel('justification_provided_and_accepted', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('justification_provided_and_accepted', this.optionsData)}"
+              ?required="${this._setRequired('justification_provided_and_accepted', this.optionsData)}"
+              ?readonly="${this.isReadOnly('justification_provided_and_accepted', this.optionsData)}"
+              ?invalid="${this.errors?.justification_provided_and_accepted}"
+              .errorMessage="${this.errors?.justification_provided_and_accepted}"
+              @value-changed="${({detail}: CustomEvent) => {
+                this.numberChanged(detail, 'justification_provided_and_accepted', this.engagement);
+              }}"
+              @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
 
-          <div class="input-container">
+          <div class="col col-4">
             <!--Write off required -->
-            <etools-currency-amount-input
-              class$="[[_setRequired('write_off_required', basePermissionPath)]]
+            <etools-currency
+              class="${this._setRequired('write_off_required', this.optionsData)}
                                       validate-input"
-              value="{{engagement.write_off_required}}"
+              .value="${this.engagement.write_off_required}"
               currency="$"
-              label$="[[getLabel('write_off_required', basePermissionPath)]]"
-              placeholder$="[[getPlaceholderText('write_off_required', basePermissionPath)]]"
-              required$="[[_setRequired('write_off_required', basePermissionPath)]]"
-              readonly$="[[isReadOnly('write_off_required', basePermissionPath)]]"
-              invalid$="{{errors.write_off_required}}"
-              error-message="{{errors.write_off_required}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              label="${this.getLabel('write_off_required', this.optionsData)}"
+              placeholder="${this.getPlaceholderText('write_off_required', this.optionsData)}"
+              ?required="${this._setRequired('write_off_required', this.optionsData)}"
+              ?readonly="${this.isReadOnly('write_off_required', this.optionsData)}"
+              ?invalid="${this.errors?.write_off_required}"
+              .errorMessage="${this.errors?.write_off_required}"
+              @value-changed="${({detail}: CustomEvent) =>
+                this.numberChanged(detail, 'write_off_required', this.engagement)}"
+              @focus="${this._resetFieldError}"
             >
-            </etools-currency-amount-input>
+            </etools-currency>
           </div>
         </div>
 
-        <div class="row-h group">
-          <div class="input-container">
+        <div class="layout-horizontal">
+          <div class="col col-4">
             <!-- Pending Unsupported Amount -->
-            <paper-input
-              value="[[setUnsupportedAmount(engagement,
-                                    engagement.additional_supporting_documentation_provided,
-                                    engagement.amount_refunded, engagement.justification_provided_and_accepted,
-                                    engagement.write_off_required)]]"
-              label$="[[getLabel('pending_unsupported_amount', basePermissionPath)]]"
-              placeholder$="[[getReadonlyPlaceholder(engagement)]]"
+            <etools-input
+              .value="${this.setUnsupportedAmount(
+                this.engagement,
+                this.engagement.additional_supporting_documentation_provided,
+                this.engagement.amount_refunded,
+                this.engagement.justification_provided_and_accepted,
+                this.engagement.write_off_required
+              )}"
+              label="${this.getLabel('pending_unsupported_amount', this.optionsData)}"
+              placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
               readonly
             >
               <div prefix>$</div>
-            </paper-input>
+            </etools-input>
           </div>
         </div>
 
-        <div class="row-h group">
-          <div class="input-container input-container-l">
+        <div class="layout-horizontal">
+          <div class="col col-12">
             <!-- explanation_for_additional_information -->
-            <paper-textarea
-              class$="validate-input {{_setRequired('explanation_for_additional_information',
-                                                    basePermissionPath)}}"
-              value="{{engagement.explanation_for_additional_information}}"
+            <etools-textarea
+              class="w100 validate-input ${this._setRequired(
+                'explanation_for_additional_information',
+                this.optionsData
+              )}"
+              .value="${this.engagement.explanation_for_additional_information}"
               allowed-pattern="[ds]"
-              label="[[getLabel('explanation_for_additional_information', basePermissionPath)]]"
+              label="${this.getLabel('explanation_for_additional_information', this.optionsData)}"
               always-float-label
-              placeholder="[[getPlaceholderText('explanation_for_additional_information',
-                                            basePermissionPath)]]"
-              required="{{_setRequired('explanation_for_additional_information', basePermissionPath)}}"
-              readonly$="{{isReadOnly('explanation_for_additional_information', basePermissionPath)}}"
-              invalid="{{errors.explanation_for_additional_information}}"
-              error-message="{{errors.explanation_for_additional_information}}"
-              on-focus="_resetFieldError"
-              on-tap="_resetFieldError"
+              placeholder="${this.getPlaceholderText('explanation_for_additional_information', this.optionsData)}"
+              ?required="${this._setRequired('explanation_for_additional_information', this.optionsData)}"
+              ?readonly="${this.isReadOnly('explanation_for_additional_information', this.optionsData)}"
+              ?invalid="${this.errors?.explanation_for_additional_information}"
+              .errorMessage="${this.errors?.explanation_for_additional_information}"
+              @focus="${this._resetFieldError}"
+              @value-changed="${({detail}: CustomEvent) =>
+                this.valueChanged(detail, 'explanation_for_additional_information', this.engagement)}"
             >
-            </paper-textarea>
+            </etools-textarea>
           </div>
         </div>
       </etools-content-panel>
@@ -250,15 +258,28 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
   @property({type: Object})
   originalData!: GenericObject;
 
-  static get observers() {
-    return ['setAuditOpinionChoices(basePermissionPath, engagement)', '_errorHandler(errorObject)'];
+  @property({type: Array})
+  auditOpinionChoices!: [];
+
+  @property({type: Object})
+  errorObject!: GenericObject;
+
+  updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('optionsData')) {
+      this.setAuditOpinionChoices(this.optionsData);
+    }
+    if (changedProperties.has('errorObject')) {
+      this._errorHandler(this.errorObject, this.errorObject);
+    }
   }
 
-  setAuditOpinionChoices(basePermissionPath) {
-    if (!basePermissionPath) {
+  setAuditOpinionChoices(options: AnyObject) {
+    if (!options) {
       return [];
     }
-    this.set('auditOpinionChoices', getChoices(`${basePermissionPath}.audit_opinion`) || []);
+    this.auditOpinionChoices = getOptionsChoices(options, 'audit_opinion') || [];
   }
 
   getFindingsData() {
@@ -287,8 +308,10 @@ class FollowUpFinancialFindings extends CommonMethodsMixin(PolymerElement) {
       value -= property;
     });
 
+    if (isNaN(value)) {
+      value = 0;
+    }
+
     return value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
   }
 }
-window.customElements.define('follow-up-financial-findings', FollowUpFinancialFindings);
-export default FollowUpFinancialFindings;

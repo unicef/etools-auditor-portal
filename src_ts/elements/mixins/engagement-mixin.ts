@@ -1,34 +1,44 @@
-import {PolymerElement} from '@polymer/polymer/polymer-element';
-import {property} from '@polymer/decorators';
-import isUndefined from 'lodash-es/isUndefined';
-import includes from 'lodash-es/includes';
+import {LitElement, PropertyValues} from 'lit';
+import {property} from 'lit/decorators.js';
 import cloneDeep from 'lodash-es/cloneDeep';
-import isNil from 'lodash-es/isNil';
 import assign from 'lodash-es/assign';
-import find from 'lodash-es/find';
 import isObject from 'lodash-es/isObject';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {Constructor, GenericObject} from '../../types/global';
+import {AnyObject, Constructor, EtoolsUser, GenericObject} from '@unicef-polymer/etools-types';
 import {getEndpoint} from '../config/endpoints-controller';
-import {getUserData} from './user-controller';
-import {getChoices, readonlyPermission, getCollection, isValidCollection, actionAllowed} from './permission-controller';
+import {isValidCollection, actionAllowed, getOptionsChoices, addAllowedActions} from './permission-controller';
 import {whichPageTrows} from './error-handler';
-import {clearQueries} from './query-params-controller';
-
-let currentEngagement: {details?: GenericObject; type?: string} = {};
+import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
+import get from 'lodash-es/get';
+import {RootState, store} from '../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
+import {
+  getActionPointOptions,
+  getEngagementAttachmentOptions,
+  getEngagementData,
+  getEngagementOptions,
+  getEngagementReportAttachmentsOptions,
+  setEngagementData
+} from '../../redux/actions/engagement';
+import {EngagementState} from '../../redux/reducers/engagement';
+import {getValueFromResponse} from '../utils/utils';
 /**
  * @polymer
  * @mixinFunction
  */
 // TODO: in old behavior config globals was used, check usage
 
-function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
-  class EngagementMixinClass extends baseClass {
+function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
+  class EngagementMixinLitClass extends baseClass {
     @property({type: Number})
     engagementId!: number | null;
 
     @property({type: Object})
-    routeData!: GenericObject;
+    routeDetails?: EtoolsRouteDetails;
+
+    @property({type: Object})
+    user!: EtoolsUser;
 
     @property({type: Array})
     tabsList!: any[];
@@ -40,22 +50,37 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     originalData!: GenericObject;
 
     @property({type: Object})
-    currentEngagement!: GenericObject;
+    engagement!: AnyObject;
 
-    @property({type: String})
-    permissionBase!: string | null;
+    @property({type: Object})
+    engagementFromRedux!: AnyObject;
 
-    @property({type: Object, observer: '_errorOccurred'})
-    errorObject: GenericObject = {};
+    @property({type: Object})
+    engagementCopy!: AnyObject;
 
-    @property({type: Boolean, observer: 'resetInputDialog'})
+    @property({type: Object})
+    engagementOptions!: AnyObject;
+
+    @property({type: Object})
+    apOptions!: AnyObject;
+
+    @property({type: Object})
+    attachmentOptions!: AnyObject;
+
+    @property({type: Object})
+    reportAttachmentOptions!: AnyObject;
+
+    @property({type: Object})
+    errorObject: AnyObject = {};
+
+    @property({type: Boolean})
     dialogOpened = false;
 
     @property({type: String})
     tab!: string;
 
-    @property({type: Object})
-    route!: GenericObject;
+    @property({type: Boolean})
+    isTabValidated = false;
 
     @property({type: Array})
     reportFileTypes!: any[];
@@ -72,122 +97,182 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     @property({type: Boolean})
     quietAdding!: boolean;
 
-    @property({type: Object})
-    updatedEngagement!: GenericObject;
+    @property({type: Boolean})
+    selectFollowUpTab = false;
 
     @property({type: Object})
-    engagement!: GenericObject;
+    updatedEngagement: GenericObject | undefined;
 
     connectedCallback() {
       super.connectedCallback();
 
       this._processAction = this._processAction.bind(this);
       this.addEventListener('action-activated', this._processAction as any);
+      this.addEventListener('global-loading', this._engagementStatusUpdated as any);
     }
 
     disconnectedCallback() {
       super.disconnectedCallback();
       this.removeEventListener('action-activated', this._processAction as any);
+      this.removeEventListener('', this._engagementStatusUpdated as any);
     }
 
-    _routeConfig(route) {
-      if (this.route && !~this.route.prefix.indexOf(this.engagementPrefix)) {
-        return;
+    setEngagementDataFromRedux(state: RootState) {
+      if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
+        this.user = state.user.data;
       }
-      fireEvent(this, `close-toasts`);
-      this.errorObject = {};
-
-      const id = this.routeData ? this.routeData.id : route.path.split('/')[1];
-      let tab = this.routeData ? this.routeData.tab : route.path.split('/')[2];
-      if (tab === '' || isUndefined(tab)) {
-        this.set('route.path', `/${id}/overview`);
-        tab = 'overview';
+      if (state.engagement?.data && !isJsonStrMatch(this.engagementFromRedux, state.engagement.data)) {
+        this.engagementFromRedux = cloneDeep(state.engagement.data);
+        this.engagement = cloneDeep(this.engagementFromRedux);
       }
-      if (!this.engagementId) {
-        clearQueries();
+      if (state.engagement?.originalData && !isJsonStrMatch(this.originalData, state.engagement.originalData)) {
+        this.originalData = cloneDeep(state.engagement.originalData);
       }
-      if (!id || isNaN(+id) || !includes(this.tabsList, tab)) {
-        fireEvent(this, '404');
-      } else {
-        this.engagementId = +id;
+      if (state.engagement?.options && !isJsonStrMatch(this.engagementOptions, state.engagement.options)) {
+        this.engagementOptions = cloneDeep(state.engagement.options!);
       }
-    }
-
-    _checkAvailableTab(engagement, permissionBase, route) {
-      if (!route || !permissionBase || !engagement) {
-        return;
+      if (state.engagement?.apOptions && !isJsonStrMatch(this.apOptions, state.engagement.apOptions)) {
+        this.apOptions = cloneDeep(state.engagement.apOptions!);
       }
-      const tab = route.path.split('/')[2];
       if (
-        (tab === 'report' && !this._showReportTabs(permissionBase, engagement)) ||
-        (tab === 'follow-up' && !this._showFollowUpTabs(permissionBase))
+        state.engagement?.attachmentOptions &&
+        !isJsonStrMatch(this.attachmentOptions, state.engagement.attachmentOptions)
       ) {
-        const id = route.path.split('/')[1];
-        this.set('route.path', `/${id}/overview`);
+        this.attachmentOptions = cloneDeep(state.engagement.attachmentOptions);
+      }
+      if (
+        state.engagement?.reportAttachmentOptions &&
+        !isJsonStrMatch(this.reportAttachmentOptions, state.engagement.reportAttachmentOptions)
+      ) {
+        this.reportAttachmentOptions = cloneDeep(state.engagement.reportAttachmentOptions);
+      }
+      if (!isJsonStrMatch(this.errorObject, state.engagement.errorObject)) {
+        this.errorObject = state.engagement.errorObject || {};
+      }
+
+      if (this.user) {
+        this._checkAvailableTab(this.engagement, this.engagementOptions, this.apOptions, this.tab);
       }
     }
 
-    _infoLoaded() {
-      // save data copy
-      this.set('originalData', cloneDeep(this.engagement));
+    updated(changedProperties: PropertyValues): void {
+      super.updated(changedProperties);
 
-      const tab = this.routeData ? this.routeData.tab : this.route.path.split('/')[2];
-      if (!~this.tabsList.indexOf(tab)) {
-        this.routeData.tab = this.tabsList[0] || '';
-        return;
-      }
-
-      this.tab = tab;
-      // @ts-ignore Defined in derived class when needed
-      if (this.infoLoaded) {
-        // @ts-ignore Defined in derived class when needed
-        this.infoLoaded();
+      if (changedProperties.has('errorObject')) {
+        this._errorOccurred(this.errorObject);
       }
     }
 
-    _engagementUpdated(event) {
-      if (!event || !event.detail) {
+    loadEngagementData(id: number | null, engagementType) {
+      if (!id || isNaN(id) || !engagementType) {
         return;
       }
-      const data = event.detail.data;
-      const success = event.detail.success;
-      if (data) {
-        this.set('originalData', cloneDeep(this.engagement));
-      }
+      fireEvent(this, 'global-loading', {message: 'Loading engagement data...', active: true, type: 'engagement-info'});
+      Promise.allSettled([
+        getEngagementData(id, engagementType),
+        getEngagementOptions(id, engagementType),
+        getEngagementAttachmentOptions(id),
+        getEngagementReportAttachmentsOptions(id),
+        getActionPointOptions(id)
+      ])
+        .then((response: any[]) => {
+          // if engagement not found redirect to not-found page
+          if (response[0].status !== 'fulfilled') {
+            fireEvent(this, '404');
+            return;
+          }
+          store.dispatch(setEngagementData(this.formatResponse(response)));
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => fireEvent(this, 'global-loading', {active: false}));
+    }
 
-      if (!isNil(success) && data && data.status === 'final') {
-        if (getUserData().is_unicef_user) {
-          this.tab = 'follow-up';
+    formatResponse(response: any[]) {
+      const resp: Partial<EngagementState> = {};
+      resp.data = getValueFromResponse(response[0]);
+      resp.options = addAllowedActions(getValueFromResponse(response[1]) || {});
+      resp.attachmentOptions = getValueFromResponse(response[2]) || {};
+      resp.reportAttachmentOptions = getValueFromResponse(response[3]) || {};
+      resp.apOptions = getValueFromResponse(response[4]) || {};
+      return resp;
+    }
+
+    engagementIsLoaded(engagement) {
+      return engagement && Object.keys(engagement).length;
+    }
+
+    resetEngagementDataIfNeeded() {
+      if (this.engagementId || (this.engagement && Object.keys(this.engagement).length)) {
+        this.updatedEngagement = undefined;
+        this.engagement = {};
+        this.engagementId = null;
+        this.engagementOptions = {};
+        this.attachmentOptions = {};
+        this.reportAttachmentOptions = {};
+        this.apOptions = {};
+        this.errorObject = {};
+        this.routeDetails = undefined;
+      }
+    }
+
+    _engagementStatusUpdated(e: CustomEvent) {
+      if (e.detail && e.detail.saved && e.detail.type) {
+        const type = e.detail.type;
+        if (type === 'finalize-engagement') {
+          this.selectFollowUpTab = true;
         }
       }
     }
 
-    _tabChanged(tab) {
-      if (tab && this.routeData && this.routeData.tab !== tab) {
-        this.set('routeData.tab', tab);
+    onDetailPageRouteChanged(stateRouteDetails: EtoolsRouteDetails) {
+      if (!stateRouteDetails) {
+        return;
       }
-    }
 
-    _setPermissionBase(id) {
-      if ((!id && id !== 0) || isNaN(+id)) {
-        this.permissionBase = null;
+      this.routeDetails = stateRouteDetails;
+      const id = Number(this.routeDetails.params?.id);
+      if (!isNaN(id)) {
+        if (!this.engagementId || this.engagementId !== id) {
+          this.loadEngagementData(id, this.engagementPrefix);
+        }
+        this.engagementId = id;
       } else {
-        this.permissionBase = `engagement_${id}`;
+        fireEvent(this, '404');
       }
-      (this.reportFileTypes as any) = getChoices(`${this.permissionBase}.report_attachments.file_type`);
-      (this.engagementFileTypes as any) = getChoices(`${this.permissionBase}.engagement_attachments.file_type`);
+      this.tab = this.routeDetails.subRouteName || 'overview';
     }
 
-    _openCancelDialog() {
-      this.dialogOpened = true;
+    _checkAvailableTab(engagement: AnyObject, options: AnyObject, apOptions: AnyObject, tab: string) {
+      if (!tab || this.isTabValidated || !engagement || !options || !apOptions) {
+        return;
+      }
+      this.isTabValidated = true;
+      if (
+        (tab === 'report' && !this._showReportTabs(options, engagement)) ||
+        (tab === 'follow-up' && !this._showFollowUpTabs(apOptions))
+      ) {
+        this._tabChanged('overview', tab);
+      }
     }
 
-    resetInputDialog(opened) {
-      const input = this.getElement('#cancellationReasonInput');
-      if (!opened && input) {
-        input.value = '';
-        this._resetFieldError({target: input});
+    _tabChanged(newTabName: string, oldTabName: string | undefined) {
+      this.tab = newTabName;
+      const newPath = this.routeDetails!.path.replace(`/${oldTabName}`, `/${newTabName}`);
+      EtoolsRouter.updateAppLocation(newPath);
+    }
+
+    setFileTypes(reportAttachments: AnyObject, attachmentOptions: AnyObject) {
+      if (!reportAttachments || !attachmentOptions) {
+        return;
       }
+      this.reportFileTypes = getOptionsChoices(reportAttachments, 'file_type');
+      this.engagementFileTypes = getOptionsChoices(attachmentOptions, 'file_type');
+    }
+
+    _openCancelOrSendBackDialog(_action: string) {
+      // overridden in the classes
     }
 
     _resetFieldError(event) {
@@ -216,7 +301,10 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
           this._finalizeReport();
           break;
         case 'cancel':
-          this._openCancelDialog();
+          this._openCancelOrSendBackDialog('cancel');
+          break;
+        case 'send_back':
+          this._openCancelOrSendBackDialog('send_back');
           break;
         default:
           throw new Error(`Unknown event type: ${details.type}`);
@@ -263,31 +351,38 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       });
     }
 
-    _cancelEngagement() {
-      if (!this.dialogOpened) {
-        return;
-      }
-      const input = this.getElement('#cancellationReasonInput');
-
-      if (!input) {
-        throw new Error('Can not find input!');
-      }
-      if (!input.validate()) {
-        return;
-      }
+    _cancelOrSendBackEngagement(action: string, comment: string) {
+      // action can be 'cancel' or 'send_back'
+      fireEvent(this, 'global-loading', {
+        message: 'Processing action...',
+        active: true,
+        loadingSource: 'processingAction'
+      });
 
       const type = this.getLongEngType(this.engagement.engagement_type);
 
       this.updatedEngagement = {
         engagement_type: type,
         id: this.engagement.id,
-        data: {cancel_comment: input.value},
-        cancel: 'cancel/'
+        data: action === 'cancel' ? {cancel_comment: comment} : {send_back_comment: comment},
+        cancel: action === 'cancel' ? 'cancel/' : null,
+        send_back: action === 'send_back' ? 'send_back/' : null
       };
-      this.dialogOpened = false;
+
       if (this.tab === 'report') {
         this.tab = 'overview';
       }
+    }
+
+    _sendBackEngagement(sendBackComment: string) {
+      const type = this.getLongEngType(this.engagement.engagement_type);
+
+      this.updatedEngagement = {
+        engagement_type: type,
+        id: this.engagement.id,
+        data: {send_back_comment: sendBackComment},
+        cancel: 'send_back/'
+      };
     }
 
     getLongEngType(type) {
@@ -303,19 +398,16 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       }
     }
 
-    persistCurrentEngagement(engagement, type) {
-      currentEngagement = {details: engagement, type};
-      this.set('currentEngagement', currentEngagement);
-    }
-
-    getCurrentEngagement() {
-      return currentEngagement;
-    }
-
     _prepareData(submit?: boolean, finalize?: boolean) {
       if (!this.engagement) {
         return Promise.reject(new Error('You need engagement object'));
       }
+
+      fireEvent(this, 'global-loading', {
+        message: 'Processing action...',
+        active: true,
+        loadingSource: 'processingAction'
+      });
 
       // Check basic info
       let [data, engagementId] = this._getBasicInfo({});
@@ -374,7 +466,7 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
 
       if (!detailsValid || !partnerDetailsValid) {
         const openTab = partnerDetailsValid && detailsValid ? 'attachments' : 'overview';
-        this.set(property || 'tab', openTab);
+        this[property || 'tab'] = openTab;
         fireEvent(this, 'toast', {text: 'Fix invalid fields before saving'});
         return false;
       }
@@ -403,14 +495,6 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       return el;
     }
 
-    _attachmentsReadonly(base, type) {
-      let readOnly = readonlyPermission(`${base}.${type}`);
-      if (readOnly === null) {
-        readOnly = true;
-      }
-      return readOnly;
-    }
-
     _getBasicInfo(data) {
       data = data || {};
 
@@ -435,32 +519,40 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
       return [data, this.engagement.id];
     }
 
-    _showReportTabs(permissionBase, engagement) {
-      if (!permissionBase || !engagement) {
+    _showReportTabs(options: AnyObject, engagement: AnyObject) {
+      if (!options || !engagement) {
         return false;
       }
-      const userIsFocalPoint = find(getUserData().groups, {name: 'UNICEF Audit Focal Point'});
-      return this.hasReportAccess(permissionBase, engagement) || Boolean(userIsFocalPoint);
+      const userIsFocalPoint = this.user.groups.some((x) => x.name === 'UNICEF Audit Focal Point');
+      return this.hasReportAccess(options, engagement) || Boolean(userIsFocalPoint);
     }
 
-    hasReportAccess(permissionBase, engagement) {
+    hasReportAccess(options: AnyObject, engagement: AnyObject) {
       return (
-        actionAllowed(permissionBase, 'submit') ||
-        engagement.status === 'report_submitted' ||
-        engagement.status === 'final'
+        actionAllowed(options, 'submit') || engagement.status === 'report_submitted' || engagement.status === 'final'
       );
     }
 
-    _showQuestionnaire(permissionBase, engagement) {
-      if (!permissionBase || !engagement) {
+    _showQuestionnaire(options: AnyObject, engagement: AnyObject) {
+      if (!options || !engagement) {
         return false;
       }
-      return this.hasReportAccess(permissionBase, engagement);
+      return this.hasReportAccess(options, engagement);
     }
 
-    _showFollowUpTabs(permissionBase) {
-      const collection = getCollection(`${permissionBase}_ap`, 'GET');
-      return isValidCollection(collection);
+    _showFollowUpTabs(options: AnyObject) {
+      const showFollowUp = isValidCollection(get(options, 'actions.GET'));
+      if (showFollowUp && this.selectFollowUpTab) {
+        setTimeout(() => {
+          this.selectFollowUpTab = false;
+          this.tab = 'follow-up';
+        }, 300);
+      }
+      return showFollowUp;
+    }
+
+    _showSendBackComments(engagement: AnyObject) {
+      return Boolean(engagement && engagement.send_back_comment && engagement.status === 'comments_received_by_unicef');
     }
 
     _showCancellationReason(engagement) {
@@ -468,17 +560,17 @@ function EngagementMixin<T extends Constructor<PolymerElement>>(baseClass: T) {
     }
 
     _errorOccurred(errorObj) {
-      if (!errorObj || !isObject(errorObj)) {
+      if (!errorObj || !isObject(errorObj) || !Object.keys(errorObj).length) {
         return;
       }
       const page = whichPageTrows(errorObj);
       if (page) {
         const tab = this.tab ? 'tab' : 'routeData.tab';
-        this.set(tab, page);
+        this[tab] = page;
       }
     }
   }
-  return EngagementMixinClass;
+  return EngagementMixinLitClass;
 }
 
 export default EngagementMixin;
