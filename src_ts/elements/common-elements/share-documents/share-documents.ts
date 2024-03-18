@@ -17,7 +17,7 @@ import {moduleStyles} from '../../styles/module-styles';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../redux/store';
 import DateMixin from '../../mixins/date-mixin';
 import {getEndpoint} from '../../config/endpoints-controller';

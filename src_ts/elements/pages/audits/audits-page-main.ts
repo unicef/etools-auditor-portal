@@ -24,7 +24,7 @@ import '../../common-elements/engagement-cancel/engagement-cancel-dialog';
 import {GenericObject} from '../../../types/global';
 import EngagementMixin from '../../mixins/engagement-mixin';
 import {RootState, store} from '../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 
 import assign from 'lodash-es/assign';

@@ -24,7 +24,7 @@ import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles';
 import {GenericObject} from '../../../types/global';
 import {RootState, store} from '../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import isNull from 'lodash-es/isNull';
 import assign from 'lodash-es/assign';
 import {isActiveTab, pageIsNotCurrentlyActive} from '../../utils/utils';

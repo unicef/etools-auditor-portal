@@ -27,7 +27,7 @@ import SlSwitch from '@shoelace-style/shoelace/dist/components/switch/switch.js'
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 

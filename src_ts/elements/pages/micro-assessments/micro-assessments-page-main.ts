@@ -25,7 +25,7 @@ import './report-page-components/ma-report-page-main';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../common-elements/engagement-cancel/engagement-cancel-dialog';
 import {RootState, store} from '../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import get from 'lodash-es/get';
 import {isActiveTab, pageIsNotCurrentlyActive} from '../../utils/utils';
