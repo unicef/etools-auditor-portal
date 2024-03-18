@@ -77,7 +77,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                 ?disable-confirm-btn="${this.requestInProcess}"
                 @confirm-btn-clicked="${this._addActionPoint}"
                 @close="${this._onClose}">
-                  <div class="container">
+                  <div class="container-dialog">
                   ${
                     this.notTouched
                       ? html`<div class="copy-warning">It is required to change at least one of the fields below.</div>`

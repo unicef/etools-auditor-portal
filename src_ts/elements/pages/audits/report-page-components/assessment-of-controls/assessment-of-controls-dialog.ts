@@ -39,7 +39,7 @@ export class AssessmentOfControlsDialog extends CommonMethodsMixin(TableElements
           @confirm-btn-clicked="${this.onSave}"
           @close="${this._onClose}"
         >
-          <div class="container">
+          <div class="container-dialog">
             <div class="row">
                 <div class="col-12 input-container">
                   <!-- Recommendation -->

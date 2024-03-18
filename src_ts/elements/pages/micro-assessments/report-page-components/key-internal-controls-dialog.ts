@@ -44,7 +44,7 @@ export class KeyInternalControlsDialog extends CommonMethodsMixin(LitElement) {
         @confirm-btn-clicked="${this.onSave}"
         @close="${this._onClose}"
       >
-      <div class="container">
+      <div class="container-dialog">
          <div class="row">
             <div class="col-12 col-md-6 input-container">
                 <!-- Risk Assessment -->

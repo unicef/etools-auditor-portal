@@ -42,7 +42,7 @@ export class KeyInternalControlsWeaknessesDialog extends CommonMethodsMixin(LitE
         @confirm-btn-clicked="${this._saveEditedArea}"
         @close="${this._onClose}"
       >
-        <div class="container">
+        <div class="container-dialog">
           <div class="row">
             <div class="col-12 input-container">
               <!-- Risk Assessment -->

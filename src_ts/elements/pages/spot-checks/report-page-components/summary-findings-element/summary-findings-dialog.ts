@@ -49,7 +49,7 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
         @confirm-btn-clicked="${this.onSave}"
         @close="${this._onClose}"
       >
-        <div class="container">
+        <div class="container-dialog">
           <div class="row">
             <div class="col-12 input-container">
               <!-- Category of Observation -->

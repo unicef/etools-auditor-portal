@@ -39,7 +39,7 @@ export class SpecificProcedureDialog extends CommonMethodsMixin(TableElementsMix
         ?disable-confirm-btn="${this.requestInProcess}"
         @confirm-btn-clicked="${this.onSave}"
       >
-        <div class="container">
+        <div class="container-dialog">
           ${this.canAddSP(this.optionsData, this.readonlyTab, this.withoutFindingColumn)
             ? html`<div class="row">
                 <div class="col-12 input-container">

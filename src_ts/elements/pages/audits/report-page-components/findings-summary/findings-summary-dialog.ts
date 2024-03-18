@@ -51,7 +51,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
         ok-btn-text="Save"
         @close="${this._onClose}"
       >
-        <div class="container">
+        <div class="container-dialog">
           <div class="row">
             <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- Implementing partner name -->

@@ -42,7 +42,7 @@ export class QuestionnairePageMainDialog extends CommonMethodsMixin(LitElement) 
         @confirm-btn-clicked="${this.onSave}"
         @close="${this._onClose}"
       >
-        <div class="container">
+        <div class="container-dialog">
           <div class="layout-horizontal">
             <div class="form-title">
               <div class="text" id="questionHeader">

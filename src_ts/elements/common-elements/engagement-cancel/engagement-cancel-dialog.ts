@@ -33,7 +33,7 @@ export class EngagementCancelDialog extends CommonMethodsMixin(LitElement) {
         @confirm-btn-clicked="${this._cancelOrSendBackEngagement}"
         @close="${this._onClose}"
       >
-        <div class="container">
+        <div class="container-dialog">
           <div class="layout-horizontal">
             <div class="col-12">
               <etools-textarea

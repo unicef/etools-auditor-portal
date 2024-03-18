@@ -43,7 +43,7 @@ export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMix
         @confirm-btn-clicked="${this._saveAttachment}"
         @close="${this._onClose}"
       >
-        <div class="container">
+        <div class="container-dialog">
           ${this.showFileTypes(this.optionsData)
             ? html` <div class="row row-padding-v">
                 <div class="col-12 col-md-6">
