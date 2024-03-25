@@ -107,6 +107,11 @@ export class StaffScPageMain extends connect(store)(LitElement) {
         this._auditFirmLoaded(resp);
       })
       .catch((err) => {
+        // request aborted, prevent showing toast errors
+        if (err.status === 0) {
+          return;
+        }
+
         throw new Error(err);
       });
   }

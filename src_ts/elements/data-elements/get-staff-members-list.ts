@@ -53,6 +53,11 @@ export class GetStaffMembersList extends connect(store)(LitElement) {
     Promise.all([this.getDataRequest(organizationId, listQueries)])
       .then(([data]) => fireEvent(this, 'data-loaded', data))
       .catch((error) => {
+        // request aborted, prevent showing toast errors
+        if (error.status === 0) {
+          return;
+        }
+
         const responseData = error?.request?.detail?.request?.xhr;
         EtoolsLogger.error(responseData);
       })

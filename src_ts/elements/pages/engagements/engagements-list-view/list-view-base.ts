@@ -283,6 +283,11 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
   onDataLoadError(err) {
     const {status} = (err || {}) as any;
 
+    // request aborted, prevent showing toast errors
+    if (status === 0) {
+      return;
+    }
+
     // wrong page in queries
     if (status === 404 && this.routeDetails!.queryParams!.page !== '1') {
       updateQueries({page: '1'});
