@@ -14,12 +14,12 @@ import {collectionExists} from '../../../mixins/permission-controller';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import DateMixin from '../../../mixins/date-mixin';
 import {validateRequiredFields} from '../../../utils/utils';
 import {RootState, store} from '../../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
@@ -36,7 +36,7 @@ import dayjs from 'dayjs';
 @customElement('assign-engagement')
 export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixin(LitElement))) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -45,8 +45,8 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
       <style></style>
 
       <etools-content-panel class="content-section clearfx" panel-title="Engagement Status">
-        <div class="layout-horizontal">
-          <div class="col col-4">
+        <div class="row">
+          <div class="col-12 col-lg-4 col-md-6">
             <!-- Date of Field Visit -->
             <datepicker-lite
               id="dateVisitInput"
@@ -68,7 +68,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
             </datepicker-lite>
           </div>
 
-          <div class="col col-4">
+          <div class="col-12 col-lg-4 col-md-6">
             <!-- Draft Report Issued to IP -->
             <datepicker-lite
               id="draftReportToIpInput"
@@ -96,7 +96,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
             </datepicker-lite>
           </div>
 
-          <div class="col col-4">
+          <div class="col-12 col-lg-4 col-md-6">
             <!-- Comments Received by IP -->
             <datepicker-lite
               id="commentsReceivedByIpInput"
@@ -124,10 +124,8 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
             >
             </datepicker-lite>
           </div>
-        </div>
 
-        <div class="layout-horizontal">
-          <div class="col col-4">
+          <div class="col-12 col-lg-4 col-md-6">
             <!-- Draft Report Issued to UNICEF -->
             <datepicker-lite
               id="draftReportUnicefInput"
@@ -156,7 +154,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
             </datepicker-lite>
           </div>
 
-          <div class="col col-4">
+          <div class="col-12 col-lg-4 col-md-6">
             <!-- Comments Received by UNICEF -->
             <datepicker-lite
               id="commentsReceivedUnicefInput"
@@ -186,7 +184,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
           </div>
 
           ${this.showCurrency(this.optionsData)
-            ? html`<div class="col col-4">
+            ? html`<div class="col-12 col-lg-4 col-md-6">
                 <!-- Currency of Report -->
                 <etools-dropdown
                   id="currency_of_report"

@@ -3,6 +3,7 @@ import {css} from 'lit';
 export const StatusTabElementStyles = css`
   :host {
     display: block;
+    min-width: 180px;
   }
   etools-content-panel::part(ecp-content) {
     padding: 0;

@@ -11,7 +11,7 @@ import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-
 import {riskTabStyles} from './risk-tab-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import {getOptionsChoices} from '../../../../mixins/permission-controller';
@@ -28,7 +28,7 @@ import cloneDeep from 'lodash-es/cloneDeep';
 @customElement('risk-tab')
 export class RiskTab extends CommonMethodsMixin(LitElement) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit, riskTabStyles];
+    return [tabInputsStyles, moduleStyles, layoutStyles, riskTabStyles];
   }
 
   render() {
@@ -59,6 +59,12 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
           margin-right: 25px;
         }
       </style>
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <div class="tab-container">
         <etools-content-panel
           list
@@ -67,17 +73,17 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
           .panelTitle="${this.setPanelTitle(this.questionnaire.header, this.completed)}"
           .open="${this.opened}"
         >
-          <etools-data-table-header no-title>
+          <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
             <etools-data-table-column class="question">Question</etools-data-table-column>
             <etools-data-table-column class="w160px">Risk Assessment</etools-data-table-column>
           </etools-data-table-header>
           ${repeat(
             this.questionnaire?.blueprints || [],
             (item: any, index) => html`
-              <etools-data-table-row>
+              <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
                 <div slot="row-data" class="layout-horizontal editable-row">
-                  <span class="question">${unsafeHTML(item.header)}</span>
-                  <span class="w160px">
+                  <span class="question" data-col-header-label="Question">${unsafeHTML(item.header)}</span>
+                  <span class="w160px" data-col-header-label="Risk Assessment">
                     ${this.editMode
                       ? html` <etools-dropdown
                           id="riskOptions1"
@@ -122,10 +128,10 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
             (category, categoryIndex) =>
               html` ${(category.blueprints || []).map(
                 (item, blueprintIndex) => html`
-                  <etools-data-table-row>
+                  <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
                     <div slot="row-data" class="layout-horizontal editable-row">
-                      <span class="question">${unsafeHTML(item.header)}</span>
-                      <span class="w160px">
+                      <span class="question" data-col-header-label="Question">${unsafeHTML(item.header)}</span>
+                      <span class="w160px" data-col-header-label="Risk Assessment">
                         ${this.editMode
                           ? html` <etools-dropdown
                               id="riskOptions2"
@@ -220,6 +226,9 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
 
   @property({type: Array})
   riskOptions!: {value: string | number; display_name: string}[];
+
+  @property({type: Boolean})
+  lowResolutionLayout = false;
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);

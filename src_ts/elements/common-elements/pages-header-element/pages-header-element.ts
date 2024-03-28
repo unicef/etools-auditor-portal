@@ -11,6 +11,7 @@ import {GenericObject} from '../../../types/global';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../styles/module-styles';
 import {pagesHeaderElementStyles} from './pages-header-element-styles';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 /**
  * @polymer
@@ -19,7 +20,7 @@ import {pagesHeaderElementStyles} from './pages-header-element-styles';
 @customElement('pages-header-element')
 export class PagesHeaderElement extends MatomoMixin(LitElement) {
   static get styles() {
-    return [moduleStyles, pagesHeaderElementStyles];
+    return [moduleStyles, pagesHeaderElementStyles, layoutStyles];
   }
   render() {
     return html`
@@ -28,11 +29,18 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
         etools-button[variant='primary']::part(suffix) {
           width: 8px;
         }
+        etools-button[variant='primary'] {
+          padding: 0px 16px 8px 0px;
+        }
       </style>
       <div class="header-wrapper">
-        <div class="side-heading horizontal layout center">
-          <span class="flex title">${this._setTitle(this.engagement, this.pageTitle)}</span>
-          <div class="layout horizontal side-heading-button-holder">
+        <div class="side-heading row center">
+          <span class="col-md-6 col-12 flex title">${this._setTitle(this.engagement, this.pageTitle)}</span>
+          <div
+            class="${this._setTitle(this.engagement, this.pageTitle)
+              ? 'col-md-6'
+              : ''}  col-12 layout horizontal side-heading-button-holder"
+          >
             <div class="export-buttons" ?hidden="${!this.exportLinks || !this.exportLinks.length}">
               <sl-dropdown id="pdExportMenuBtn" ?hidden="${!this._isDropDown(this.exportLinks)}" close-on-activate>
                 <etools-button slot="trigger" variant="text" class="neutral" caret>

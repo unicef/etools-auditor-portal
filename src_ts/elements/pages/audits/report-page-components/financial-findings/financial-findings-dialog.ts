@@ -12,7 +12,7 @@ import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
@@ -30,7 +30,7 @@ import {GenericObject} from '@unicef-polymer/etools-types';
 @customElement('financial-findings-dialog')
 export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -48,9 +48,9 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
         @confirm-btn-clicked="${this.onSave}"
         @close="${this._onClose}"
       >
-        <div class="container">
-          <div class="layout-horizontal">
-            <div class="col col-6">
+        <div class="container-dialog">
+          <div class="row">
+            <div class="col-12 input-container col-lg-6 col-md-6">
               <!-- Title -->
               <etools-dropdown
                 id="titleOptionsDropDown"
@@ -75,8 +75,8 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
             </div>
           </div>
 
-          <div class="layout-horizontal">
-            <div class="col col-6">
+          <div class="row">
+            <div class="col-12 input-container col-lg-6 col-md-6">
               <!-- Amount (local) -->
               <etools-currency
                 class="w100 ${this._setRequired('financial_finding_set.local_amount', this.optionsData)} validate-input"
@@ -95,7 +95,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
               </etools-currency>
             </div>
 
-            <div class="col col-6">
+            <div class="col-12 input-container col-lg-6 col-md-6">
               <!-- Amount USD -->
               <etools-currency
                 class="w100 ${this._setRequired('financial_finding_set.amount', this.optionsData)} validate-input"
@@ -112,10 +112,8 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
               >
               </etools-currency>
             </div>
-          </div>
 
-          <div class="layout-horizontal">
-            <div class="col col-12">
+            <div class="col-12 input-container">
               <!-- Description -->
               <etools-textarea
                 class="w100 ${this._setRequired('financial_finding_set.description', this.optionsData)}
@@ -134,10 +132,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
               >
               </etools-textarea>
             </div>
-          </div>
-
-          <div class="layout-horizontal">
-            <div class="col col-12">
+            <div class="col-12 input-container">
               <!-- Recommendation -->
               <etools-textarea
                 class="w100 ${this._setRequired('financial_finding_set.recommendation', this.optionsData)}
@@ -157,10 +152,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
               >
               </etools-textarea>
             </div>
-          </div>
-
-          <div class="layout-horizontal">
-            <div class="col col-12">
+            <div class="col-12 input-container">
               <!-- IP comments -->
               <etools-textarea
                 class="w100 ${this._setRequired('financial_finding_set.ip_comments', this.optionsData)}

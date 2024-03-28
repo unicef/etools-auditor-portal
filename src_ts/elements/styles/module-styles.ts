@@ -49,6 +49,9 @@ export const moduleStyles = css`
   .readonly {
     pointer-events: none;
   }
+  etools-input::part(readonly-input-value) {
+    word-break: break-word;
+  }
 
   /* TABS */
   .container {
@@ -78,7 +81,12 @@ export const moduleStyles = css`
   etools-content-panel::part(ecp-header-title) {
     font-weight: 500;
     line-height: 43px;
-    padding: 0 30px;
+    display: contents;
+  }
+  @media (min-width: 850px) {
+    etools-content-panel::part(ecp-header-title) {
+      padding: 0 30px;
+    }
   }
   etools-content-panel::part(ecp-header) {
     background-color: var(--primary-color);
@@ -89,6 +97,7 @@ export const moduleStyles = css`
     left: 13px;
     width: 45px;
     height: 45px;
+    display: contents;
   }
 
   etools-content-panel div[slot='panel-btns'] .panel-button {

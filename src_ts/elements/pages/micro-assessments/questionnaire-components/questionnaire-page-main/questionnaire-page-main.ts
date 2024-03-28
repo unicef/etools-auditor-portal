@@ -5,7 +5,7 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import each from 'lodash-es/each';
@@ -31,7 +31,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('questionnaire-page-main')
 export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -40,7 +40,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
       <style>
         etools-content-panel.totals::part(ecp-header) {
           margin-bottom: 24px;
-          height: 51px;
+          min-height: 51px;
           background-color: var(--module-warning) !important;
         }
         .result-element {
@@ -99,7 +99,6 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
         .open="${this.overalRiskOpen}"
       >
       </etools-content-panel>
-
       ${(this.questionnaire.children || []).map(
         (item, index) => html`<risk-tab
           .questionnaire="${item}"

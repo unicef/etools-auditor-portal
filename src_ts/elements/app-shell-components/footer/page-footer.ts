@@ -1,7 +1,7 @@
 import {LitElement, html} from 'lit';
 import {customElement} from 'lit/decorators.js';
 import {BASE_PATH} from '../../config/config';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 /**
  * page footer element
@@ -11,7 +11,7 @@ import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/st
 @customElement('page-footer')
 export class PageFooter extends LitElement {
   static get styles() {
-    return [gridLayoutStylesLit];
+    return [layoutStyles];
   }
 
   render() {

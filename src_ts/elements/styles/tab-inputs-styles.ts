@@ -20,38 +20,11 @@ export const tabInputsStyles = css`
   }
 
   .input-container {
-    position: relative;
-    float: left;
-    margin-right: 0;
-    width: 33.33%;
+    display: flex;
   }
 
   .input-container:last-of-type {
     margin-right: 0;
-  }
-
-  .input-container.input-container-s {
-    width: 30%;
-  }
-
-  .input-container.input-container-40 {
-    width: 35%;
-  }
-
-  .input-container.input-container-m {
-    width: 66.66%;
-  }
-
-  .input-container.input-container-45 {
-    width: 45%;
-  }
-
-  .input-container.input-container-ms {
-    width: 50%;
-  }
-
-  .input-container.input-container-l {
-    width: 100%;
   }
 
   .row-h {
@@ -108,7 +81,6 @@ export const tabInputsStyles = css`
   .repeatable-item-container {
     position: relative;
     display: block;
-    min-width: 500px;
     width: 100%;
     box-sizing: border-box;
     padding: 0 8%;

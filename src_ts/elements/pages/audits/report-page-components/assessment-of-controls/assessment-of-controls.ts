@@ -12,7 +12,7 @@ import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
@@ -33,7 +33,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('assessment-of-controls')
 export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -64,7 +64,12 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
           max-width: calc(100% - 40px);
         }
       </style>
-
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('key_internal_controls', this.optionsData)}"
@@ -86,15 +91,17 @@ export class AssessmentOfControls extends CommonMethodsMixin(TableElementsMixin(
           </div>
         </div>
 
-        <etools-data-table-header no-title>
+        <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-12">Audit Observation</etools-data-table-column>
         </etools-data-table-header>
 
         ${(this.dataItems || []).map(
           (item, index) => html`
-            <etools-data-table-row>
+            <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-12 truncate">${item.audit_observation}</span>
+                <span class="col-data col-12 truncate" data-col-header-label="Audit Observation"
+                  >${item.audit_observation}</span
+                >
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                   <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>

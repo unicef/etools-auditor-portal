@@ -1,7 +1,7 @@
 import {css, LitElement, html, CSSResult} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
@@ -15,13 +15,13 @@ export class SendBackComments extends LitElement {
 
       <etools-content-panel class="content-section comment-container clearfx" panel-title="">
         <img class="flag-icon" src="${BASE_PATH}/assets/images/flag-icon.svg" />
-        <div class="layout-horizontal">
-          <div class="col col-12">
+        <div class="row">
+          <div class="col-12">
             <div class="title">Sent Back Comments</div>
           </div>
         </div>
-        <div class="layout-horizontal">
-          <div class="col col-12">
+        <div class="row">
+          <div class="col-12">
             <span>${this.comments}</span>
           </div>
         </div>
@@ -34,7 +34,7 @@ export class SendBackComments extends LitElement {
 
   static get styles(): CSSResult[] {
     return [
-      gridLayoutStylesLit,
+      layoutStyles,
       moduleStyles,
       tabInputsStyles,
       css`

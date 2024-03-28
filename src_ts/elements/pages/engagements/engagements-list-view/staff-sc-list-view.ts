@@ -5,7 +5,7 @@ import {StaffScFilterKeys, getStaffScFilters, StaffScFiltersHelper} from '../../
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {RootState, store} from '../../../../redux/store';
 import {ListViewBase} from './list-view-base';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {property} from 'lit/decorators.js';
 
 /**

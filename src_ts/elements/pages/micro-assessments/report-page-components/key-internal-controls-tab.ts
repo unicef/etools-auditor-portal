@@ -2,7 +2,7 @@ import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {KeyInternalControlsTabStyles} from './key-internal-controls-tab-styles';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
@@ -29,7 +29,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('key-internal-controls-tab')
 export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit, KeyInternalControlsTabStyles];
+    return [tabInputsStyles, moduleStyles, layoutStyles, KeyInternalControlsTabStyles];
   }
 
   render() {
@@ -43,8 +43,14 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
           background-color: transparent;
         }
       </style>
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <etools-content-panel .panelTitle="${this.subjectAreas.header}" list>
-        <etools-data-table-header no-title>
+        <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-8">Subject area</etools-data-table-column>
           <etools-data-table-column class="col-4">Risk Assessment</etools-data-table-column>
         </etools-data-table-header>
@@ -63,8 +69,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
         )}
         <etools-data-table-row no-collapse ?hidden="${this.subjectAreas?.children?.length}">
           <div slot="row-data" class="layout-horizontal editable-row pl-30">
-            <span class="col-data col-8">–</span>
-            <span class="col-data col-4">–</span>
+            <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>
       </etools-content-panel>
@@ -106,6 +111,9 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
 
   @property({type: Boolean})
   canBeChanged = false;
+
+  @property({type: Boolean})
+  lowResolutionLayout = false;
 
   connectedCallback() {
     super.connectedCallback();

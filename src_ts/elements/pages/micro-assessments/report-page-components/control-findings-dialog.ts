@@ -2,7 +2,7 @@ import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
@@ -20,7 +20,7 @@ import {GenericObject} from '@unicef-polymer/etools-types';
 @customElement('control-findings-tab-dialog')
 export class ControlFindingsTabDialog extends CommonMethodsMixin(TableElementsMixin(LitElement)) {
   static get styles() {
-    return [moduleStyles, gridLayoutStylesLit];
+    return [moduleStyles, layoutStyles];
   }
 
   render() {
@@ -37,9 +37,9 @@ export class ControlFindingsTabDialog extends CommonMethodsMixin(TableElementsMi
         @confirm-btn-clicked="${this.onSave}"
         @close="${this._onClose}"
       >
-        <div class="container">
-          <div class="layout-horizontal">
-            <div class="col col-12">
+        <div class="container-dialog">
+          <div class="row">
+            <div class="col-12">
               <!-- Finding -->
               <etools-input
                 class="w100 validate-input ${this._setRequired('findings.finding', this.optionsData)}"
@@ -56,9 +56,7 @@ export class ControlFindingsTabDialog extends CommonMethodsMixin(TableElementsMi
               >
               </etools-input>
             </div>
-          </div>
-          <div class="layout-horizontal">
-            <div class="col col-12">
+            <div class="col-12">
               <!-- Recommendation -->
               <etools-textarea
                 class="w100 validate-input ${this._setRequired('findings.recommendation', this.optionsData)}"

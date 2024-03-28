@@ -4,7 +4,7 @@ import {EtoolsFilter} from '@unicef-polymer/etools-unicef/src/etools-filters/eto
 import {EngagementFilterKeys, getEngagementFilters, EngagementsFiltersHelper} from '../engagement-filters';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {RootState, store} from '../../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {ListViewBase} from './list-view-base';
 
 /**
