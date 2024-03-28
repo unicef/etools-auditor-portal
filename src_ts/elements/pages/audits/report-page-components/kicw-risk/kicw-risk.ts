@@ -65,7 +65,7 @@ export class KicwRisk extends LitElement {
         }
       </style>
       <etools-media-query
-        query="(max-width: 767px)"
+        query="(max-width: 1180px)"
         @query-matches-changed="${(e: CustomEvent) => {
           this.lowResolutionLayout = e.detail.value;
         }}"

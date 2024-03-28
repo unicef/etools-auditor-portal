@@ -106,7 +106,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
             >
             </etools-input>
           </div>
-          <div class="col-12 col-lg-4 col-md-4 input-container">
+          <div class="col-12 col-xl-4 col-lg-4 col-md-4 input-container">
             <!-- Partner Phone Number -->
             <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
@@ -118,7 +118,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
             </etools-input>
           </div>
 
-          <div class="col-12 col-lg-4 col-md-8 input-container">
+          <div class="col-12 col-xl-4 col-lg-8 col-md-8 input-container">
             <!-- Partner E-mail Address -->
             <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
@@ -130,7 +130,7 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
             </etools-input>
           </div>
 
-          <div class="col-12 col-lg-4 col-md-6 input-container">
+          <div class="col-12 col-xl-4 col-lg-6 col-md-6 input-container">
             <!-- Partner  Officers-->
             <etools-dropdown
               id="authorizedOfficer"

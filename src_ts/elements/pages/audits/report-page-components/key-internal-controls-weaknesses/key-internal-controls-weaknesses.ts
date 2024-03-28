@@ -89,9 +89,14 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
+        @media (max-width: 1180px) {
+          etools-data-table-row[slot='row-data'] .truncate {
+            white-space: normal;
+          }
+        }
       </style>
       <etools-media-query
-        query="(max-width: 767px)"
+        query="(max-width: 1180px)"
         @query-matches-changed="${(e: CustomEvent) => {
           this.lowResolutionLayout = e.detail.value;
         }}"

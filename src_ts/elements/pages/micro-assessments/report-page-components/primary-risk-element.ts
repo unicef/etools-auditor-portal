@@ -40,7 +40,7 @@ export class PrimaryRiskElement extends CommonMethodsMixin(LitElement) {
         }
 
         etools-content-panel.overal-risks::part(ecp-header) {
-          height: 51px;
+          min-height: 51px;
           background-color: var(--module-warning);
         }
       </style>

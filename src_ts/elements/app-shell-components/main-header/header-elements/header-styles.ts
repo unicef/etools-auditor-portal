@@ -64,7 +64,7 @@ export const HeaderStyles = html`
       }
     }
 
-    @media (max-width: 820px) {
+    @media (max-width: 490px) {
       .dropdowns {
         order: 1;
         margin-top: 0;

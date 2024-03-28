@@ -49,6 +49,9 @@ export const moduleStyles = css`
   .readonly {
     pointer-events: none;
   }
+  etools-input::part(readonly-input-value) {
+    word-break: break-word;
+  }
 
   /* TABS */
   .container {
