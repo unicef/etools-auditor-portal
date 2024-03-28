@@ -91,7 +91,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
         }
       </style>
       <etools-media-query
-        query="(max-width: 767px)"
+        query="(max-width: 1180px)"
         @query-matches-changed="${(e: CustomEvent) => {
           this.lowResolutionLayout = e.detail.value;
         }}"
@@ -155,7 +155,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
             <etools-data-table-row no-collapse secondary-bg-on-hover .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
                 <span
-                  class="col-data col-2 truncate"
+                  class="col-data col-2"
                   data-col-header-label="${getHeadingLabel(this.optionsData, 'reference_number', 'Reference Number #')}"
                 >
                   <a href="${item.url}" class="truncate" title="${item.reference_number}" target="_blank">
@@ -163,25 +163,25 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                   </a>
                 </span>
                 <span
-                  class="col-data col-3 truncate"
+                  class="col-data col-3"
                   data-col-header-label="${getHeadingLabel(this.optionsData, 'category', 'Action Point Category')}"
                   >${item.ap_category?.display_name || '-'}</span
                 >
-                <span class="col-data col-3 truncate" data-col-header-label="Assignee (Section / Office)"
+                <span class="col-data col-3" data-col-header-label="Assignee (Section / Office)"
                   >${item.computed_field}</span
                 >
                 <span
-                  class="col-data col-1 truncate caps"
+                  class="col-data col-1 caps"
                   data-col-header-label="${getHeadingLabel(this.optionsData, 'status', 'Status')}"
                   >${item.status}</span
                 >
                 <span
-                  class="col-data col-2 truncate"
+                  class="col-data col-2"
                   data-col-header-label="${getHeadingLabel(this.optionsData, 'due_date', 'Due Date')}"
                   >${this.prettyDate(String(item.due_date), '') || '-'}</span
                 >
                 <span
-                  class="col-data col-1 truncate caps"
+                  class="col-data col-1 caps"
                   data-col-header-label="${getHeadingLabel(this.optionsData, 'high_priority', 'Priority')}"
                   >${item.priority}</span
                 >

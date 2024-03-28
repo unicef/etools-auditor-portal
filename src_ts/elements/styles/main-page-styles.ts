@@ -6,6 +6,8 @@ export const mainPageStyles = css`
     display: block;
 
     --ecp-header-bg: var(--primary-color);
+    --ecp-header-height: auto;
+    --ecp-title-white-space: wrap;
   }
 
   .view-container {
@@ -68,7 +70,7 @@ export const mainPageStyles = css`
   }
 
   etools-content-panel.cancellation-tab::part(ecp-header) {
-    height: 51px;
+    min-height: 51px;
     background-color: var(--primary-color);
     border-bottom: none;
   }

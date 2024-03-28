@@ -40,7 +40,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
       <style>
         etools-content-panel.totals::part(ecp-header) {
           margin-bottom: 24px;
-          height: 51px;
+          min-height: 51px;
           background-color: var(--module-warning) !important;
         }
         .result-element {

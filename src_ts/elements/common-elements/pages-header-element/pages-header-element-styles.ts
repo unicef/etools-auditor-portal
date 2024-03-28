@@ -43,7 +43,7 @@ export const pagesHeaderElementStyles = css`
     padding-top: 20px;
     box-sizing: border-box;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     .side-heading {
       height: auto;
     }

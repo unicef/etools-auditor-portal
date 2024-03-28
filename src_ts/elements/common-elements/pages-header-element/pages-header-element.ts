@@ -36,7 +36,11 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
       <div class="header-wrapper">
         <div class="side-heading row center">
           <span class="col-md-6 col-12 flex title">${this._setTitle(this.engagement, this.pageTitle)}</span>
-          <div class="col-md-6 col-12 layout horizontal side-heading-button-holder">
+          <div
+            class="${this._setTitle(this.engagement, this.pageTitle)
+              ? 'col-md-6'
+              : ''}  col-12 layout horizontal side-heading-button-holder"
+          >
             <div class="export-buttons" ?hidden="${!this.exportLinks || !this.exportLinks.length}">
               <sl-dropdown id="pdExportMenuBtn" ?hidden="${!this._isDropDown(this.exportLinks)}" close-on-activate>
                 <etools-button slot="trigger" variant="text" class="neutral" caret>

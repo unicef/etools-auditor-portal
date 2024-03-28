@@ -114,7 +114,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       </div>
 
       <div class="view-container row">
-        <div id="pageContent" class="col-md-8 col-lg-10 col-12">
+        <div id="pageContent" class="col-md-8 col-lg-9 col-xl-10 col-12">
           <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
             <engagement-info-details
               .errorObject="${this.errorObject}"
@@ -170,7 +170,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
           </div>
         </div>
 
-        <div id="sidebar" class=" col-md-4 col-lg-2 col-12">
+        <div id="sidebar" class="  col-md-4 col-lg-3 col-xl-2 col-12">
           <status-tab-element
             .engagementData="${this.engagement}"
             .optionsData="${this.engagementOptions}"

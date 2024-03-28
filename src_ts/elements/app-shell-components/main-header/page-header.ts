@@ -68,11 +68,14 @@ export class PageHeader extends MatomoMixin(LitElement) {
           width: auto;
           margin: 0px 10px 0px 20px;
         }
-
+        .accessibility {
+          margin-inline-end: 4px;
+        }
         .dropdowns {
-          /*padding-block-start: 6px;*/
+          padding-block-start: 6px;
+          margin-inline-start: auto;
           display: flex;
-          /*margin-inline-end: 20px;*/
+          margin-inline-end: 20px;
         }
 
         etools-accesibility {
@@ -157,8 +160,8 @@ export class PageHeader extends MatomoMixin(LitElement) {
         }
       </style>
 
-      <app-toolbar id="toolbar" sticky class="content-align row">
-        <div class="layout-horizontal align-items-center col-lg-4 col-4">
+      <app-toolbar id="toolbar" sticky class="content-align  layout-horizontal">
+        <div class="layout-horizontal align-items-center">
           <etools-icon-button
             id="menuButton"
             name="menu"
@@ -171,7 +174,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
             ${this.environment}
           </div>
         </div>
-        <div class="dropdowns layout-horizontal align-items-center col-lg-6 col-12">
+        <div class="dropdowns layout-horizontal align-items-center">
           <countries-dropdown
             id="countries"
             .countries="${this.user?.countries_available}"
@@ -182,7 +185,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
           <organizations-dropdown .user="${this.user}"></organizations-dropdown>
         </div>
 
-        <div class="layout-horizontal align-items-center col-lg-2 col-8">
+        <div class="layout-horizontal align-items-center accessibility">
           <support-btn title="Support"></support-btn>
 
           <etools-profile-dropdown title="Profile and Sign out" .profile="${this.user}" @sign-out="${this._signOut}">

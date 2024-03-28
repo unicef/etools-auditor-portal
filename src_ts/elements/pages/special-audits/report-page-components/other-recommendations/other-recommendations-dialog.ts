@@ -39,7 +39,7 @@ export class OtherRecommendationsDialog extends TableElementsMixin(CommonMethods
         @confirm-btn-clicked="${this.onSave}"
         @close="${this._onClose}"
       >
-        <div class="row">
+        <div class="layout-horizontal">
           <div class="col-12 input-container">
             <!-- Description -->
             <etools-textarea
