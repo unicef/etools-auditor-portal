@@ -66,8 +66,22 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         section {
           position: relative;
         }
+        .search-filters {
+          flex-grow: 1;
+          margin-block: 8px;
+          width: 100%;
+        }
         etools-filters::part(filter-search) {
-          min-width: 370px !important;
+            min-width: 370px;
+        }
+        @media (max-width: 640px) {
+            etools-filters::part(filter-search) {
+              min-width: 100%;
+              width: 100%;
+          }
+          etools-filters::part(filters) {
+            width: 100%;
+          }
         }
       </style>
 
@@ -84,6 +98,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
 
       <section class="elevation page-content filters" elevation="1">
         <etools-filters
+          class="search-filters"
           .filters="${this.filters}"
           @filter-change="${this.filtersChange}"
           @click="${() => {
@@ -92,7 +107,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         ></etools-filters>
       </section>
 
-      <section class="elevation page-content no-padding" elevation="1">
+      <section class="elevation page-content" elevation="1">
         <etools-loading
           ?active="${this.listLoadingActive}"
           loading-text="Loading of engagements list..."

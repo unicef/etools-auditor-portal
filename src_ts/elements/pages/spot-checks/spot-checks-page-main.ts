@@ -100,8 +100,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
             </div>
 
             <div class="view-container">
-              <div class="row">
-                <div id="pageContent" class="col-md-8 col-lg-9 col-xl-10 col-12">
+                <div id="pageContent">
                   <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
                     ${this._showCancellationReason(this.engagement)
                       ? html`<etools-content-panel class="cancellation-tab" panel-title="">
@@ -197,11 +196,10 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                   </div>
                 </div>
 
-                <div id="sidebar" class=" col-md-4 col-lg-3 col-xl-2 col-12">
+                <div id="sidebar">
                   <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
                   </status-tab-element>
                 </div>
-              </div>
             </div>
           `
         : ``}

@@ -116,7 +116,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
           margin-inline-end: 10px;
         }
 
-        @media (min-width: 850px) {
+        @media (min-width: 1100px) {
           #menuButton {
             display: none;
           }
@@ -139,6 +139,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
           }
           etools-profile-dropdown {
             margin-inline-start: 0px;
+            margin-inline-end: 10px;
             width: 40px;
           }
         }
