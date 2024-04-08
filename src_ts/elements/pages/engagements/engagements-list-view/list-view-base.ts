@@ -72,12 +72,12 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
           width: 100%;
         }
         etools-filters::part(filter-search) {
-            min-width: 370px;
+          min-width: 370px;
         }
         @media (max-width: 640px) {
-            etools-filters::part(filter-search) {
-              min-width: 100%;
-              width: 100%;
+          etools-filters::part(filter-search) {
+            min-width: 100%;
+            width: 100%;
           }
           etools-filters::part(filters) {
             width: 100%;

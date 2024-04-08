@@ -10,7 +10,7 @@ export const mainPageStyles = css`
     --ecp-title-white-space: wrap;
   }
 
-  .view-container {    
+  .view-container {
     position: relative;
     width: 100%;
     display: flex;
