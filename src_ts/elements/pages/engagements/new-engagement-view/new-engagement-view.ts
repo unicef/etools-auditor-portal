@@ -81,6 +81,8 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
           font-size: var(--etools-font-size-14, 14px);
           font-weight: bold;
           text-transform: uppercase;
+          min-width: calc(100% - 4px);
+          max-width: calc(100% - 4px);
         }
 
         .tab-selector .tab-content {
@@ -113,8 +115,8 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
         ></etools-tabs-lit>
       </div>
 
-      <div class="view-container row">
-        <div id="pageContent" class="col-md-8 col-lg-9 col-xl-10 col-12">
+      <div class="view-container">
+        <div id="pageContent">
           <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
             <engagement-info-details
               .errorObject="${this.errorObject}"
@@ -170,7 +172,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
           </div>
         </div>
 
-        <div id="sidebar" class="  col-md-4 col-lg-3 col-xl-2 col-12">
+        <div id="sidebar">
           <status-tab-element
             .engagementData="${this.engagement}"
             .optionsData="${this.engagementOptions}"

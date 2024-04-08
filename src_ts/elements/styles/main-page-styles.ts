@@ -13,8 +13,24 @@ export const mainPageStyles = css`
   .view-container {
     position: relative;
     width: 100%;
-    padding: 25px 25px 25px 25px;
+    display: flex;
+    padding: 25px;
     box-sizing: border-box;
+  }
+
+  #pageContent {
+    position: relative;
+    margin-bottom: 24px;
+    margin-right: 24px;
+    width: 100%;
+    max-width: calc(100% - 240px);
+  }
+
+  #sidebar {
+    position: relative;
+    width: 215px;
+    min-width: 215px;
+    margin-bottom: 24px;
   }
 
   .tab-selector {
@@ -37,6 +53,8 @@ export const mainPageStyles = css`
   .tab-selector etools-tabs-lit {
     font-size: var(--etools-font-size-14, 14px);
     font-weight: bold;
+    min-width: calc(100% - 4px);
+    max-width: calc(100% - 4px);
   }
 
   .tab-selector etools-tabs-lit span {
@@ -45,16 +63,6 @@ export const mainPageStyles = css`
 
   .tab-selector .tab-content {
     padding: 0 13px;
-  }
-
-  #pageContent {
-    position: relative;
-    margin-bottom: 24px;
-    width: 100%;
-  }
-
-  #sidebar {
-    margin-bottom: 24px;
   }
 
   .submitted-message {
@@ -112,5 +120,19 @@ export const mainPageStyles = css`
   div[slot='panel-btns'].bookmark etools-icon {
     width: 70px !important;
     height: 70px !important;
+  }
+
+  @media (max-width: 768px) {
+    .view-container {
+      flex-wrap: wrap;
+    }
+    #pageContent {
+      margin-right: 0px;
+      min-width: 100%;
+    }
+    #sidebar {
+      width: 100%;
+      min-width: 100%;
+    }
   }
 `;

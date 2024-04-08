@@ -36,5 +36,12 @@ export const ActionButtonsStyles = html`
       --etools-icon-font-size: var(--etools-font-size-20, 20px);
       vertical-align: sub;
     }
+    @media (max-width: 768px) {
+      etools-button-group {
+        padding: 0 24px;
+        max-width: 220px;
+        margin: 0 auto;
+      }
+    }
   </style>
 `;

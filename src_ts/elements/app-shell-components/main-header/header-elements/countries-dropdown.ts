@@ -40,7 +40,7 @@ export class CountriesDropdown extends LitElement {
 
         @media (max-width: 768px) {
           etools-dropdown {
-            width: 130px;
+            max-width: 130px;
           }
         }
       </style>

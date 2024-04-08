@@ -32,7 +32,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AppDrawer} from '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
 import {GenericObject} from './types/global';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
-import {BASE_PATH, SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY} from './elements/config/config';
+import {BASE_URL, SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY} from './elements/config/config';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import '@unicef-polymer/etools-unicef/src/etools-toasts/etools-toasts';
 import './elements/utils/routes.js';
@@ -63,7 +63,7 @@ store.addReducers({
 
 window.EtoolsLanguage = 'en';
 
-setBasePath(BASE_PATH);
+setBasePath(BASE_URL);
 initializeIcons();
 /**
  * @customElement
@@ -89,7 +89,7 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
 
       <app-drawer-layout
         id="layout"
-        responsive-width="850px"
+        responsive-width="1100px"
         fullbleed
         .narrow="${this.narrow}"
         ?small-menu="${this.smallMenu}"
@@ -312,7 +312,7 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
   }
 
   allowPageChange() {
-    const urlSpaceRegex = new RegExp(`^${BASE_PATH}`);
+    const urlSpaceRegex = new RegExp(`^${BASE_URL}`);
     return urlSpaceRegex.test(this.reduxRouteDetails?.path || '');
   }
 

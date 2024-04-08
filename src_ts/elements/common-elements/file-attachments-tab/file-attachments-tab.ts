@@ -148,7 +148,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         ${this.dataItems.map(
           (item, index) => html`
             <etools-data-table-row no-collapse secondary-bg-on-hover .lowResolutionLayout="${this.lowResolutionLayout}">
-              <div slot="row-data" class="layout-horizontal editable-row">
+              <div slot="row-data" class="editable-row">
                 <span
                   class="col-data col-2"
                   data-col-header-label="${getHeadingLabel(this.optionsData, 'created', 'Created')}"
@@ -229,14 +229,14 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
               </etools-data-table-row>`
             )}
 
-        <div class="row-v" ?hidden="${!this._isNewEngagement()}">
-          You can add attachments after you create the engagement.
+        <div class="layout-horizontal editable-row" ?hidden="${!this._isNewEngagement()}">
+          <div class="col-12">You can add attachments after you create the engagement.</div>
         </div>
         <etools-data-table-row
           no-collapse
           ?hidden="${this._isNewEngagement() || this.dataItems?.length || this.linkedAttachments?.length}"
         >
-          <div slot="row-data" class="layout-horizontal editable-row">
+          <div slot="row-data" class="editable-row">
             <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>

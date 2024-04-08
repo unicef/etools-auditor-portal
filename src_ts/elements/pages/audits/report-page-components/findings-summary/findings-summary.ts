@@ -99,7 +99,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
           (item, index) => html`
             <etools-data-table-row no-collapse secondary-bg-on-hover .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-2 text-ellipsis" data-col-header-label="IP name">${item.partner.name}</span>
+                <span class="col-data col-2" data-col-header-label="IP name">${item.partner.name}</span>
                 <span class="col-data col-1" data-col-header-label="Audited Expenditure $"
                   >${item.audited_expenditure}</span
                 >
