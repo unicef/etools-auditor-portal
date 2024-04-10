@@ -140,7 +140,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
           ?hidden="${this.dataItems?.length}"
           .lowResolutionLayout="${this.lowResolutionLayout}"
         >
-          <div slot="row-data" class="layout-horizontal editable-row">
+          <div slot="row-data" class="layout-horizontal editable-row padding-v">
             <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>

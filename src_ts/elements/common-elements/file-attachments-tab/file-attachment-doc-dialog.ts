@@ -45,7 +45,7 @@ export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMix
       >
         <div class="container-dialog">
           ${this.showFileTypes(this.optionsData)
-            ? html` <div class="row row-padding-v">
+            ? html` <div class="row padding-v">
                 <div class="col-12 col-md-6">
                   <etools-dropdown
                     id="fileType"
@@ -73,7 +73,7 @@ export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMix
               </div>`
             : ``}
 
-          <div class="layout-horizontal row-padding-v">
+          <div class="layout-horizontal padding-v">
             <etools-upload
               id="uploadFile"
               label="Upload File"

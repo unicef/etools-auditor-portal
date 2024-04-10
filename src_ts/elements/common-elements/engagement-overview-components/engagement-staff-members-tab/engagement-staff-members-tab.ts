@@ -74,16 +74,14 @@ export class EngagementStaffMembersTab extends connect(store)(
           height: 48px;
           color: #fff;
           overflow: hidden;
-          flex: 1;
+          width: 140px;          
         }
         .search-input-container .search-input {
           float: right;
           box-sizing: border-box;
-          min-width: 46px;
-          margin-top: -2px;
+          margin-top: -6px;
           transition: 0.35s;
           cursor: pointer;
-
         }
         .search-input-container .search-input,
         .search-input-container .search-input:focus {
@@ -146,11 +144,19 @@ export class EngagementStaffMembersTab extends connect(store)(
           flex-direction: row;
           align-items: center;
           justify-content: flex-end;
-          column-gap: 30px;
+          column-gap: 20px;
           line-height: 48px;
         }
         sl-switch {
           --sl-input-label-color: #ffffff;
+        }
+        @media(max-width: 576px) {
+          .panel-btns-container {
+            flex-wrap: wrap;
+          }
+          .search-input-container {
+            width: 110px;
+          }
         }
       </style>
 
@@ -292,7 +298,7 @@ export class EngagementStaffMembersTab extends connect(store)(
           <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}" .lowResolutionLayout="${
       this.lowResolutionLayout
     }">
-            <div slot="row-data" class="layout-horizontal editable-row">
+            <div slot="row-data" class="layout-horizontal editable-row padding-v">
               <span class="col-data col-12">No records found.</span>
             </div>
           </etools-data-table-row>

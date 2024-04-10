@@ -180,7 +180,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           `
         )}
         <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
-          <div slot="row-data" class="layout-horizontal editable-row pl-30">
+          <div slot="row-data" class="layout-horizontal editable-row pl-30 padding-v">
             <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>

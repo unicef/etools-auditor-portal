@@ -236,7 +236,7 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
           no-collapse
           ?hidden="${this._isNewEngagement() || this.dataItems?.length || this.linkedAttachments?.length}"
         >
-          <div slot="row-data" class="editable-row">
+          <div slot="row-data" class="editable-row padding-v">
             <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>
