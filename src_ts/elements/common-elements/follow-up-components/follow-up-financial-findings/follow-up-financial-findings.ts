@@ -16,7 +16,7 @@ import {getOptionsChoices} from '../../../mixins/permission-controller';
 
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../types/global';
 import {AnyObject} from '@unicef-polymer/etools-types';
@@ -29,7 +29,7 @@ import {AnyObject} from '@unicef-polymer/etools-types';
 @customElement('follow-up-financial-findings')
 export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMixin(LitElement)) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -41,12 +41,15 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           margin-bottom: 24px;
           display: block;
         }
+        .input-container {
+          display: flex;
+        }
       </style>
 
       <etools-content-panel panel-title="Financial Findings">
         ${this.showFields(this.engagement.engagement_type, 'audit')
-          ? html`<div class="layout-horizontal">
-              <div class="col col-4">
+          ? html`<div class="row">
+              <div class="col-12 col-lg-4 col-md-6 input-container">
                 <!-- Audit Opinion -->
                 <etools-dropdown
                   id="test"
@@ -63,10 +66,10 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             </div>`
           : ``}
 
-        <div class="layout-horizontal">
+        <div class="row">
           <!--Audit engagement fields-->
           ${this.showFields(this.engagement.engagement_type, 'audit')
-            ? html`<div class="col col-4">
+            ? html`<div class="col-12 input-container col-lg-4 col-md-6">
                   <!-- Audited expenditure (USD)-->
                   <etools-currency
                     .value="${this.engagement.audited_expenditure}"
@@ -77,7 +80,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col col-4">
+                <div class="col-12 input-container col-lg-4 col-md-6">
                   <!-- Financial Findings (USD)-->
                   <etools-currency
                     .value="${this.engagement.financial_findings}"
@@ -92,7 +95,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
 
           <!--Spot-Check engagement fields-->
           ${this.showFields(this.engagement.engagement_type, 'sc')
-            ? html`<div class="col col-4">
+            ? html`<div class="col-12 input-container col-lg-4 col-md-6">
                   <!-- Total amount tested-->
                   <etools-currency
                     .value="${this.engagement.total_amount_tested}"
@@ -104,7 +107,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   </etools-currency>
                 </div>
 
-                <div class="col col-4">
+                <div class="col-12 input-container col-lg-4 col-md-6">
                   <!-- Total amount of ineligible expenditure-->
                   <etools-currency
                     .value="${this.engagement.total_amount_of_ineligible_expenditure}"
@@ -118,7 +121,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             : ``}
 
           <!--  -->
-          <div class="col col-4">
+          <div class="col-12 input-container col-lg-4 col-md-6">
             <!--Amount refunded -->
             <etools-currency
               class="${this._setRequired('amount_refunded', this.optionsData)}
@@ -138,10 +141,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             >
             </etools-currency>
           </div>
-        </div>
-
-        <div class="layout-horizontal">
-          <div class="col col-4">
+          <div class="col-12 input-container col-lg-4 col-md-6">
             <!--Additional supporting documentation provided -->
             <etools-currency
               class="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}
@@ -162,7 +162,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             </etools-currency>
           </div>
 
-          <div class="col col-4">
+          <div class="col-12 input-container col-lg-4 col-md-6">
             <!-- Justification provided and accepted -->
             <etools-currency
               class="${this._setRequired('justification_provided_and_accepted', this.optionsData)}
@@ -183,7 +183,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             </etools-currency>
           </div>
 
-          <div class="col col-4">
+          <div class="col-12 input-container col-lg-4 col-md-6">
             <!--Write off required -->
             <etools-currency
               class="${this._setRequired('write_off_required', this.optionsData)}
@@ -202,10 +202,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             >
             </etools-currency>
           </div>
-        </div>
-
-        <div class="layout-horizontal">
-          <div class="col col-4">
+          <div class="col-12 input-container col-lg-4 col-md-6">
             <!-- Pending Unsupported Amount -->
             <etools-input
               .value="${this.setUnsupportedAmount(
@@ -222,10 +219,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               <div prefix>$</div>
             </etools-input>
           </div>
-        </div>
-
-        <div class="layout-horizontal">
-          <div class="col col-12">
+          <div class="col-12 input-container">
             <!-- explanation_for_additional_information -->
             <etools-textarea
               class="w100 validate-input ${this._setRequired(

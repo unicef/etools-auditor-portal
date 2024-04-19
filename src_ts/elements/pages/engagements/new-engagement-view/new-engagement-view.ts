@@ -10,7 +10,7 @@ import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import {clearQueries} from '../../../mixins/query-params-controller';
 import '../../../mixins/permission-controller';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {mainPageStyles} from '../../../styles/main-page-styles';
 import '../../../common-elements/file-attachments-tab/file-attachments-tab';
@@ -29,7 +29,7 @@ import '../../../common-elements/engagement-report-components/specific-procedure
 import '../../../common-elements/engagement-overview-components/engagement-staff-members-tab/engagement-staff-members-tab';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {RootState, store} from '../../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {AnyObject, RouteDetails} from '@unicef-polymer/etools-types';
@@ -47,7 +47,7 @@ import {isActiveTab} from '../../../utils/utils';
 @customElement('new-engagement-view')
 export class NewEngagementView extends connect(store)(EngagementMixin(CommonMethodsMixin(LitElement))) {
   static get styles() {
-    return [moduleStyles, gridLayoutStylesLit, mainPageStyles, tabInputsStyles];
+    return [moduleStyles, layoutStyles, mainPageStyles, tabInputsStyles];
   }
 
   render() {
@@ -81,6 +81,8 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
           font-size: var(--etools-font-size-14, 14px);
           font-weight: bold;
           text-transform: uppercase;
+          min-width: calc(100% - 4px);
+          max-width: calc(100% - 4px);
         }
 
         .tab-selector .tab-content {

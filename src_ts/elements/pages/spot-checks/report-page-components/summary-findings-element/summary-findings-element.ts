@@ -16,7 +16,7 @@ import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import DateMixin from '../../../../mixins/date-mixin';
@@ -49,7 +49,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   TableElementsMixin(DateMixin(ModelChangedMixin(LitElement)))
 ) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -89,7 +89,12 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           flex-direction: column;
         }
       </style>
-
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <etools-content-panel
         list
         class="content-section clearfix ${this.itemModel?.priority || ''}"
@@ -104,7 +109,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
           </div>
         </div>
 
-        <etools-data-table-header no-title>
+        <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-3">Finding Number</etools-data-table-column>
           <etools-data-table-column class="col-6">
             ${getHeadingLabel(this.optionsData, 'findings.category_of_observation', 'Subject Area')}
@@ -117,11 +122,29 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
         ${(this.dataItems || []).map(
           (item, index) =>
             html`
-              <etools-data-table-row>
+              <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
                 <div slot="row-data" class="layout-horizontal editable-row">
-                  <span class="col-data col-3">${getTableRowIndexText(index)}</span>
-                  <span class="col-data col-6">${this.getCategoryDisplayName(item.category_of_observation, '--')}</span>
-                  <span class="col-data col-3">${item.deadline_of_action}</span>
+                  <span class="col-data col-3" data-col-header-label="Finding Number"
+                    >${getTableRowIndexText(index)}</span
+                  >
+                  <span
+                    class="col-data col-6"
+                    data-col-header-label="${getHeadingLabel(
+                      this.optionsData,
+                      'findings.category_of_observation',
+                      'Subject Area'
+                    )}"
+                    >${this.getCategoryDisplayName(item.category_of_observation, '--')}</span
+                  >
+                  <span
+                    class="col-data col-3"
+                    data-col-header-label="${getHeadingLabel(
+                      this.optionsData,
+                      'findings.deadline_of_action',
+                      'Deadline of Action'
+                    )}"
+                    >${item.deadline_of_action}</span
+                  >
                   <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                     <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                     <etools-icon-button
@@ -149,10 +172,8 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
             `
         )}
         <etools-data-table-row no-collapse ?hidden="${(this.dataItems || []).some((item) => this._showFindings(item))}">
-          <div slot="row-data" class="layout-horizontal editable-row pl-30">
-            <span class="col-data col-3">–</span>
-            <span class="col-data col-6">–</span>
-            <span class="col-data col-3">–</span>
+          <div slot="row-data" class="layout-horizontal editable-row pl-30 padding-v">
+            <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>
       </etools-content-panel>

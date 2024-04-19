@@ -7,7 +7,7 @@ import {getEndpoint} from '../../../config/endpoints-controller';
 import {pageLayoutStyles} from '../../../styles/page-layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {elevationStyles} from '@unicef-polymer/etools-modules-common/dist/styles/elevation-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
 import '../../../common-elements/pages-header-element/pages-header-element';
@@ -27,7 +27,7 @@ import {RootState, store} from '../../../../redux/store';
 import {RouteDetails, RouteQueryParams} from '@unicef-polymer/etools-types/dist/router.types';
 import {buildUrlQueryString, cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import pick from 'lodash-es/pick';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
@@ -42,7 +42,7 @@ import {getDataFromSessionStorage, setDataOnSessionStorage} from '../../../utils
  */
 export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement)) {
   static get styles() {
-    return [pageLayoutStyles, moduleStyles, gridLayoutStylesLit, elevationStyles];
+    return [pageLayoutStyles, moduleStyles, layoutStyles, elevationStyles];
   }
 
   render() {
@@ -66,8 +66,22 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         section {
           position: relative;
         }
+        .search-filters {
+          flex-grow: 1;
+          margin-block: 8px;
+          width: 100%;
+        }
         etools-filters::part(filter-search) {
-          min-width: 370px !important;
+          min-width: 370px;
+        }
+        @media (max-width: 640px) {
+          etools-filters::part(filter-search) {
+            min-width: 100%;
+            width: 100%;
+          }
+          etools-filters::part(filters) {
+            width: 100%;
+          }
         }
       </style>
 
@@ -84,6 +98,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
 
       <section class="elevation page-content filters" elevation="1">
         <etools-filters
+          class="search-filters"
           .filters="${this.filters}"
           @filter-change="${this.filtersChange}"
           @click="${() => {
@@ -92,7 +107,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         ></etools-filters>
       </section>
 
-      <section class="elevation page-content no-padding" elevation="1">
+      <section class="elevation page-content" elevation="1">
         <etools-loading
           ?active="${this.listLoadingActive}"
           loading-text="Loading of engagements list..."

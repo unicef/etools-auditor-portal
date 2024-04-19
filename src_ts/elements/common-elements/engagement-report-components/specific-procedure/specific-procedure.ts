@@ -14,7 +14,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {checkNonField} from '../../../mixins/error-handler';
 import {getHeadingLabel} from '../../../mixins/permission-controller';
@@ -22,6 +22,7 @@ import {getTableRowIndexText} from '../../../utils/utils';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 
 /**
  * @polymer
@@ -32,14 +33,14 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('specific-procedure')
 export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(LitElement)) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
     return html`
       ${sharedStyles}
       <style>
-        :host .repeatable-item-container[without-line] {
+        ${dataTableStylesLit} :host .repeatable-item-container[without-line] {
           min-width: 0 !important;
           margin-bottom: 0 !important;
         }
@@ -53,7 +54,12 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
           padding: 0;
         }
       </style>
-
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('specific_procedures', this.optionsData)}"
@@ -68,7 +74,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
           </div>
         </div>
 
-        <etools-data-table-header no-collapse no-title>
+        <etools-data-table-header no-collapse no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-2">Procedure</etools-data-table-column>
           <etools-data-table-column class="${this.withoutFindingColumn ? 'col-10' : 'col-5'}"
             >${getHeadingLabel(
@@ -84,11 +90,24 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
 
         ${(this.dataItems || []).map(
           (item, index) => html`
-            <etools-data-table-row no-collapse>
+            <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-2">${getTableRowIndexText(index)}</span>
-                <span class="col-data ${this.withoutFindingColumn ? 'col-10' : 'col-5'}">${item.description}</span>
-                <span class="col-data col-5" ?hidden="${this.withoutFindingColumn}">${item.finding}</span>
+                <span class="col-data col-2" data-col-header-label="Procedure">${getTableRowIndexText(index)}</span>
+                <span
+                  class="col-data ${this.withoutFindingColumn ? 'col-10' : 'col-5'}"
+                  data-col-header-label="${getHeadingLabel(
+                    this.optionsData,
+                    'specific_procedures.description',
+                    'Description'
+                  )}"
+                  >${item.description}</span
+                >
+                <span
+                  class="col-data col-5"
+                  data-col-header-label="${getHeadingLabel(this.optionsData, 'specific_procedures.finding', 'Finding')}"
+                  ?hidden="${this.withoutFindingColumn}"
+                  >${item.finding}</span
+                >
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <etools-icon-button
                     name="create"
@@ -106,10 +125,8 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
           `
         )}
         <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
-          <div slot="row-data" class="layout-horizontal editable-row">
-            <span class="col-data col-2">–</span>
-            <span class="col-data ${this.withoutFindingColumn ? 'col-10' : 'col-5'}">–</span>
-            <span class="col-data col-5" ?hidden="${this.withoutFindingColumn}">–</span>
+          <div slot="row-data" class="layout-horizontal editable-row padding-v">
+            <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>
       </etools-content-panel>

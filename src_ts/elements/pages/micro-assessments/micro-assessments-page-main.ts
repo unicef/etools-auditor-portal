@@ -25,12 +25,13 @@ import './report-page-components/ma-report-page-main';
 import '../../common-elements/file-attachments-tab/file-attachments-tab';
 import '../../common-elements/engagement-cancel/engagement-cancel-dialog';
 import {RootState, store} from '../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import get from 'lodash-es/get';
 import {isActiveTab, pageIsNotCurrentlyActive} from '../../utils/utils';
 import {AnyObject} from '@unicef-polymer/etools-types';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 /**
  * @customElement
@@ -41,7 +42,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('micro-assessments-page-main')
 export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(CommonMethodsMixin(LitElement))) {
   static get styles() {
-    return [moduleStyles, mainPageStyles, tabInputsStyles];
+    return [moduleStyles, mainPageStyles, tabInputsStyles, layoutStyles];
   }
 
   render() {

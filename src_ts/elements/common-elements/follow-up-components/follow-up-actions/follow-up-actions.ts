@@ -25,8 +25,9 @@ import '../../../data-elements/update-action-points';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
@@ -38,7 +39,7 @@ import {checkNonField} from '../../../mixins/error-handler';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {AnyObject} from '@unicef-polymer/etools-types';
 import {RootState, store} from '../../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
@@ -51,14 +52,14 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('follow-up-actions')
 export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElementsMixin(DateMixin(LitElement)))) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
     return html`
       ${sharedStyles}
       <style>
-        :host .confirm-text {
+        ${dataTableStylesLit} :host .confirm-text {
           padding: 5px 86px 0 23px !important;
         }
         div.action-complete {
@@ -89,7 +90,12 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
           --iron-icon-width: 16px;
         }
       </style>
-
+      <etools-media-query
+        query="(max-width: 1180px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <get-action-points
         .engagementId="${this.engagementId}"
         @ap-loaded="${({detail}: CustomEvent) => {
@@ -125,7 +131,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
           </div>
         </div>
 
-        <etools-data-table-header no-collapse no-title>
+        <etools-data-table-header no-collapse no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-2" field="reference_number" sortable
             >${getHeadingLabel(this.optionsData, 'reference_number', 'Reference Number #')}</etools-data-table-column
           >
@@ -146,18 +152,39 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
 
         ${(this.itemsToDisplay || []).map(
           (item, index) => html`
-            <etools-data-table-row no-collapse secondary-bg-on-hover>
+            <etools-data-table-row no-collapse secondary-bg-on-hover .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-2 truncate">
+                <span
+                  class="col-data col-2"
+                  data-col-header-label="${getHeadingLabel(this.optionsData, 'reference_number', 'Reference Number #')}"
+                >
                   <a href="${item.url}" class="truncate" title="${item.reference_number}" target="_blank">
                     ${item.reference_number} <etools-icon class="launch-icon" name="launch"></etools-icon>
                   </a>
                 </span>
-                <span class="col-data col-3 truncate">${item.ap_category?.display_name || '-'}</span>
-                <span class="col-data col-3 truncate">${item.computed_field}</span>
-                <span class="col-data col-1 truncate caps">${item.status}</span>
-                <span class="col-data col-2 truncate">${this.prettyDate(String(item.due_date), '') || '-'}</span>
-                <span class="col-data col-1 truncate caps">${item.priority}</span>
+                <span
+                  class="col-data col-3"
+                  data-col-header-label="${getHeadingLabel(this.optionsData, 'category', 'Action Point Category')}"
+                  >${item.ap_category?.display_name || '-'}</span
+                >
+                <span class="col-data col-3" data-col-header-label="Assignee (Section / Office)"
+                  >${item.computed_field}</span
+                >
+                <span
+                  class="col-data col-1 caps"
+                  data-col-header-label="${getHeadingLabel(this.optionsData, 'status', 'Status')}"
+                  >${item.status}</span
+                >
+                <span
+                  class="col-data col-2"
+                  data-col-header-label="${getHeadingLabel(this.optionsData, 'due_date', 'Due Date')}"
+                  >${this.prettyDate(String(item.due_date), '') || '-'}</span
+                >
+                <span
+                  class="col-data col-1 caps"
+                  data-col-header-label="${getHeadingLabel(this.optionsData, 'high_priority', 'Priority')}"
+                  >${item.priority}</span
+                >
                 <div class="hover-block">
                   <etools-icon-button
                     name="content-copy"
@@ -174,13 +201,8 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
           `
         )}
         <etools-data-table-row no-collapse ?hidden="${this.itemsToDisplay?.length}">
-          <div slot="row-data" class="layout-horizontal editable-row">
-            <span class="col-data col-2">–</span>
-            <span class="col-data col-3">–</span>
-            <span class="col-data col-3">–</span>
-            <span class="col-data col-1">–</span>
-            <span class="col-data col-2">–</span>
-            <span class="col-data col-1">–</span>
+          <div slot="row-data" class="layout-horizontal editable-row padding-v">
+            <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>
       </etools-content-panel>

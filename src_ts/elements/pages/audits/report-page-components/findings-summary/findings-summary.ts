@@ -8,12 +8,14 @@ import './findings-summary-dialog';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
+import '@unicef-polymer/etools-unicef/src/etools-media-query/etools-media-query.js';
 
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
 import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
@@ -41,14 +43,14 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('findings-summary')
 export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
     return html`
       ${sharedStyles}
       <style>
-        etools-content-panel::part(ecp-content) {
+        ${dataTableStylesLit} etools-content-panel::part(ecp-content) {
           padding: 0;
         }
         .row-h {
@@ -72,9 +74,14 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
           text-overflow: ellipsis;
         }
       </style>
-
+      <etools-media-query
+        query="(max-width: 1300px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <etools-content-panel list panel-title="Summary of Audit Findings">
-        <etools-data-table-header no-collapse no-title>
+        <etools-data-table-header no-collapse no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-2">IP name</etools-data-table-column>
           <etools-data-table-column class="col-1">Audited Expenditure $</etools-data-table-column>
           <etools-data-table-column class="col-1">Financial Findings $</etools-data-table-column>
@@ -90,19 +97,37 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
 
         ${(this.dataItems || []).map(
           (item, index) => html`
-            <etools-data-table-row no-collapse secondary-bg-on-hover>
+            <etools-data-table-row no-collapse secondary-bg-on-hover .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-2 text-ellipsis">${item.partner.name}</span>
-                <span class="col-data col-1">${item.audited_expenditure}</span>
-                <span class="col-data col-1">${item.financial_findings}</span>
-                <span class="col-data col-1">${item.audited_expenditure_local}</span>
-                <span class="col-data col-1">${item.financial_findings_local}</span>
-                <span class="col-data col-1">${item.percent_of_audited_expenditure}</span>
-                <span class="col-data col-1">${item.display_name}</span>
-                <span class="col-data col-1">${item.number_of_financial_findings}</span>
-                <span class="col-data col-1">${item.key_internal_weakness.high_risk_count}</span>
-                <span class="col-data col-1">${item.key_internal_weakness.medium_risk_count}</span>
-                <span class="col-data col-1">${item.key_internal_weakness.low_risk_count}</span>
+                <span class="col-data col-2" data-col-header-label="IP name">${item.partner.name}</span>
+                <span class="col-data col-1" data-col-header-label="Audited Expenditure $"
+                  >${item.audited_expenditure}</span
+                >
+                <span class="col-data col-1" data-col-header-label="Financial Findings $"
+                  >${item.financial_findings}</span
+                >
+                <span class="col-data col-1" data-col-header-label="Audited Expenditure"
+                  >${item.audited_expenditure_local}</span
+                >
+                <span class="col-data col-1" data-col-header-label="Financial Findings"
+                  >${item.financial_findings_local}</span
+                >
+                <span class="col-data col-1" data-col-header-label="% Of Audited Expenditure"
+                  >${item.percent_of_audited_expenditure}</span
+                >
+                <span class="col-data col-1" data-col-header-label="Audit Opinion">${item.display_name}</span>
+                <span class="col-data col-1" data-col-header-label="No. of Financial Findings"
+                  >${item.number_of_financial_findings}</span
+                >
+                <span class="col-data col-1" data-col-header-label="High Risk"
+                  >${item.key_internal_weakness.high_risk_count}</span
+                >
+                <span class="col-data col-1" data-col-header-label="Medium Risk"
+                  >${item.key_internal_weakness.medium_risk_count}</span
+                >
+                <span class="col-data col-1" data-col-header-label="Low Risk"
+                  >${item.key_internal_weakness.low_risk_count}</span
+                >
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                 </div>
@@ -110,19 +135,13 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
             </etools-data-table-row>
           `
         )}
-        <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
-          <div slot="row-data" class="layout-horizontal editable-row">
-            <span class="col-data col-2">–</span>
-            <span class="col-data col-1">–</span>
-            <span class="col-data col-1">–</span>
-            <span class="col-data col-1">–</span>
-            <span class="col-data col-1">–</span>
-            <span class="col-data col-1">–</span>
-            <span class="col-data col-1">–</span>
-            <span class="col-data col-1">–</span>
-            <span class="col-data col-1">–</span>
-            <span class="col-data col-1">–</span>
-            <span class="col-data col-1">–</span>
+        <etools-data-table-row
+          no-collapse
+          ?hidden="${this.dataItems?.length}"
+          .lowResolutionLayout="${this.lowResolutionLayout}"
+        >
+          <div slot="row-data" class="layout-horizontal editable-row padding-v">
+            <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>
       </etools-content-panel>

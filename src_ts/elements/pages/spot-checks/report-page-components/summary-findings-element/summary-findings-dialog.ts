@@ -9,7 +9,7 @@ import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import DateMixin from '../../../../mixins/date-mixin';
@@ -31,7 +31,7 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
   TableElementsMixin(DateMixin(ModelChangedMixin(LitElement)))
 ) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -49,9 +49,9 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
         @confirm-btn-clicked="${this.onSave}"
         @close="${this._onClose}"
       >
-        <div class="container">
-          <div class="layout-horizontal">
-            <div class="col col-12">
+        <div class="container-dialog">
+          <div class="row">
+            <div class="col-12 input-container">
               <!-- Category of Observation -->
               <etools-dropdown
                 class="w100 validate-input"
@@ -73,10 +73,7 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
               >
               </etools-dropdown>
             </div>
-          </div>
-
-          <div class="layout-horizontal">
-            <div class="col col-12">
+            <div class="col-12 input-container">
               <!-- Recommendation -->
               <etools-textarea
                 class="${this._setRequired('findings.recommendation', this.optionsData)} validate-input w100"
@@ -96,10 +93,7 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
               >
               </etools-textarea>
             </div>
-          </div>
-
-          <div class="layout-horizontal">
-            <div class="col col-12">
+            <div class="col-12 input-container">
               <!-- Agreed Action by IP -->
               <etools-textarea
                 class="${this._setRequired('findings.agreed_action_by_ip', this.optionsData)}
@@ -120,10 +114,7 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
               >
               </etools-textarea>
             </div>
-          </div>
-
-          <div class="layout-horizontal">
-            <div class="col col-6">
+            <div class="col-12 col-md-6 input-container">
               <!-- Deadline of Action -->
               <datepicker-lite
                 id="deadlineActionSelector"

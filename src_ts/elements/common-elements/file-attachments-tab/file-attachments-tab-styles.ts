@@ -25,12 +25,6 @@ export const fileAttachmentsTabStyles = html`
       padding: 0;
     }
 
-    .download-icon {
-      --iron-icon-width: 25px;
-      --iron-icon-height: 25px;
-      --iron-icon-fill-color: var(--gray-50);
-    }
-
     .attachment-error {
       position: relative;
       visibility: visible;
@@ -53,12 +47,6 @@ export const fileAttachmentsTabStyles = html`
       right: 10px;
       display: none;
       cursor: pointer;
-    }
-
-    .delete-icon etools-icon {
-      --iron-icon-width: 20px;
-      --iron-icon-height: 20px;
-      --iron-icon-fill-color: var(--gray-50);
     }
 
     etools-content-panel::part(ecp-content) {

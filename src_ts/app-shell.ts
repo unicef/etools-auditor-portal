@@ -32,16 +32,14 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AppDrawer} from '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
 import {GenericObject} from './types/global';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
-import {BASE_PATH, SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY} from './elements/config/config';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {BASE_URL, SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY} from './elements/config/config';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import '@unicef-polymer/etools-unicef/src/etools-toasts/etools-toasts';
 import './elements/utils/routes.js';
 import {store, RootState} from './redux/store';
 import {handleUrlChange} from './redux/actions/app.js';
 import {setStore} from '@unicef-polymer/etools-utils/dist/store.util';
-import {connect} from 'pwa-helpers/connect-mixin.js';
-import {installMediaQueryWatcher} from 'pwa-helpers/media-query.js';
-import {installRouter} from 'pwa-helpers/router';
+import {connect, installMediaQueryWatcher, installRouter} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {getCurrentUser} from './elements/data-elements/user-data.js';
 import {EtoolsUser} from '@unicef-polymer/etools-types/dist/user.types.js';
 import commonData, {CommonDataState} from './redux/reducers/common-data.js';
@@ -65,7 +63,7 @@ store.addReducers({
 
 window.EtoolsLanguage = 'en';
 
-setBasePath(BASE_PATH);
+setBasePath(BASE_URL);
 initializeIcons();
 /**
  * @customElement
@@ -73,7 +71,7 @@ initializeIcons();
  */
 class AppShell extends connect(store)(LoadingMixin(LitElement)) {
   static get styles() {
-    return [gridLayoutStylesLit];
+    return [layoutStyles];
   }
 
   render() {
@@ -91,7 +89,7 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
 
       <app-drawer-layout
         id="layout"
-        responsive-width="850px"
+        responsive-width="1100px"
         fullbleed
         .narrow="${this.narrow}"
         ?small-menu="${this.smallMenu}"
@@ -314,7 +312,7 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
   }
 
   allowPageChange() {
-    const urlSpaceRegex = new RegExp(`^${BASE_PATH}`);
+    const urlSpaceRegex = new RegExp(`^${BASE_URL}`);
     return urlSpaceRegex.test(this.reduxRouteDetails?.path || '');
   }
 

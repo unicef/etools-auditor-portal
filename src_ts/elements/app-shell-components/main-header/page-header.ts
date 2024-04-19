@@ -8,8 +8,8 @@ import '@unicef-polymer/etools-unicef/src/etools-accesibility/etools-accesibilit
 import './header-elements/countries-dropdown';
 import './header-elements/organizations-dropdown';
 import './support-btn';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
-import {HeaderStyles} from '../main-header/header-elements/header-styles';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {HeaderStyles} from './header-elements/header-styles';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
 import {isProductionServer, checkEnvironment, BASE_PATH} from '../../config/config';
 import {GenericObject} from '../../../types/global';
@@ -24,7 +24,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 @customElement('page-header')
 export class PageHeader extends MatomoMixin(LitElement) {
   static get styles() {
-    return [gridLayoutStylesLit];
+    return [layoutStyles];
   }
 
   render() {
@@ -68,9 +68,12 @@ export class PageHeader extends MatomoMixin(LitElement) {
           width: auto;
           margin: 0px 10px 0px 20px;
         }
-
+        .accessibility {
+          margin-inline-end: 4px;
+        }
         .dropdowns {
           padding-block-start: 6px;
+          margin-inline-start: auto;
           display: flex;
           margin-inline-end: 20px;
         }
@@ -105,6 +108,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
         }
 
         support-btn {
+          margin-inline-start: auto;
           color: var(--header-color);
         }
 
@@ -112,7 +116,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
           margin-inline-end: 10px;
         }
 
-        @media (min-width: 850px) {
+        @media (min-width: 1100px) {
           #menuButton {
             display: none;
           }
@@ -135,6 +139,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
           }
           etools-profile-dropdown {
             margin-inline-start: 0px;
+            margin-inline-end: 10px;
             width: 40px;
           }
         }
@@ -156,7 +161,7 @@ export class PageHeader extends MatomoMixin(LitElement) {
         }
       </style>
 
-      <app-toolbar id="toolbar" sticky class="content-align">
+      <app-toolbar id="toolbar" sticky class="content-align  layout-horizontal">
         <div class="layout-horizontal align-items-center">
           <etools-icon-button
             id="menuButton"
@@ -170,18 +175,18 @@ export class PageHeader extends MatomoMixin(LitElement) {
             ${this.environment}
           </div>
         </div>
-        <div class="layout-horizontal align-items-center">
-          <div class="dropdowns">
-            <countries-dropdown
-              id="countries"
-              .countries="${this.user?.countries_available}"
-              .currentCountry="${this.user?.country}"
-            >
-            </countries-dropdown>
+        <div class="dropdowns layout-horizontal align-items-center">
+          <countries-dropdown
+            id="countries"
+            .countries="${this.user?.countries_available}"
+            .currentCountry="${this.user?.country}"
+          >
+          </countries-dropdown>
 
-            <organizations-dropdown .user="${this.user}"></organizations-dropdown>
-          </div>
+          <organizations-dropdown .user="${this.user}"></organizations-dropdown>
+        </div>
 
+        <div class="layout-horizontal align-items-center accessibility">
           <support-btn title="Support"></support-btn>
 
           <etools-profile-dropdown title="Profile and Sign out" .profile="${this.user}" @sign-out="${this._signOut}">

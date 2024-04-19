@@ -5,13 +5,14 @@ import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button'
 
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import cloneDeep from 'lodash-es/cloneDeep';
 import {getTableRowIndexText} from '../../../../utils/utils';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 
 /**
  * @customElement
@@ -20,14 +21,14 @@ import {getTableRowIndexText} from '../../../../utils/utils';
 @customElement('kicw-risk')
 export class KicwRisk extends LitElement {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, moduleStyles, layoutStyles];
   }
 
   render() {
     return html`
       ${sharedStyles}
       <style>
-        :host {
+        ${dataTableStylesLit} :host {
           position: relative;
           display: block;
           background: transparent;
@@ -63,8 +64,13 @@ export class KicwRisk extends LitElement {
           align-items: flex-start !important;
         }
       </style>
-
-      <etools-data-table-header no-collapse no-title>
+      <etools-media-query
+        query="(max-width: 1180px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
+      <etools-data-table-header no-collapse no-title .lowResolutionLayout="${this.lowResolutionLayout}">
         <etools-data-table-column class="col-1">Risk #</etools-data-table-column>
         <etools-data-table-column class="col-2">Risks Rating</etools-data-table-column>
         <etools-data-table-column class="col-3">Key control observation</etools-data-table-column>
@@ -74,13 +80,17 @@ export class KicwRisk extends LitElement {
 
       ${(this.risksData || []).map(
         (item, index) => html`
-          <etools-data-table-row no-collapse secondary-bg-on-hover>
+          <etools-data-table-row no-collapse secondary-bg-on-hover .lowResolutionLayout="${this.lowResolutionLayout}">
             <div slot="row-data" class="layout-horizontal editable-row">
-              <span class="col-data col-1">${getTableRowIndexText(index)}</span>
-              <span class="col-data col-2">${item.value_display}</span>
-              <span class="col-data col-3">${item.extra.key_control_observation}</span>
-              <span class="col-data col-3">${item.extra.recommendation}</span>
-              <span class="col-data col-3">${item.extra.ip_response}</span>
+              <span class="col-data col-1 truncate" data-col-header-label="Risk #">${getTableRowIndexText(index)}</span>
+              <span class="col-data col-2 truncate" data-col-header-label="Risks Rating">${item.value_display}</span>
+              <span class="col-data col-3 truncate" data-col-header-label="Key control observation"
+                >${item.extra.key_control_observation}</span
+              >
+              <span class="col-data col-3 truncate" data-col-header-label="Recommendation"
+                >${item.extra.recommendation}</span
+              >
+              <span class="col-data col-3 truncate" data-col-header-label="IP response">${item.extra.ip_response}</span>
               <div class="hover-block" ?hidden="${!this.isEditable}">
                 <etools-icon-button name="create" @click="${() => this.editRisk(index)}"></etools-icon-button>
                 <etools-icon-button name="delete" @click="${() => this.removeRisk(index)}"></etools-icon-button>
@@ -90,12 +100,8 @@ export class KicwRisk extends LitElement {
         `
       )}
       <etools-data-table-row no-collapse ?hidden="${this.risksData?.length}">
-        <div slot="row-data" class="layout-horizontal editable-row">
-          <span class="col-data col-1">–</span>
-          <span class="col-data col-2">–</span>
-          <span class="col-data col-3">–</span>
-          <span class="col-data col-3">–</span>
-          <span class="col-data col-5">–</span>
+        <div slot="row-data" class="layout-horizontal editable-row padding-v">
+          <span class="col-data col-12">No records found.</span>
         </div>
       </etools-data-table-row>
     `;
@@ -119,6 +125,9 @@ export class KicwRisk extends LitElement {
 
   @property({type: Number})
   blueprintId!: number;
+
+  @property({type: Boolean})
+  lowResolutionLayout = false;
 
   editRisk(index) {
     const blueprint = this._createBlueprintFromEvent(index);
