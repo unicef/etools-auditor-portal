@@ -14,16 +14,16 @@ export class SendBackComments extends LitElement {
       ${sharedStyles}
 
       <etools-content-panel class="content-section comment-container clearfx" panel-title="">
-        <div>
-          <img class="flag-icon" src="${BASE_PATH}/assets/images/flag-icon.svg" />
+        <div class="flag-container">
+          <img class="flag-icon" src="${BASE_PATH}assets/images/flag-icon.svg" />
         </div>
         <div class="row">
-          <div class="col-12">
+          <div class="col-12 m-l4">
             <div class="title">Sent Back Comments</div>
           </div>
         </div>
         <div class="row">
-          <div class="col-12">
+          <div class="col-12 m-l4">
             <span>${this.comments}</span>
           </div>
         </div>
@@ -50,7 +50,7 @@ export class SendBackComments extends LitElement {
 
         .flag-icon {
           position: absolute;
-          top: -5px;
+          top: -4px;
           left: 16px;
           width: 24px;
         }
@@ -72,6 +72,12 @@ export class SendBackComments extends LitElement {
         .layout-horizontal {
           padding: 0px 12px;
           margin-left: 36px;
+        }
+        .flag-container {
+          height: 50px;
+        }
+        .m-l4 {
+          margin-inline-start: 4px;
         }
       `
     ];
