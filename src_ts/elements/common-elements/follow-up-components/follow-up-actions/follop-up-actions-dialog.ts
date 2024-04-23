@@ -67,6 +67,9 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
         .action-complete {
           padding-inline-start: 16px;
         }
+        datepicker-lite::part(dp-calendar) {
+          position: fixed;
+        }
         </style>
         <etools-dialog no-padding keep-dialog-open size="md"
                 keep-dialog-open

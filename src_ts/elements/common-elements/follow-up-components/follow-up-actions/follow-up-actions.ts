@@ -1,6 +1,5 @@
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
-import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel.js';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog.js';
 import '@unicef-polymer/etools-unicef/src/etools-checkbox/etools-checkbox';
@@ -81,9 +80,6 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
         }
         etools-content-panel::part(ecp-content) {
           padding: 0;
-        }
-        datepicker-lite::part(dp-calendar) {
-          position: fixed;
         }
         .launch-icon {
           --iron-icon-height: 16px;

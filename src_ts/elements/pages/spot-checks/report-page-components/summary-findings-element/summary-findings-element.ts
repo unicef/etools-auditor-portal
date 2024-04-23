@@ -5,7 +5,6 @@ import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
-import '@unicef-polymer/etools-unicef/src/etools-date-time/datepicker-lite';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown';
@@ -69,9 +68,6 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
 
         etools-content-panel::part(ecp-content) {
           padding: 0;
-        }
-        datepicker-lite::part(dp-calendar) {
-          position: fixed;
         }
         .mt-30 {
           margin-top: 30px;
