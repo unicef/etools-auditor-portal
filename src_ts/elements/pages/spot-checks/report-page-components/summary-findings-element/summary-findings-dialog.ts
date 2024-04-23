@@ -37,6 +37,11 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
   render() {
     return html`
       ${sharedStyles}
+      <style>
+        datepicker-lite::part(dp-calendar) {
+          position: fixed;
+        }
+      </style>
       <etools-dialog
         size="md"
         no-padding
