@@ -24,7 +24,7 @@ import {moduleStyles} from '../../styles/module-styles';
 import {mainPageStyles} from '../../styles/main-page-styles';
 import {GenericObject} from '../../../types/global';
 import {RootState, store} from '../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import isNull from 'lodash-es/isNull';
 import assign from 'lodash-es/assign';
 import {isActiveTab, pageIsNotCurrentlyActive} from '../../utils/utils';
@@ -33,6 +33,7 @@ import get from 'lodash-es/get';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AnyObject} from '@unicef-polymer/etools-types';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 /**
  * @customElement
@@ -43,7 +44,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('spot-checks-page-main')
 export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(EngagementMixin(LitElement))) {
   static get styles() {
-    return [moduleStyles, mainPageStyles, tabInputsStyles];
+    return [moduleStyles, mainPageStyles, tabInputsStyles, layoutStyles];
   }
 
   render() {

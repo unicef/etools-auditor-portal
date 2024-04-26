@@ -12,12 +12,12 @@ import remove from 'lodash-es/remove';
 import uniqBy from 'lodash-es/uniqBy';
 import isEmpty from 'lodash-es/isEmpty';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {moduleStyles} from '../../styles/module-styles';
 import {tabInputsStyles} from '../../styles/tab-inputs-styles';
 
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../redux/store';
 import DateMixin from '../../mixins/date-mixin';
 import {getEndpoint} from '../../config/endpoints-controller';
@@ -34,7 +34,7 @@ import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-re
 @customElement('share-documents')
 export class ShareDocuments extends connect(store)(TableElementsMixin(CommonMethodsMixin(DateMixin(LitElement)))) {
   static get styles() {
-    return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
+    return [moduleStyles, tabInputsStyles, layoutStyles];
   }
   render() {
     return html`
@@ -82,14 +82,19 @@ export class ShareDocuments extends connect(store)(TableElementsMixin(CommonMeth
           overflow: auto;
         }
       </style>
-
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <div>
         <div class="subtitle" without-line>Showing documents for ${this.partnerName}</div>
 
         <div class="row-h repeatable-item-container" without-line>
-          <div class="layout-horizontal w50">
+          <div class="row">
             <etools-dropdown
-              class="validate-input"
+              class="validate-input col-12 col-md-6"
               .selected="${this.selectedFiletype}"
               label="${this.getLabel('file_type', this.optionsData)}"
               placeholder="Select"
@@ -108,7 +113,7 @@ export class ShareDocuments extends connect(store)(TableElementsMixin(CommonMeth
           </div>
         </div>
 
-          <etools-data-table-header no-collapse no-title>
+          <etools-data-table-header no-collapse no-title .lowResolutionLayout="${this.lowResolutionLayout}">
             <etools-data-table-column class="col-3">Agreement Ref</etools-data-table-column>
             <etools-data-table-column class="col-3">Document Type</etools-data-table-column>
             <etools-data-table-column class="col-4">Document</etools-data-table-column>
@@ -118,18 +123,22 @@ export class ShareDocuments extends connect(store)(TableElementsMixin(CommonMeth
             !this.attachmentsList || !this.attachmentsList.length
               ? html`<span class="modal-pad">There are no attachments for this partner. </span>`
               : html` ${this.attachmentsList.map(
-                  (item) => html` <etools-data-table-row no-collapse secondary-bg-on-hover>
+                  (item) => html` <etools-data-table-row
+                    no-collapse
+                    secondary-bg-on-hover
+                    .lowResolutionLayout="${this.lowResolutionLayout}"
+                  >
                     <div slot="row-data" class="layout-horizontal row-data">
-                      <span class="col-data col-3">
+                      <span class="col-data col-3" data-col-header-label="Agreement Ref">
                         <etools-checkbox @click="${(e) => this._toggleChecked(e, item.id)}"></etools-checkbox>
                         <span class="pd"> ${this._getReferenceNumber(item.agreement_reference_number)} </span>
                       </span>
-                      <span class="col-data col-3">${item.file_type}</span>
-                      <span class="col-data col-4 wrap-text">
+                      <span class="col-data col-3" data-col-header-label="Document Type">${item.file_type}</span>
+                      <span class="col-data col-4 wrap-text" data-col-header-label="Document">
                         <etools-icon name="attachment" class="download-icon"> </etools-icon>
                         <a href="${item.file_link}" title="${item.filename}" target="_blank">${item.filename} </a>
                       </span>
-                      <span class="col-data col-2">
+                      <span class="col-data col-2" data-col-header-label="Date Uploaded">
                         <span>${this.prettyDate(String(item.created), '') || '–'}</span>
                       </span>
                     </div>
@@ -137,11 +146,8 @@ export class ShareDocuments extends connect(store)(TableElementsMixin(CommonMeth
                 )}`
           }
           <etools-data-table-row no-collapse ?hidden="${this.attachmentsList?.length}">
-            <div slot="row-data" class="layout-horizontal editable-row">
-              <span class="col-data col-3">–</span>
-              <span class="col-data col-3">–</span>
-              <span class="col-data col-4">–</span>
-              <span class="col-data col-2">–</span>
+            <div slot="row-data" class="layout-horizontal editable-row padding-v">
+              <span class="col-data col-12">No records found.</span>
             </div>
           </etools-data-table-row>
         </div>

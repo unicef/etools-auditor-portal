@@ -30,7 +30,7 @@ export const HeaderStyles = html`
 
     countries-dropdown {
       max-width: 160px;
-      margin-inline-start: 10px;
+      margin-inline-start: auto;
     }
 
     .w100 {
@@ -50,6 +50,29 @@ export const HeaderStyles = html`
     @media (max-width: 768px) {
       etools-dropdown {
         max-width: 130px;
+      }
+    }
+    @media (max-width: 1024px) {
+      .envWarning {
+        display: none;
+      }
+      .envLong {
+        display: none;
+      }
+      etools-profile-dropdown {
+        width: 40px;
+      }
+    }
+
+    @media (max-width: 490px) {
+      .dropdowns {
+        order: 1;
+        margin-top: 0;
+      }
+      app-toolbar {
+        height: auto;
+        padding-inline-end: 0px;
+        margin: 0 !important;
       }
     }
   </style>

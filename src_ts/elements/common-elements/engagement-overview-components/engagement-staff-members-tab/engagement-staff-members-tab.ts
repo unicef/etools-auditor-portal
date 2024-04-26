@@ -20,14 +20,14 @@ import TableElementsMixin from '../../../mixins/table-elements-mixin';
 import PaginationMixin from '@unicef-polymer/etools-modules-common/dist/mixins/pagination-mixin';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import '../../../data-elements/get-staff-members-list';
 import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler';
 import SlSwitch from '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
@@ -42,7 +42,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   PaginationMixin(TableElementsMixin(CommonMethodsMixin(LitElement)))
 ) {
   static get styles() {
-    return [moduleStyles, tabInputsStyles, gridLayoutStylesLit];
+    return [moduleStyles, tabInputsStyles, layoutStyles];
   }
   render() {
     return html`
@@ -74,16 +74,14 @@ export class EngagementStaffMembersTab extends connect(store)(
           height: 48px;
           color: #fff;
           overflow: hidden;
-          flex: 1;
+          width: 140px;          
         }
         .search-input-container .search-input {
           float: right;
           box-sizing: border-box;
-          min-width: 46px;
-          margin-top: -2px;
+          margin-top: -6px;
           transition: 0.35s;
           cursor: pointer;
-
         }
         .search-input-container .search-input,
         .search-input-container .search-input:focus {
@@ -146,14 +144,28 @@ export class EngagementStaffMembersTab extends connect(store)(
           flex-direction: row;
           align-items: center;
           justify-content: flex-end;
-          column-gap: 30px;
+          column-gap: 20px;
           line-height: 48px;
         }
         sl-switch {
           --sl-input-label-color: #ffffff;
         }
+        @media(max-width: 576px) {
+          .panel-btns-container {
+            flex-wrap: wrap;
+          }
+          .search-input-container {
+            width: 110px;
+          }
+        }
       </style>
 
+      <etools-media-query
+        query="(max-width: 1180px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <!--requests-->
       <get-staff-members-list
         .organizationId="${this.organizationId}"
@@ -221,7 +233,7 @@ export class EngagementStaffMembersTab extends connect(store)(
           <etools-loading .active="${this.listLoading}" loading-text="Loading list data..." class="loading">
           </etools-loading>
 
-          <etools-data-table-header no-collapse no-title>
+          <etools-data-table-header no-collapse no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           ${
             this.showHasAccess
               ? html`<etools-data-table-column class="col-1">Has Access</etools-data-table-column>`
@@ -239,10 +251,14 @@ export class EngagementStaffMembersTab extends connect(store)(
           ${(this.dataItems || [])
             .filter((x) => this._isVisible(x.has_active_realm, this.showInactive))
             .map(
-              (item) => html` <etools-data-table-row no-collapse>
+              (item) => html` <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
                 <div slot="row-data" class="layout-horizontal editable-row">
                   ${this.showHasAccess
-                    ? html` <span class="col-data col-1" ?hidden="${!this.showHasAccess}">
+                    ? html` <span
+                        class="col-data col-1"
+                        data-col-header-label="Has Access"
+                        ?hidden="${!this.showHasAccess}"
+                      >
                         <etools-checkbox
                           class="checkbox"
                           ?checked="${item.hasAccess}"
@@ -256,33 +272,40 @@ export class EngagementStaffMembersTab extends connect(store)(
                         </etools-checkbox>
                       </span>`
                     : ``}
-                  <span class="col-data col-2 wrap-text">${item.user.profile.job_title || '–'}</span>
-                  <span class="col-data ${this.showHasAccess ? 'col-2' : 'col-3'} wrap-text"
+                  <span class="col-data col-2 wrap-text" data-col-header-label="Position"
+                    >${item.user.profile.job_title || '–'}</span
+                  >
+                  <span
+                    class="col-data ${this.showHasAccess ? 'col-2' : 'col-3'} wrap-text"
+                    data-col-header-label="First Name"
                     >${item.user.first_name}</span
                   >
-                  <span class="col-data col-2 wrap-text">${item.user.last_name}</span>
-                  <span class="col-data col-2 wrap-text">${item.user.profile.phone_number || '–'}</span>
-                  <span class="col-data col-2 wrap-text">${item.user.email}</span>
-                  <span class="col-data col-1 wrap-text center-align"
+                  <span class="col-data col-2 wrap-text" data-col-header-label="Last Name">${item.user.last_name}</span>
+                  <span class="col-data col-2 wrap-text" data-col-header-label="Phone Number"
+                    >${item.user.profile.phone_number || '–'}</span
+                  >
+                  <span class="col-data col-2 wrap-text" data-col-header-label="E-mail Address"
+                    >${item.user.email}</span
+                  >
+                  <span
+                    class="col-data col-1 wrap-text ${!this.lowResolutionLayout ? 'center-align' : ''}"
+                    data-col-header-label="Active"
                     >${this.computeStaffMembActiveColumn(item) || html`<etools-icon name="check"></etools-icon>`}</span
                   >
                 </div>
               </etools-data-table-row>`
             )}
-          <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
-            <div slot="row-data" class="layout-horizontal editable-row">
-              ${this.showHasAccess ? html`<etools-data-table-column class="col-1">–</etools-data-table-column>` : ``}
-              <span class="col-data col-2">–</span>
-              <span class="${this.showHasAccess ? 'col-2' : 'col-3'}">–</span>
-              <span class="col-data col-2">–</span>
-              <span class="col-data col-2">–</span>
-              <span class="col-data col-2">–</span>
-              <span class="col-1 center-align">–</span>
+          <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}" .lowResolutionLayout="${
+      this.lowResolutionLayout
+    }">
+            <div slot="row-data" class="layout-horizontal editable-row padding-v">
+              <span class="col-data col-12">No records found.</span>
             </div>
           </etools-data-table-row>
         ${
           this._showPagination(this.datalength)
             ? html`<etools-data-table-footer
+                .lowResolutionLayout="${this.lowResolutionLayout}"
                 .pageSize="${this.paginator.page_size}"
                 .pageNumber="${this.paginator.page}"
                 .totalResults="${this.paginator.count}"

@@ -13,7 +13,7 @@ import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import '../kicw-risk/kicw-risk';
@@ -37,7 +37,7 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 @customElement('key-internal-controls-weaknesses')
 export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -89,8 +89,18 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
         etools-content-panel::part(ecp-content) {
           padding: 0;
         }
+        @media (max-width: 1180px) {
+          etools-data-table-row[slot='row-data'] .truncate {
+            white-space: normal;
+          }
+        }
       </style>
-
+      <etools-media-query
+        query="(max-width: 1180px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('key_internal_weakness', this.optionsData)}"
@@ -102,17 +112,17 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
           </div>
         </div>
 
-        <etools-data-table-header no-title>
+        <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-9">Subject area</etools-data-table-column>
           <etools-data-table-column class="col-3">Risks Count</etools-data-table-column>
         </etools-data-table-header>
 
         ${(this.subjectAreas?.blueprints || []).map(
           (item, index) => html`
-            <etools-data-table-row>
+            <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-9">${item.header}</span>
-                <span class="col-data col-3">${item.risks.length}</span>
+                <span class="col-data col-9 truncate" data-col-header-label="Subject area">${item.header}</span>
+                <span class="col-data col-3 truncate" data-col-header-label="Risks Count">${item.risks.length}</span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <etools-icon-button name="add-box" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                 </div>
@@ -129,9 +139,8 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
           `
         )}
         <etools-data-table-row no-collapse ?hidden="${this.subjectAreas?.blueprints?.length}">
-          <div slot="row-data" class="layout-horizontal editable-row pl-30">
-            <span class="col-data col-9">–</span>
-            <span class="col-data col-3">–</span>
+          <div slot="row-data" class="layout-horizontal editable-row pl-30 padding-v">
+            <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>
       </etools-content-panel>
@@ -195,6 +204,8 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   @property({type: Boolean})
   requestInProcess!: boolean;
 
+  @property({type: Boolean})
+  lowResolutionLayout = false;
   connectedCallback() {
     super.connectedCallback();
 

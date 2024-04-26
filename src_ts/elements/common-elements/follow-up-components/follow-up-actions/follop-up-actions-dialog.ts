@@ -10,7 +10,7 @@ import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -37,7 +37,7 @@ import get from 'lodash-es/get';
 @customElement('follow-up-actions-dialog')
 export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin(DateMixin(LitElement))) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -52,8 +52,8 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
           color: #212121;
           font-size: var(--etools-font-size-15, 15px);
         }
-        .checkbox-container {
-          padding-inline-start: 14px;
+        .checkbox-container etools-checkbox {
+          padding-inline-start: 12px;
           padding-top: 14px;
         }
         .input-container etools-button {
@@ -67,6 +67,9 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
         .action-complete {
           padding-inline-start: 16px;
         }
+        datepicker-lite::part(dp-calendar) {
+          position: fixed;
+        }
         </style>
         <etools-dialog no-padding keep-dialog-open size="md"
                 keep-dialog-open
@@ -77,14 +80,14 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                 ?disable-confirm-btn="${this.requestInProcess}"
                 @confirm-btn-clicked="${this._addActionPoint}"
                 @close="${this._onClose}">
-                  <div class="container">
+                  <div class="container-dialog">
                   ${
                     this.notTouched
                       ? html`<div class="copy-warning">It is required to change at least one of the fields below.</div>`
                       : ``
                   }
-                    <div class="layout-horizontal">
-                        <div class="col col-6">
+                    <div class="row">
+                        <div class="col-12 input-container col-lg-6 col-md-6">
                             <!-- Partner -->
                             <etools-dropdown
                                     class="${this._setRequired('partner', this.editedApBase)} validate-input fua-person"
@@ -101,7 +104,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                                     @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
-                        <div class="col col-6">
+                        <div class="col-12 input-container col-lg-6 col-md-6">
                             <!-- PD/SSFA -->
                             <etools-dropdown
                                     class="${this._setRequired(
@@ -134,9 +137,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                                     @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
-                    </div>
-                    <div class="layout-horizontal">
-                        <div class="col col-6">
+                        <div class="col-12 input-container col-lg-6 col-md-6">
                             <!-- Category -->
                             <etools-dropdown
                                     class="${this._setRequired(
@@ -159,10 +160,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                                     @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
-                    </div>
-
-                    <div class="layout-horizontal">
-                        <div class="col col-12">
+                        <div class="col-12 input-container">
                             <!-- Description -->
                             <etools-textarea
                                     class="w100 validate-input ${this._setRequired('description', this.editedApBase)}"
@@ -184,10 +182,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                                     @focus="${this._resetFieldError}">
                             </etools-textarea>
                         </div>
-                    </div>
-
-                    <div class="layout-horizontal">
-                        <div class="col col-6">
+                        <div class="col-12 input-container col-lg-6 col-md-6">
                             <!-- Assigned To -->
 
                             <etools-dropdown
@@ -221,7 +216,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                             </etools-dropdown>
                         </div>
 
-                        <div class="col col-6">
+                        <div class="col-12 input-container col-lg-6 col-md-6">
                             <!-- Sections -->
 
                             <etools-dropdown
@@ -245,10 +240,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                                     @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
-                    </div>
-
-                    <div class="layout-horizontal">
-                        <div class="col col-6">
+                        <div class="col-12 input-container col-lg-6 col-md-6">
                             <!-- Offices -->
 
                             <etools-dropdown
@@ -273,7 +265,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                             </etools-dropdown>
                         </div>
 
-                        <div class="col col-6">
+                        <div class="col-12 input-container col-lg-6 col-md-6">
                             <!-- Due Date -->
                             <datepicker-lite
                                     id="deadlineAction"
@@ -294,11 +286,8 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                                     >
                             </datepicker-lite>
                         </div>
-                    </div>
-
-                    <div class="layout-horizontal">
                         <!-- High Priority -->
-                        <div class="col col-12 checkbox-container">
+                        <div class="input-container col-12 checkbox-container">
                             <etools-checkbox
                                     ?checked="${this.editedItem.high_priority}"
                                     ?disabled="${this.isReadOnly(

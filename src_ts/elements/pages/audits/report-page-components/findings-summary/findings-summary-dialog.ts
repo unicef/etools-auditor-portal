@@ -4,7 +4,7 @@ import '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
@@ -27,7 +27,7 @@ import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins
 @customElement('findings-summary-dialog')
 export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -51,9 +51,9 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
         ok-btn-text="Save"
         @close="${this._onClose}"
       >
-        <div class="container">
-          <div class="layout-horizontal">
-            <div class="col col-4">
+        <div class="container-dialog">
+          <div class="row">
+            <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- Implementing partner name -->
               <etools-input
                 class="w100 validate-input"
@@ -65,7 +65,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-input>
             </div>
 
-            <div class="col col-4">
+            <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- Audited expenditure (USD) -->
               <etools-currency
                 id="audited-expenditure"
@@ -90,7 +90,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-currency>
             </div>
 
-            <div class="col col-4">
+            <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- Financial findings (USD) -->
               <etools-currency
                 id="financial-findings"
@@ -114,7 +114,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               >
               </etools-currency>
             </div>
-            <div class="col col-4" ?hidden="${!this.showLocalCurrency}">
+            <div class="col-12 input-container col-md-6 col-lg-4" ?hidden="${!this.showLocalCurrency}">
               <!-- Audited expenditure (Local) -->
               <etools-currency
                 id="audited-expenditure-local"
@@ -138,7 +138,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-currency>
             </div>
 
-            <div class="col col-4" ?hidden="${!this.showLocalCurrency}">
+            <div class="col-12 input-container col-md-6 col-lg-4" ?hidden="${!this.showLocalCurrency}">
               <!-- Financial findings (Local) -->
               <etools-currency
                 id="financial-findings-local"
@@ -162,7 +162,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-currency>
             </div>
 
-            <div class="col col-4">
+            <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- % of audited expenditure -->
               <etools-currency
                 class="w100 validate-input"
@@ -175,7 +175,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-currency>
             </div>
 
-            <div class="col col-4">
+            <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- Audit opinion -->
               <etools-dropdown
                 id="auditOpinionDropDown"
@@ -200,7 +200,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-dropdown>
             </div>
 
-            <div class="col col-4">
+            <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- Number of financial findings -->
               <etools-input
                 class="w100"
@@ -212,7 +212,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-input>
             </div>
 
-            <div class="col col-4">
+            <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- High risk -->
               <etools-input
                 class="w100"
@@ -227,7 +227,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-input>
             </div>
 
-            <div class="col col-4">
+            <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- Medium risk -->
               <etools-input
                 class="w100"
@@ -242,7 +242,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-input>
             </div>
 
-            <div class="col col-4">
+            <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- Low risk -->
               <etools-input
                 class="w100"

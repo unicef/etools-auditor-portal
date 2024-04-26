@@ -3,7 +3,7 @@ import {customElement, property} from 'lit/decorators.js';
 import {getEndpoint} from '../config/endpoints-controller';
 import {GenericObject} from '../../types/global';
 import each from 'lodash-es/each';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../redux/store';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
@@ -53,6 +53,11 @@ export class GetStaffMembersList extends connect(store)(LitElement) {
     Promise.all([this.getDataRequest(organizationId, listQueries)])
       .then(([data]) => fireEvent(this, 'data-loaded', data))
       .catch((error) => {
+        // request aborted, prevent showing toast errors
+        if (error.status === 0) {
+          return;
+        }
+
         const responseData = error?.request?.detail?.request?.xhr;
         EtoolsLogger.error(responseData);
       })
