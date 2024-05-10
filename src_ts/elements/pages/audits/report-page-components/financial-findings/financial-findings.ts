@@ -10,12 +10,13 @@ import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
+import '@unicef-polymer/etools-unicef/src/etools-media-query/etools-media-query.js';
 
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 
 import TableElementsMixin from '../../../../mixins/table-elements-mixin';
@@ -41,7 +42,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('financial-findings')
 export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -67,7 +68,12 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           margin-bottom: 30px;
         }
       </style>
-
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('financial_finding_set', this.optionsData)}"
@@ -82,7 +88,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           </div>
         </div>
 
-        <etools-data-table-header no-title>
+        <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-2">Finding Number</etools-data-table-column>
           <etools-data-table-column class="col-4"
             >${getHeadingLabel(
@@ -109,12 +115,38 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
 
         ${(this.dataItems || []).map(
           (item, index) => html`
-            <etools-data-table-row>
+            <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-2">${getTableRowIndexText(index)}</span>
-                <span class="col-data col-4">${item.title}</span>
-                <span class="col-data col-3">${item.local_amount}</span>
-                <span class="col-data col-1">${item.amount}</span>
+                <span class="col-data col-2" data-col-header-label="Finding Number"
+                  >${getTableRowIndexText(index)}</span
+                >
+                <span
+                  class="col-data col-4"
+                  data-col-header-label="${getHeadingLabel(
+                    this.optionsData,
+                    'financial_finding_set.title',
+                    'Title (Category)'
+                  )}"
+                  >${item.title}</span
+                >
+                <span
+                  class="col-data col-3"
+                  data-col-header-label="${getHeadingLabel(
+                    this.optionsData,
+                    'financial_finding_set.local_amount',
+                    'Amount (local)'
+                  )}"
+                  >${item.local_amount}</span
+                >
+                <span
+                  class="col-data col-1"
+                  data-col-header-label="${getHeadingLabel(
+                    this.optionsData,
+                    'financial_finding_set.amount',
+                    'Amount USD'
+                  )}"
+                  >${item.amount}</span
+                >
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                   <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
@@ -148,11 +180,8 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
           `
         )}
         <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}">
-          <div slot="row-data" class="layout-horizontal editable-row pl-30">
-            <span class="col-data col-2">–</span>
-            <span class="col-data col-4">–</span>
-            <span class="col-data col-3">–</span>
-            <span class="col-data col-1">–</span>
+          <div slot="row-data" class="layout-horizontal editable-row pl-30 padding-v">
+            <span class="col-data col-12">No records found.</span>
           </div>
         </etools-data-table-row>
       </etools-content-panel>

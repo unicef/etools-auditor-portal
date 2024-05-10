@@ -5,7 +5,7 @@ import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
-import {gridLayoutStylesLit} from '@unicef-polymer/etools-modules-common/dist/styles/grid-layout-styles-lit';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button';
@@ -30,7 +30,7 @@ import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util.js';
 @customElement('control-findings-tab')
 export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(LitElement)) {
   static get styles() {
-    return [tabInputsStyles, moduleStyles, gridLayoutStylesLit];
+    return [tabInputsStyles, moduleStyles, layoutStyles];
   }
 
   render() {
@@ -66,7 +66,12 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
           flex-direction: column;
         }
       </style>
-
+      <etools-media-query
+        query="(max-width: 767px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
       <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations" list>
         <div slot="panel-btns">
           <div ?hidden="${!this.canBeChanged}">
@@ -77,24 +82,24 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
           </div>
         </div>
 
-        <etools-data-table-header no-title>
+        <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-12">Description of Finding</etools-data-table-column>
         </etools-data-table-header>
         ${(this.dataItems || []).map(
           (item, index) => html`
-            <etools-data-table-row>
+            <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-12">${item.finding}</span>
+                <span class="col-data col-12" data-col-header-label="Description of Finding">${item.finding}</span>
                 <div class="hover-block" ?hidden="${!this.canBeChanged}">
                   <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                   <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
                 </div>
               </div>
-              <div slot="row-data-details">
+              <div slot="row-data-details" class="row">
                 <div class="row-details-content col-12">
                   <span class="rdc-title">Recommendation and IP Management Response</span>
                 </div>
-                <span>${item.recommendation}</span>
+                <span class="col-12">${item.recommendation}</span>
               </div>
             </etools-data-table-row>
           `

@@ -24,7 +24,7 @@ import '../../common-elements/engagement-cancel/engagement-cancel-dialog';
 import {GenericObject} from '../../../types/global';
 import EngagementMixin from '../../mixins/engagement-mixin';
 import {RootState, store} from '../../../redux/store';
-import {connect} from 'pwa-helpers/connect-mixin';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import CommonMethodsMixin from '../../mixins/common-methods-mixin';
 
 import assign from 'lodash-es/assign';
@@ -35,6 +35,7 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AnyObject} from '@unicef-polymer/etools-types';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 
 /**
  * @customElement
@@ -45,7 +46,7 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 @customElement('audits-page-main')
 export class AuditsPageMain extends connect(store)(CommonMethodsMixin(EngagementMixin(LitElement))) {
   static get styles() {
-    return [moduleStyles, mainPageStyles, tabInputsStyles];
+    return [moduleStyles, mainPageStyles, tabInputsStyles, layoutStyles];
   }
 
   render() {
@@ -56,6 +57,12 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
     return html`
       ${sharedStyles}
       <style>
+        #attachments {
+          position: relative;
+          display: inline-block;
+          margin-bottom: 24px;
+          width: 100%;
+        }
         .repeatable-item-container {
           margin-bottom: 0 !important;
         }
@@ -169,29 +176,31 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                   : ``}
 
                 <div name="attachments" ?hidden="${!isActiveTab(this.tab, 'attachments')}">
-                  <file-attachments-tab
-                    id="engagement_attachments"
-                    .optionsData="${this.attachmentOptions}"
-                    .engagement="${this.engagement}"
-                    .errorObject="${this.errorObject}"
-                    .isUnicefUser="${this.user?.is_unicef_user}"
-                    error-property="engagement_attachments"
-                    endpoint-name="attachments"
-                  >
-                  </file-attachments-tab>
+                  <div id="attachments">
+                    <file-attachments-tab
+                      id="engagement_attachments"
+                      .optionsData="${this.attachmentOptions}"
+                      .engagement="${this.engagement}"
+                      .errorObject="${this.errorObject}"
+                      .isUnicefUser="${this.user?.is_unicef_user}"
+                      error-property="engagement_attachments"
+                      endpoint-name="attachments"
+                    >
+                    </file-attachments-tab>
 
-                  ${this.hasReportAccess(this.engagementOptions, this.engagement)
-                    ? html`<file-attachments-tab
-                        id="report_attachments"
-                        is-report-tab="true"
-                        .optionsData="${this.reportAttachmentOptions}"
-                        .engagement="${this.engagement}"
-                        .errorObject="${this.errorObject}"
-                        error-property="report_attachments"
-                        endpoint-name="reportAttachments"
-                      >
-                      </file-attachments-tab>`
-                    : ``}
+                    ${this.hasReportAccess(this.engagementOptions, this.engagement)
+                      ? html`<file-attachments-tab
+                          id="report_attachments"
+                          is-report-tab="true"
+                          .optionsData="${this.reportAttachmentOptions}"
+                          .engagement="${this.engagement}"
+                          .errorObject="${this.errorObject}"
+                          error-property="report_attachments"
+                          endpoint-name="reportAttachments"
+                        >
+                        </file-attachments-tab>`
+                      : ``}
+                  </div>
                 </div>
               </div>
 

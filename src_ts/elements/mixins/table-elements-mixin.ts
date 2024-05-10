@@ -83,6 +83,8 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: String})
     dialogKey = '';
 
+    @property({type: Boolean})
+    lowResolutionLayout = false;
     connectedCallback() {
       super.connectedCallback();
       this.editedItem = cloneDeep(this.itemModel);
