@@ -38,14 +38,14 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
           <div class="col-12 input-container col-lg-4 col-md-6">
             <datepicker-lite
               id="dateFaceStartInput"
-              label="${this.getLabel('face_form_start_date', this.optionsData)}"
-              .value="${this.data?.face_form_start_date}"
+              label="${this.getLabel('start_date', this.optionsData)}"
+              .value="${this.data?.start_date}"
               selected-date-display-format="D MMM YYYY"
-              ?readonly="${this.isReadOnly('face_form_start_date', this.optionsData)}"
+              ?readonly="${this.isReadOnly('start_date', this.optionsData)}"
               fire-date-has-changed
-              property-name="face_form_start_date"
+              property-name="start_date"
               @date-has-changed="${({detail}: CustomEvent) =>
-                this.dateHasChanged(detail, 'face_form_start_date', this.data)}"
+                this.dateHasChanged(detail, 'start_date', this.data)}"
             >
             </datepicker-lite>
           </div>
@@ -53,14 +53,14 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
           <div class="col-12 input-container col-lg-4 col-md-6">
             <datepicker-lite
               id="dateFaceEndInput"
-              .value="${this.data?.face_form_end_date}"
-              label="${this.getLabel('face_form_end_date', this.optionsData)}"
+              .value="${this.data?.end_date}"
+              label="${this.getLabel('end_date', this.optionsData)}"
               selected-date-display-format="D MMM YYYY"
-              readonly="${this.isReadOnly('face_form_end_date', this.optionsData)}"
+              readonly="${this.isReadOnly('end_date', this.optionsData)}"
               fire-date-has-changed
-              property-name="face_form_end_date"
+              property-name="end_date"
               @date-has-changed="${({detail}: CustomEvent) =>
-                this.dateHasChanged(detail, 'face_form_end_date', this.data)}"
+                this.dateHasChanged(detail, 'end_date', this.data)}"
             >
             </datepicker-lite>
           </div>
@@ -137,8 +137,8 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
   tabTexts: GenericObject = {
     name: 'Audit Overview',
     fields: [
-      'face_form_start_date',
-      'face_form_end_date',
+      'start_date',
+      'end_date',
       'total_value',
       'total_amount_tested',
       'total_amount_of_ineligible_expenditure'
