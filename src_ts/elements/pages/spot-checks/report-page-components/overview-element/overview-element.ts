@@ -44,8 +44,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
               ?readonly="${this.isReadOnly('start_date', this.optionsData)}"
               fire-date-has-changed
               property-name="start_date"
-              @date-has-changed="${({detail}: CustomEvent) =>
-                this.dateHasChanged(detail, 'start_date', this.data)}"
+              @date-has-changed="${({detail}: CustomEvent) => this.dateHasChanged(detail, 'start_date', this.data)}"
             >
             </datepicker-lite>
           </div>
@@ -59,8 +58,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
               readonly="${this.isReadOnly('end_date', this.optionsData)}"
               fire-date-has-changed
               property-name="end_date"
-              @date-has-changed="${({detail}: CustomEvent) =>
-                this.dateHasChanged(detail, 'end_date', this.data)}"
+              @date-has-changed="${({detail}: CustomEvent) => this.dateHasChanged(detail, 'end_date', this.data)}"
             >
             </datepicker-lite>
           </div>
@@ -136,13 +134,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
   @property({type: Object})
   tabTexts: GenericObject = {
     name: 'Audit Overview',
-    fields: [
-      'start_date',
-      'end_date',
-      'total_value',
-      'total_amount_tested',
-      'total_amount_of_ineligible_expenditure'
-    ]
+    fields: ['start_date', 'end_date', 'total_value', 'total_amount_tested', 'total_amount_of_ineligible_expenditure']
   };
 
   updated(changedProperties: PropertyValues): void {
