@@ -17,20 +17,15 @@ export class SupportBtn extends MatomoMixin(LitElement) {
       }
 
       a {
-        color: var(--light-secondary-text-color);
+        color: var(--header-color);
         text-decoration: none;
         font-size: var(--etools-font-size-16, 16px);
       }
 
-      etools-icon {
-        margin-right: 4px;
-        color: var(--light-secondary-text-color);
-      }
-
-      @media (max-width: 650px) {
-        .support-text {
-          display: none;
-        }
+      etools-icon-button {
+        font-size: var(--etools-font-size-14, 14px);
+        padding-top: 4px;
+        display: flex;
       }
     `;
   }
@@ -40,7 +35,7 @@ export class SupportBtn extends MatomoMixin(LitElement) {
         href="https://unicef.service-now.com/cc?id=sc_cat_item&sys_id=c8e43760db622450f65a2aea4b9619ad&sysparm_category=99c51053db0a6f40f65a2aea4b9619af"
         target="_blank"
       >
-        <etools-icon name="communication:textsms"></etools-icon>
+        <etools-icon-button name="communication:textsms" label="Support" title="Support"></etools-icon-button>
       </a>
     `;
   }

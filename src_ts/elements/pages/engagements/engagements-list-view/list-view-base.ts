@@ -11,7 +11,7 @@ import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styl
 import {moduleStyles} from '../../../styles/module-styles';
 import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
 import '../../../common-elements/pages-header-element/pages-header-element';
-import {ROOT_PATH} from '@unicef-polymer/etools-modules-common/dist/config/config';
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment';
 import '@unicef-polymer/etools-unicef/src/etools-table/etools-table';
 import {EtoolsTableColumnType} from '@unicef-polymer/etools-unicef/src/etools-table/etools-table.js';
 import {
@@ -140,7 +140,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
     {
       label: 'Unique ID #',
       name: 'reference_number',
-      link_tmpl: `${ROOT_PATH}:engagement_link/:id/overview`,
+      link_tmpl: `${Environment.basePath}:engagement_link/:id/overview`,
       type: EtoolsTableColumnType.Link,
       sort: 'reference_number',
       path: 'reference_number'
@@ -375,8 +375,8 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
 
   setReferenceNumberLink(isStaffSc: boolean) {
     this.listColumns[0].link_tmpl = isStaffSc
-      ? `${ROOT_PATH}staff-spot-checks/:id/overview`
-      : `${ROOT_PATH}:engagement_link/:id/overview`;
+      ? `${Environment.basePath}staff-spot-checks/:id/overview`
+      : `${Environment.basePath}:engagement_link/:id/overview`;
   }
 
   protected populateFilterOptionsFromCommonData(_state: RootState, _filters: EtoolsFilter[]) {

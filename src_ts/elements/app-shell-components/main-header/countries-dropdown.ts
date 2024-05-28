@@ -1,13 +1,13 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
-import famEndpoints from '../../../config/endpoints';
-import {HeaderStyles} from './header-styles';
-import {GenericObject} from '../../../../types/global';
-import {BASE_PATH} from '../../../config/config';
+import famEndpoints from '../../config/endpoints';
+import {GenericObject} from '../../../types/global';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {DexieRefresh} from '@unicef-polymer/etools-utils/dist/singleton/dexie-refresh';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {toolbarDropdownStyles} from '@unicef-polymer/etools-unicef/src/styles/toolbar-dropdown-styles';
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment';
 
 /**
  * @polymer
@@ -19,31 +19,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 export class CountriesDropdown extends LitElement {
   render() {
     return html`
-      ${HeaderStyles}
-      <style>
-        *[hidden] {
-          display: none !important;
-        }
-
-        :host {
-          display: block;
-        }
-
-        :host(:hover) {
-          cursor: pointer;
-        }
-
-        etools-dropdown {
-          --sl-input-color: var(--light-secondary-text-color);
-          --sl-input-placeholder-color: var(--light-secondary-text-color);
-        }
-
-        @media (max-width: 768px) {
-          etools-dropdown {
-            max-width: 130px;
-          }
-        }
-      </style>
+      ${toolbarDropdownStyles}
       <etools-dropdown
         transparent
         id="countrySelector"
@@ -112,6 +88,6 @@ export class CountriesDropdown extends LitElement {
     DexieRefresh.refreshInProgress = true;
     DexieRefresh.clearDexieDbs();
     DexieRefresh.refreshInProgress = false;
-    window.location.href = `${window.location.origin}${BASE_PATH}`;
+    window.location.href = `${window.location.origin}${Environment.basePath}`;
   }
 }
