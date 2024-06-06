@@ -355,7 +355,8 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
       (this.originalData.audited_expenditure !== this.editedItem.audited_expenditure ||
         this.originalData.financial_findings !== this.editedItem.financial_findings)
     ) {
-      this.msgUSDConfirm = `Please confirm that the value for Audited Expenditure: ${aeNumber} and Financial Findings: ${ffNumber} are in USD`;
+      this.msgUSDConfirm = `Please confirm that the value for Audited Expenditure:
+        ${aeNumber} and Financial Findings: ${ffNumber} are in USD`;
     }
     let isvalid = true;
     if (aeNumber < ffNumber) {
