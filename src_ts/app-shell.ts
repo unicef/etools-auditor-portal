@@ -6,6 +6,7 @@ import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-header-layout';
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-header';
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-toolbar';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-footer';
 import '@unicef-polymer/etools-piwik-analytics/etools-piwik-analytics.js';
 import {createDynamicDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
 import get from 'lodash-es/get';
@@ -13,7 +14,6 @@ import {LoadingMixin} from '@unicef-polymer/etools-unicef/src/etools-loading/eto
 
 import './elements/app-shell-components/sidebar-menu/app-menu.js';
 import './elements/app-shell-components/main-header/page-header.js';
-import './elements/app-shell-components/footer/page-footer.js';
 
 import {
   getPartners,
@@ -142,7 +142,7 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
               ? html`<not-found-page-view name="not-found" id="not-found"> </not-found-page-view>`
               : html``}
           </main>
-          <page-footer></page-footer>
+          <app-footer></app-footer>
         </app-header-layout>
       </app-drawer-layout>
     `;
