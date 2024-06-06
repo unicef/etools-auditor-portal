@@ -11,13 +11,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 import {Action, ActionCreator} from 'redux';
 import {UPDATE_ROUTE_DETAILS} from './actionsConstants';
 export const RESET_CURRENT_ITEM = 'RESET_CURRENT_ITEM';
-import {BASE_URL} from '../../elements/config/config';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {EtoolsRedirectPath} from '@unicef-polymer/etools-utils/dist/enums/router.enum';
 import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
 import {resetCurrentEngagement} from './engagement';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment';
 
 export interface AppActionUpdateDrawerState extends Action<'UPDATE_DRAWER_STATE'> {
   opened: boolean;
@@ -100,7 +100,10 @@ const loadPageComponents = (routeDetails: EtoolsRouteDetails) => (_dispatch: any
 export const handleUrlChange = (path: string) => (dispatch: any, getState: any) => {
   // if app route is accessed, redirect to default route (if not already on it)
   // @ts-ignore
-  if (path === BASE_URL && BASE_URL !== EtoolsRouter.getRedirectPath(EtoolsRedirectPath.DEFAULT)) {
+  if (
+    path === Environment.basePath &&
+    Environment.basePath !== EtoolsRouter.getRedirectPath(EtoolsRedirectPath.DEFAULT)
+  ) {
     EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.DEFAULT));
     return;
   }
