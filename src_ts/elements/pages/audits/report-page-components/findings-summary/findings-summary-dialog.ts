@@ -43,9 +43,15 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
         .col:not(:first-of-type) {
           padding-inline-start: 0px !important;
         }
-        .align-right {
-          text-align: right;
+        .flex-column {
+          display: flex;
+          flex-direction: column;
+        }
+        .red {
           color: red;
+          font-size: 12px;
+          margin-bottom: -8px;
+          padding-inline-start: 12px;
         }
       </style>
       <etools-dialog
@@ -60,14 +66,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
       >
         <div class="container-dialog">
           <div class="row">
-            <div class="col-12 align-right">
-              <span
-                >Please ensure that the values are in USD for both the Audited Expenditures and Financial
-                Findings.</span
-              >
-            </div>
-          </div>
-          <div class="row">
             <div class="col-12 input-container col-md-6 col-lg-4">
               <!-- Implementing partner name -->
               <etools-input
@@ -80,8 +78,9 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-input>
             </div>
 
-            <div class="col-12 input-container col-md-6 col-lg-4">
+            <div class="col-12 input-container col-md-6 col-lg-4 flex-column">
               <!-- Audited expenditure (USD) -->
+              <span class="red" ?hidden="${!this.showUSDWarning}">Please ensure that the value is in USD</span>
               <etools-currency
                 id="audited-expenditure"
                 class="w100 ${this._setRequired('audited_expenditure', this.optionsData)} validate-input"
@@ -100,13 +99,17 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                   this._setAuditedExpenditure(this.editedItem.financial_findings, this.editedItem.audited_expenditure);
                 }}"
                 @blur="${this.customValidation}"
-                @focus="${this._resetFieldError}"
+                @focus="${() => {
+                  this.showUSDWarning = true;
+                  this._resetFieldError;
+                }}"
               >
               </etools-currency>
             </div>
 
-            <div class="col-12 input-container col-md-6 col-lg-4">
+            <div class="col-12 input-container col-md-6 col-lg-4 flex-column">
               <!-- Financial findings (USD) -->
+              <span class="red" ?hidden="${!this.showUSDWarning}">Please ensure that the value is in USD</span>
               <etools-currency
                 id="financial-findings"
                 class="w100 ${this._setRequired('financial_findings', this.optionsData)} validate-input"
@@ -125,7 +128,10 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                   this._setAuditedExpenditure(this.editedItem.financial_findings, this.editedItem.audited_expenditure);
                 }}"
                 @blur="${this.customValidation}"
-                @focus="${this._resetFieldError}"
+                @focus="${() => {
+                  this.showUSDWarning = true;
+                  this._resetFieldError;
+                }}"
               >
               </etools-currency>
             </div>
@@ -295,6 +301,9 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
   @property({type: String})
   msgUSDConfirm = '';
 
+  @property({type: Boolean})
+  showUSDWarning = false;
+
   set dialogData(data: any) {
     const {optionsData, editedItem, opener, dialogTitle, auditOpinions, currency, showLocalCurrency}: any = data;
 
@@ -352,8 +361,10 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
     this.msgUSDConfirm = '';
     if (
       isForSaving &&
-      (this.originalData.audited_expenditure !== this.editedItem.audited_expenditure ||
-        this.originalData.financial_findings !== this.editedItem.financial_findings)
+      ((this.originalData.audited_expenditure !== this.editedItem.audited_expenditure &&
+        this.editedItem.audited_expenditure > 0) ||
+        (this.originalData.financial_findings !== this.editedItem.financial_findings &&
+          this.editedItem.financial_findings > 0))
     ) {
       this.msgUSDConfirm = `Please confirm that the values for Audited Expenditure:
         ${aeNumber} and Financial Findings: ${ffNumber} are in USD`;

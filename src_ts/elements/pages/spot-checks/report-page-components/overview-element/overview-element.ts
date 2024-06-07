@@ -32,6 +32,18 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
   render() {
     return html`
       ${sharedStyles}
+      <style>
+        .red {
+          color: red;
+          font-size: 12px;
+          margin-bottom: -8px;
+          padding-inline-start: 12px;
+        }
+        .flex-column {
+          display: flex;
+          flex-direction: column;
+        }
+      </style>
 
       <etools-content-panel class="content-section clearfx" panel-title="Overview">
         <div class="row">
@@ -77,7 +89,8 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
             </etools-currency>
           </div>
 
-          <div class="col-12 input-container col-lg-4 col-md-6">
+          <div class="col-12 input-container col-lg-4 col-md-6 flex-column">
+            <span class="red" ?hidden="${!this.showUSDWarning}">Please ensure that the value is in USD</span>
             <etools-currency
               class="w100 ${this._setRequired('total_amount_tested', this.optionsData)}"
               .value="${this.data?.total_amount_tested}"
@@ -90,12 +103,16 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
               .errorMessage="${this.errors?.total_amount_tested}"
               @value-changed="${({detail}: CustomEvent) =>
                 this.numberChanged(detail, 'total_amount_tested', this.data)}"
-              @focus="${this._resetFieldError}"
+              @focus="${() => {
+                this.showUSDWarning = true;
+                this._resetFieldError;
+              }}"
             >
             </etools-currency>
           </div>
 
-          <div class="col-12 input-container col-lg-4 col-md-6">
+          <div class="col-12 input-container col-lg-4 col-md-6 flex-column">
+            <span class="red" ?hidden="${!this.showUSDWarning}">Please ensure that the value is in USD</span>
             <etools-currency
               class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
               .value="${this.data?.total_amount_of_ineligible_expenditure}"
@@ -108,7 +125,10 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
               .errorMessage="${this.errors?.total_amount_of_ineligible_expenditure}"
               @value-changed="${({detail}: CustomEvent) =>
                 this.numberChanged(detail, 'total_amount_of_ineligible_expenditure', this.data)}"
-              @focus="${this._resetFieldError}"
+              @focus="${() => {
+                this.showUSDWarning = true;
+                this._resetFieldError;
+              }}"
             >
             </etools-currency>
           </div>
@@ -130,6 +150,9 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
 
   @property({type: Boolean})
   datepickerModal = false;
+
+  @property({type: Boolean})
+  showUSDWarning = false;
 
   @property({type: Object})
   tabTexts: GenericObject = {
