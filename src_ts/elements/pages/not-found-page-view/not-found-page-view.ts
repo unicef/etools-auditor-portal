@@ -2,7 +2,7 @@ import {LitElement, html} from 'lit';
 import {customElement} from 'lit/decorators.js';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
-import {BASE_PATH} from '../../../elements/config/config';
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment';
 
 @customElement('not-found-page-view')
 export class NotFoundPageView extends LitElement {
@@ -27,7 +27,7 @@ export class NotFoundPageView extends LitElement {
 
       <div id="pageContent">
         <div class="paper-material" elevation="1">
-          404 <a href="${BASE_PATH}engagements/list" class="link">Head back home.</a>
+          404 <a href="${Environment.basePath}engagements/list" class="link">Head back home.</a>
         </div>
       </div>
     `;

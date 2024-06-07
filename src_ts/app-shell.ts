@@ -6,6 +6,7 @@ import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-header-layout';
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-header';
 import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-toolbar';
+import '@unicef-polymer/etools-unicef/src/etools-app-layout/app-footer';
 import '@unicef-polymer/etools-piwik-analytics/etools-piwik-analytics.js';
 import {createDynamicDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
 import get from 'lodash-es/get';
@@ -13,7 +14,6 @@ import {LoadingMixin} from '@unicef-polymer/etools-unicef/src/etools-loading/eto
 
 import './elements/app-shell-components/sidebar-menu/app-menu.js';
 import './elements/app-shell-components/main-header/page-header.js';
-import './elements/app-shell-components/footer/page-footer.js';
 
 import {
   getPartners,
@@ -32,7 +32,7 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {AppDrawer} from '@unicef-polymer/etools-unicef/src/etools-app-layout/app-drawer';
 import {GenericObject} from './types/global';
 import {appDrawerStyles} from './elements/app-shell-components/sidebar-menu/styles/app-drawer-styles';
-import {BASE_URL, SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY} from './elements/config/config';
+import {SMALL_MENU_ACTIVE_LOCALSTORAGE_KEY} from './elements/config/config';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import '@unicef-polymer/etools-unicef/src/etools-toasts/etools-toasts';
 import './elements/utils/routes.js';
@@ -53,6 +53,7 @@ import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-compari
 import cloneDeep from 'lodash-es/cloneDeep.js';
 import {setBasePath} from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 import {initializeIcons} from '@unicef-polymer/etools-unicef/src/etools-icons/etools-icons';
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment.js';
 
 setStore(store as any);
 store.addReducers({
@@ -63,7 +64,7 @@ store.addReducers({
 
 window.EtoolsLanguage = 'en';
 
-setBasePath(BASE_URL);
+setBasePath(Environment.basePath);
 initializeIcons();
 /**
  * @customElement
@@ -141,7 +142,7 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
               ? html`<not-found-page-view name="not-found" id="not-found"> </not-found-page-view>`
               : html``}
           </main>
-          <page-footer></page-footer>
+          <app-footer></app-footer>
         </app-header-layout>
       </app-drawer-layout>
     `;
@@ -312,7 +313,7 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
   }
 
   allowPageChange() {
-    const urlSpaceRegex = new RegExp(`^${BASE_URL}`);
+    const urlSpaceRegex = new RegExp(`^${Environment.basePath}`);
     return urlSpaceRegex.test(this.reduxRouteDetails?.path || '');
   }
 

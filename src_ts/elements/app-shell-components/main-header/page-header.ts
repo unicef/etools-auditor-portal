@@ -5,15 +5,16 @@ import '@unicef-polymer/etools-unicef/src/etools-icon-button/etools-icon-button'
 import '@unicef-polymer/etools-unicef/src/etools-app-selector/etools-app-selector';
 import '@unicef-polymer/etools-unicef/src/etools-profile-dropdown/etools-profile-dropdown';
 import '@unicef-polymer/etools-unicef/src/etools-accesibility/etools-accesibility';
-import './header-elements/countries-dropdown';
-import './header-elements/organizations-dropdown';
-import './support-btn';
+import '@unicef-polymer/etools-modules-common/dist/components/dropdowns/countries-dropdown';
+import '@unicef-polymer/etools-modules-common/dist/components/dropdowns/organizations-dropdown';
+import '@unicef-polymer/etools-modules-common/dist/components/buttons/support-button';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
-import {HeaderStyles} from './header-elements/header-styles';
 import MatomoMixin from '@unicef-polymer/etools-piwik-analytics/matomo-mixin';
-import {isProductionServer, checkEnvironment, BASE_PATH} from '../../config/config';
 import {GenericObject} from '../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment';
+import famEndpoints from '../../config/endpoints';
+import {DexieRefresh} from '@unicef-polymer/etools-utils/dist/singleton/dexie-refresh';
 
 /**
  * page header element
@@ -27,167 +28,42 @@ export class PageHeader extends MatomoMixin(LitElement) {
     return [layoutStyles];
   }
 
+  @property({type: Object})
+  user!: GenericObject;
+
   render() {
     return html`
-      ${HeaderStyles}
       <style>
-        app-toolbar {
-          padding: 0px;
-          background-color: ${this.headerColor};
-          flex-wrap: wrap;
-          height: 100%;
-          justify-content: space-between;
-        }
-
-        countries-dropdown {
-          --countries-dropdown-color: var(--light-secondary-text-color);
-        }
-
-        etools-profile-dropdown,
-        #refresh {
-          color: var(--light-secondary-text-color);
-        }
-
-        #menuButton {
-          display: block;
-          color: var(--light-secondary-text-color);
-        }
-
-        #pageRefresh::part(base) {
-          color: var(--light-secondary-text-color);
-        }
-
-        .content-align {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-        }
-
-        #app-logo {
-          height: 32px;
-          width: auto;
-          margin: 0px 10px 0px 20px;
-        }
-        .accessibility {
-          margin-inline-end: 4px;
-        }
-        .dropdowns {
-          padding-block-start: 6px;
-          margin-inline-start: auto;
-          display: flex;
-          margin-inline-end: 20px;
-        }
-
         etools-accesibility {
-          margin-inline-end: 10px;
           display: none;
-        }
-
-        .nav-menu-button {
-          padding-inline-start: 10px;
-          min-width: 60px;
-        }
-
-        .header__item {
-          display: flex;
-          align-items: center;
-        }
-
-        .header__right-group {
-          justify-content: space-evenly;
-        }
-
-        .envWarning {
-          color: #000;
-          background-color: #ffffff;
-          font-weight: 700;
-          padding: 5px 10px;
-          font-size: var(--etools-font-size-14, 14px);
-          line-height: 1;
-          border-radius: 10px;
-        }
-
-        support-btn {
-          margin-inline-start: auto;
-          color: var(--header-color);
-        }
-
-        #pageRefresh {
-          margin-inline-end: 10px;
-        }
-
-        @media (min-width: 1100px) {
-          #menuButton {
-            display: none;
-          }
-        }
-        @media (max-width: 920px) {
-          .envWarning {
-            font-size: var(--etools-font-size-14, 14px);
-            line-height: 16px;
-          }
-        }
-        @media (max-width: 768px) {
-          #app-logo {
-            width: 90px;
-          }
-          .envLong {
-            display: none;
-          }
-          etools-app-selector {
-            width: 42px;
-          }
-          etools-profile-dropdown {
-            margin-inline-start: 0px;
-            margin-inline-end: 10px;
-            width: 40px;
-          }
-        }
-        @media (max-width: 576px) {
-          etools-app-selector {
-            --app-selector-button-padding: 18px 8px;
-          }
-          #app-logo {
-            display: none;
-          }
-          .envWarning {
-            font-size: var(--etools-font-size-10, 10px);
-            margin-inline-start: 2px;
-          }
-          #refresh {
-            width: 24px;
-            padding: 0px;
-          }
         }
       </style>
 
-      <app-toolbar id="toolbar" sticky class="content-align  layout-horizontal">
-        <div class="layout-horizontal align-items-center">
-          <etools-icon-button
-            id="menuButton"
-            name="menu"
-            class="nav-menu-button"
-            @click="${this.menuBtnClicked}"
-          ></etools-icon-button>
-          <etools-app-selector id="selector" .user="${this.user}"></etools-app-selector>
-          <img id="app-logo" src="${BASE_PATH}assets/images/etools-logo-color-white.svg" alt="Etools" />
-          <div class="envWarning" .hidden="${!this.environment}" title="${this.environment} TESTING ENVIRONMENT">
-            ${this.environment}
-          </div>
-        </div>
-        <div class="dropdowns layout-horizontal align-items-center">
+      <app-toolbar
+        id="toolbar"
+        responsive-width="1101px"
+        sticky
+        class="content-align  layout-horizontal"
+        @menu-button-clicked="${this.menuBtnClicked}"
+        .profile="${this.user}"
+      >
+        <div slot="dropdowns">
           <countries-dropdown
             id="countries"
-            .countries="${this.user?.countries_available}"
-            .currentCountry="${this.user?.country}"
+            .profile="${this.user}"
+            .changeCountryEndpoint="${famEndpoints.changeCountry}"
+            @country-changed="${this.countryOrOrganizationChanged}"
           >
           </countries-dropdown>
-
-          <organizations-dropdown .user="${this.user}"></organizations-dropdown>
+          <organizations-dropdown
+            .profile="${this.user}"
+            .changeOrganizationEndpoint="${famEndpoints.changeOrganization}"
+            @organization-changed="${this.countryOrOrganizationChanged}"
+          ></organizations-dropdown>
         </div>
 
-        <div class="layout-horizontal align-items-center accessibility">
-          <support-btn title="Support"></support-btn>
+        <div slot="icons">
+          <support-btn></support-btn>
 
           <etools-profile-dropdown title="Profile and Sign out" .profile="${this.user}" @sign-out="${this._signOut}">
           </etools-profile-dropdown>
@@ -208,29 +84,19 @@ export class PageHeader extends MatomoMixin(LitElement) {
     `;
   }
 
-  @property({type: Object})
-  user!: GenericObject;
-
-  @property({type: String})
-  environment: string | null = checkEnvironment();
-
-  @property({type: String})
-  headerColor = 'var(--header-bg-color)';
-
   public connectedCallback() {
     super.connectedCallback();
-    this._setBgColor();
+  }
+
+  public countryOrOrganizationChanged() {
+    DexieRefresh.refreshInProgress = true;
+    DexieRefresh.clearDexieDbs();
+    DexieRefresh.refreshInProgress = false;
+    document.location.assign(window.location.origin + Environment.basePath);
   }
 
   public menuBtnClicked() {
     fireEvent(this, 'change-drawer-state');
-  }
-
-  public _setBgColor() {
-    // If not production environment, changing header color to red
-    if (!isProductionServer()) {
-      this.headerColor = 'var(--nonprod-header-color)';
-    }
   }
 
   protected _signOut() {
