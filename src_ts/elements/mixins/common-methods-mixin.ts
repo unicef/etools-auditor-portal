@@ -94,10 +94,16 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!componentError || !Object.keys(componentError).length) {
         return false;
       }
-      this.errors = clone(refactorErrorObject(componentError));
-      if (this.tabTexts && this.tabTexts.fields.some((field) => !!this.errors[field])) {
-        fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
-      }
+      this.errors = {};
+      this.requestUpdate();
+
+      setTimeout(() => {
+        this.errors = clone(refactorErrorObject(componentError));
+        this.requestUpdate();
+        if (this.tabTexts && this.tabTexts.fields.some((field) => !!this.errors[field])) {
+          fireEvent(this, 'toast', {text: `${this.tabTexts.name}: Please correct errors`});
+        }
+      }, 20);
     }
 
     closeDialogLoading(dialogKey = this.dialogKey) {
