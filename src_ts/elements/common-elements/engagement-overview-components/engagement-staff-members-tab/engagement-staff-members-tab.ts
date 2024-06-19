@@ -150,6 +150,9 @@ export class EngagementStaffMembersTab extends connect(store)(
         sl-switch {
           --sl-input-label-color: #ffffff;
         }
+        .center-align {
+          justify-content: center !important;
+        }
         @media(max-width: 576px) {
           .panel-btns-container {
             flex-wrap: wrap;
