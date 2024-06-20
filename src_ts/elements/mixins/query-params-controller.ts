@@ -2,7 +2,7 @@ import isObject from 'lodash-es/isObject';
 import keys from 'lodash-es/keys';
 import isString from 'lodash-es/isString';
 import {GenericObject} from '../../types/global';
-import {BASE_PATH} from '../config/config';
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment';
 
 export function parseQueries(): GenericObject {
   const queriesOvj: GenericObject = {};
@@ -27,8 +27,8 @@ export function getQueriesString() {
 
 function getPath() {
   let path = _getLocationProperty('pathname');
-  if (~path.indexOf(`${BASE_PATH}`)) {
-    path = path.replace(`${BASE_PATH}`, '/');
+  if (~path.indexOf(`${Environment.basePath}`)) {
+    path = path.replace(`${Environment.basePath}`, '/');
   }
   return path.slice(1);
 }

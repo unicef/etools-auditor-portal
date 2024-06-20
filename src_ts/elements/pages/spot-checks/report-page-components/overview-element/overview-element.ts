@@ -32,20 +32,31 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
   render() {
     return html`
       ${sharedStyles}
+      <style>
+        .red {
+          color: red;
+          font-size: 12px;
+          margin-bottom: -8px;
+          padding-inline-start: 12px;
+        }
+        .flex-column {
+          display: flex;
+          flex-direction: column;
+        }
+      </style>
 
       <etools-content-panel class="content-section clearfx" panel-title="Overview">
         <div class="row">
           <div class="col-12 input-container col-lg-4 col-md-6">
             <datepicker-lite
               id="dateFaceStartInput"
-              label="${this.getLabel('face_form_start_date', this.optionsData)}"
-              .value="${this.data?.face_form_start_date}"
+              label="${this.getLabel('start_date', this.optionsData)}"
+              .value="${this.data?.start_date}"
               selected-date-display-format="D MMM YYYY"
-              ?readonly="${this.isReadOnly('face_form_start_date', this.optionsData)}"
+              ?readonly="${this.isReadOnly('start_date', this.optionsData)}"
               fire-date-has-changed
-              property-name="face_form_start_date"
-              @date-has-changed="${({detail}: CustomEvent) =>
-                this.dateHasChanged(detail, 'face_form_start_date', this.data)}"
+              property-name="start_date"
+              @date-has-changed="${({detail}: CustomEvent) => this.dateHasChanged(detail, 'start_date', this.data)}"
             >
             </datepicker-lite>
           </div>
@@ -53,14 +64,13 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
           <div class="col-12 input-container col-lg-4 col-md-6">
             <datepicker-lite
               id="dateFaceEndInput"
-              .value="${this.data?.face_form_end_date}"
-              label="${this.getLabel('face_form_end_date', this.optionsData)}"
+              .value="${this.data?.end_date}"
+              label="${this.getLabel('end_date', this.optionsData)}"
               selected-date-display-format="D MMM YYYY"
-              readonly="${this.isReadOnly('face_form_end_date', this.optionsData)}"
+              readonly="${this.isReadOnly('end_date', this.optionsData)}"
               fire-date-has-changed
-              property-name="face_form_end_date"
-              @date-has-changed="${({detail}: CustomEvent) =>
-                this.dateHasChanged(detail, 'face_form_end_date', this.data)}"
+              property-name="end_date"
+              @date-has-changed="${({detail}: CustomEvent) => this.dateHasChanged(detail, 'end_date', this.data)}"
             >
             </datepicker-lite>
           </div>
@@ -79,7 +89,8 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
             </etools-currency>
           </div>
 
-          <div class="col-12 input-container col-lg-4 col-md-6">
+          <div class="col-12 input-container col-lg-4 col-md-6 flex-column">
+            <span class="red" ?hidden="${!this.showUSDWarning}">Please ensure that the value is in USD</span>
             <etools-currency
               class="w100 ${this._setRequired('total_amount_tested', this.optionsData)}"
               .value="${this.data?.total_amount_tested}"
@@ -92,12 +103,16 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
               .errorMessage="${this.errors?.total_amount_tested}"
               @value-changed="${({detail}: CustomEvent) =>
                 this.numberChanged(detail, 'total_amount_tested', this.data)}"
-              @focus="${this._resetFieldError}"
+              @focus="${() => {
+                this.showUSDWarning = true;
+                this._resetFieldError;
+              }}"
             >
             </etools-currency>
           </div>
 
-          <div class="col-12 input-container col-lg-4 col-md-6">
+          <div class="col-12 input-container col-lg-4 col-md-6 flex-column">
+            <span class="red" ?hidden="${!this.showUSDWarning}">Please ensure that the value is in USD</span>
             <etools-currency
               class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
               .value="${this.data?.total_amount_of_ineligible_expenditure}"
@@ -110,7 +125,10 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
               .errorMessage="${this.errors?.total_amount_of_ineligible_expenditure}"
               @value-changed="${({detail}: CustomEvent) =>
                 this.numberChanged(detail, 'total_amount_of_ineligible_expenditure', this.data)}"
-              @focus="${this._resetFieldError}"
+              @focus="${() => {
+                this.showUSDWarning = true;
+                this._resetFieldError;
+              }}"
             >
             </etools-currency>
           </div>
@@ -133,16 +151,13 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
   @property({type: Boolean})
   datepickerModal = false;
 
+  @property({type: Boolean})
+  showUSDWarning = false;
+
   @property({type: Object})
   tabTexts: GenericObject = {
     name: 'Audit Overview',
-    fields: [
-      'face_form_start_date',
-      'face_form_end_date',
-      'total_value',
-      'total_amount_tested',
-      'total_amount_of_ineligible_expenditure'
-    ]
+    fields: ['start_date', 'end_date', 'total_value', 'total_amount_tested', 'total_amount_of_ineligible_expenditure']
   };
 
   updated(changedProperties: PropertyValues): void {

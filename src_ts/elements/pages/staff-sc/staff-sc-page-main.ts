@@ -9,7 +9,6 @@ import {isValidCollection} from '../../mixins/permission-controller';
 import {getEndpoint} from '../../config/endpoints-controller';
 
 import {GenericObject} from '../../../types/global';
-import {BASE_PATH} from '../../config/config';
 import {EtoolsLogger} from '@unicef-polymer/etools-utils/dist/singleton/logger';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
@@ -18,6 +17,7 @@ import {RootState, store} from '../../../redux/store';
 import {EtoolsRouteDetails} from '@unicef-polymer/etools-utils/dist/interfaces/router.interfaces';
 import get from 'lodash-es/get';
 import {pageIsNotCurrentlyActive} from '../../utils/utils';
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment';
 
 /**
  * @customElement
@@ -75,7 +75,7 @@ export class StaffScPageMain extends connect(store)(LitElement) {
   partnerDetails: GenericObject = {};
 
   @property({type: String})
-  newBtnLink = `${BASE_PATH}staff-sc/new/overview`;
+  newBtnLink = `${Environment.basePath}staff-sc/new/overview`;
 
   @property({type: String})
   endpointName = 'staffSCList';

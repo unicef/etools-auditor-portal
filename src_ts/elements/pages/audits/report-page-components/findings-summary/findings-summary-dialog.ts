@@ -6,6 +6,7 @@ import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';
 import '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
 import '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
@@ -17,6 +18,8 @@ import toNumber from 'lodash-es/toNumber';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 
 /**
  * @customElement
@@ -39,6 +42,16 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
         }
         .col:not(:first-of-type) {
           padding-inline-start: 0px !important;
+        }
+        .flex-column {
+          display: flex;
+          flex-direction: column;
+        }
+        .red {
+          color: red;
+          font-size: 12px;
+          margin-bottom: -8px;
+          padding-inline-start: 12px;
         }
       </style>
       <etools-dialog
@@ -65,8 +78,9 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-input>
             </div>
 
-            <div class="col-12 input-container col-md-6 col-lg-4">
+            <div class="col-12 input-container col-md-6 col-lg-4 flex-column">
               <!-- Audited expenditure (USD) -->
+              <span class="red" ?hidden="${!this.showUSDWarning}">Please ensure that the value is in USD</span>
               <etools-currency
                 id="audited-expenditure"
                 class="w100 ${this._setRequired('audited_expenditure', this.optionsData)} validate-input"
@@ -85,13 +99,17 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                   this._setAuditedExpenditure(this.editedItem.financial_findings, this.editedItem.audited_expenditure);
                 }}"
                 @blur="${this.customValidation}"
-                @focus="${this._resetFieldError}"
+                @focus="${() => {
+                  this.showUSDWarning = true;
+                  this._resetFieldError;
+                }}"
               >
               </etools-currency>
             </div>
 
-            <div class="col-12 input-container col-md-6 col-lg-4">
+            <div class="col-12 input-container col-md-6 col-lg-4 flex-column">
               <!-- Financial findings (USD) -->
+              <span class="red" ?hidden="${!this.showUSDWarning}">Please ensure that the value is in USD</span>
               <etools-currency
                 id="financial-findings"
                 class="w100 ${this._setRequired('financial_findings', this.optionsData)} validate-input"
@@ -110,7 +128,10 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                   this._setAuditedExpenditure(this.editedItem.financial_findings, this.editedItem.audited_expenditure);
                 }}"
                 @blur="${this.customValidation}"
-                @focus="${this._resetFieldError}"
+                @focus="${() => {
+                  this.showUSDWarning = true;
+                  this._resetFieldError;
+                }}"
               >
               </etools-currency>
             </div>
@@ -268,16 +289,26 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
   @property({type: Object})
   opener!: GenericObject;
 
+  @property({type: Object})
+  originalData!: GenericObject;
+
   @property({type: String})
   currency!: string;
 
   @property({type: Boolean})
   showLocalCurrency!: boolean;
 
+  @property({type: String})
+  msgUSDConfirm = '';
+
+  @property({type: Boolean})
+  showUSDWarning = false;
+
   set dialogData(data: any) {
     const {optionsData, editedItem, opener, dialogTitle, auditOpinions, currency, showLocalCurrency}: any = data;
 
     this.optionsData = optionsData;
+    this.originalData = cloneDeep(editedItem);
     this.editedItem = editedItem;
     this.dialogTitle = dialogTitle;
     this.opener = opener;
@@ -287,11 +318,31 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
   }
 
   onSave() {
-    if (!this.validate() || !this.customValidation()) {
+    if (!this.validate() || !this.customValidation(true)) {
       return;
     }
-    this.requestInProcess = true;
-    this.opener._addItemFromDialog();
+    if (this.msgUSDConfirm) {
+      this.openConfirmDialog();
+    } else {
+      this.requestInProcess = true;
+      this.opener._addItemFromDialog();
+    }
+  }
+
+  openConfirmDialog() {
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: this.msgUSDConfirm,
+        confirmBtnText: 'Confirm',
+        cancelBtnText: 'Cancel'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.requestInProcess = true;
+        this.opener._addItemFromDialog();
+      }
+    });
   }
 
   _setAuditedExpenditure(financialFindings, auditedExpenditure) {
@@ -301,20 +352,46 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
     this.editedItem.percent_of_audited_expenditure = val;
   }
 
-  customValidation() {
+  customValidation(isForSaving?: boolean) {
     const ffElement = this.shadowRoot!.querySelector('#financial-findings') as unknown as EtoolsCurrency;
     const ffNumber = ffElement && toNumber(ffElement.value);
     const aeElement = this.shadowRoot!.querySelector('#audited-expenditure') as unknown as EtoolsCurrency;
     const aeNumber = aeElement && toNumber(aeElement.value);
 
+    this.msgUSDConfirm = '';
+    if (
+      isForSaving &&
+      ((this.originalData.audited_expenditure !== this.editedItem.audited_expenditure &&
+        this.editedItem.audited_expenditure > 0) ||
+        (this.originalData.financial_findings !== this.editedItem.financial_findings &&
+          this.editedItem.financial_findings > 0))
+    ) {
+      this.msgUSDConfirm = `Please confirm that the values for Audited Expenditure:
+        ${aeNumber} and Financial Findings: ${ffNumber} are in USD`;
+    }
+    let isvalid = true;
     if (aeNumber < ffNumber) {
       ffElement.invalid = true;
       ffElement.errorMessage = 'Cannot exceed Audited Expenditure';
-      return false;
+      isvalid = false;
     } else {
       ffElement.invalid = false;
-      return true;
     }
+
+    if (this.showLocalCurrency) {
+      const ffElementLocal = this.shadowRoot!.querySelector('#financial-findings-local') as unknown as EtoolsCurrency;
+      const ffNumberLocal = ffElementLocal && toNumber(ffElementLocal.value);
+      const aeElementLocal = this.shadowRoot!.querySelector('#audited-expenditure-local') as unknown as EtoolsCurrency;
+      const aeNumberLocal = aeElementLocal && toNumber(aeElementLocal.value);
+      if (aeNumberLocal < ffNumberLocal) {
+        ffElementLocal.invalid = true;
+        ffElementLocal.errorMessage = 'Cannot exceed Audited Expenditure Local';
+        isvalid = false;
+      } else {
+        ffElementLocal.invalid = false;
+      }
+    }
+    return isvalid;
   }
 
   getLocalLabel(path, base) {

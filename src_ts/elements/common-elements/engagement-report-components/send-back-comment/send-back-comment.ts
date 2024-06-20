@@ -5,8 +5,7 @@ import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styl
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {moduleStyles} from '../../../styles/module-styles';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
-import {BASE_PATH} from '../../../config/config';
-
+import {Environment} from '@unicef-polymer/etools-utils/dist/singleton/environment';
 @customElement('send-back-comments')
 export class SendBackComments extends LitElement {
   render() {
@@ -15,7 +14,7 @@ export class SendBackComments extends LitElement {
 
       <etools-content-panel class="content-section comment-container clearfx" panel-title="">
         <div class="flag-container">
-          <img class="flag-icon" src="${BASE_PATH}assets/images/flag-icon.svg" />
+          <img class="flag-icon" src="${Environment.basePath}assets/images/flag-icon.svg" />
         </div>
         <div class="row">
           <div class="col-12 m-l4">
