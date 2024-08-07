@@ -156,7 +156,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
       label: 'Name',
       name: 'partner.name',
       type: EtoolsTableColumnType.Text,
-      sort: 'partner__name',
+      sort: 'partner__organization__name',
       path: 'partner.name'
     },
     {
@@ -401,7 +401,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
     const colKeyToSortKey = {
       reference_number: 'reference_number',
       'agreement.auditor_firm.name': 'agreement__auditor_firm__name',
-      'partner.name': 'partner__name',
+      'partner.name': 'partner__organization__name',
       engagement_type: 'engagement_type',
       status: 'status'
     };
