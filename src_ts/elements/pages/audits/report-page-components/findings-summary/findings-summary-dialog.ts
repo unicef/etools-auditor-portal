@@ -370,9 +370,9 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
         ${aeNumber} and Financial Findings: ${ffNumber} are in USD`;
     }
     let isvalid = true;
-    if (aeNumber < ffNumber) {
+    if (aeNumber <= ffNumber) {
       ffElement.invalid = true;
-      ffElement.errorMessage = 'Cannot exceed Audited Expenditure';
+      ffElement.errorMessage = 'Must be less than Audited Expenditure';
       isvalid = false;
     } else {
       ffElement.invalid = false;
@@ -383,9 +383,9 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
       const ffNumberLocal = ffElementLocal && toNumber(ffElementLocal.value);
       const aeElementLocal = this.shadowRoot!.querySelector('#audited-expenditure-local') as unknown as EtoolsCurrency;
       const aeNumberLocal = aeElementLocal && toNumber(aeElementLocal.value);
-      if (aeNumberLocal < ffNumberLocal) {
+      if (aeNumberLocal <= ffNumberLocal) {
         ffElementLocal.invalid = true;
-        ffElementLocal.errorMessage = 'Cannot exceed Audited Expenditure Local';
+        ffElementLocal.errorMessage = 'Must be less than Audited Expenditure Local';
         isvalid = false;
       } else {
         ffElementLocal.invalid = false;
