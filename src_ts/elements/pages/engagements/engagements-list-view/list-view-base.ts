@@ -149,14 +149,14 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
       label: 'Audit Firm',
       name: 'agreement.auditor_firm.name',
       type: EtoolsTableColumnType.Text,
-      sort: 'agreement__auditor_firm__name',
+      sort: 'agreement__auditor_firm__organization__name',
       path: 'agreement.audit_firm'
     },
     {
       label: 'Name',
       name: 'partner.name',
       type: EtoolsTableColumnType.Text,
-      sort: 'partner__name',
+      sort: 'partner__organization__name',
       path: 'partner.name'
     },
     {
@@ -400,8 +400,8 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
   sortChange(e: CustomEvent) {
     const colKeyToSortKey = {
       reference_number: 'reference_number',
-      'agreement.auditor_firm.name': 'agreement__auditor_firm__name',
-      'partner.name': 'partner__name',
+      'agreement.auditor_firm.name': 'agreement__auditor_firm__organization__name',
+      'partner.name': 'partner__organization__name',
       engagement_type: 'engagement_type',
       status: 'status'
     };
