@@ -105,10 +105,10 @@ export class ScReportPageMain extends LitElement {
   getFindingsData() {
     const findingsLowPriority = (
       this.shadowRoot!.querySelector('#findingsLowPriority') as SummaryFindingsElement
-    ).getFindingsData();
+    )?.getFindingsData();
     const findingsHighPriority = (
       this.shadowRoot!.querySelector('#findingsHighPriority') as SummaryFindingsElement
-    ).getFindingsData();
+    )?.getFindingsData();
     const findings = concat(findingsLowPriority || [], findingsHighPriority || []);
     return findings.length ? findings : null;
   }
