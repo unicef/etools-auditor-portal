@@ -49,6 +49,16 @@ export class ScReportPageMain extends LitElement {
       </overview-element>
 
       <summary-findings-element
+        id="findingsHighPriority"
+        .dataItems="${this.getFindingsDataFiltered(this.engagement.findings, this.priorities.high.value)}"
+        .errorObject="${this.errorObject}"
+        .originalData="${this.getFindingsDataFiltered(this.originalData.findings, this.priorities.high.value)}"
+        .priority="${this.priorities.high}"
+        .optionsData="${this.optionsData}"
+      >
+      </summary-findings-element>
+
+      <summary-findings-element
         id="findingsLowPriority"
         .dataItems="${this.getFindingsDataFiltered(this.engagement.findings, this.priorities.low.value)}"
         .errorObject="${this.errorObject}"
