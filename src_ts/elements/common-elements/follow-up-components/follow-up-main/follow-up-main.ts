@@ -54,9 +54,9 @@ export class FollowUpMain extends LitElement {
       ${this._showCard(this.engagement?.engagement_type, 'sc')
         ? html`<summary-findings-element
             id="followUpFindingsHighPriority"
-            .dataItems="${this.engagement.findings}"
+            .dataItems="${this.getFindingsDataFiltered(this.engagement.findings, this.priorities.high.value)}"
             .errorObject="${this.errorObject}"
-            .originalData="${this.originalData.findings}"
+            .originalData="${this.getFindingsDataFiltered(this.originalData.findings, this.priorities.high.value)}"
             .priority="${this.priorities.high}"
             .optionsData="${this.apOptionsData}"
           >
@@ -117,6 +117,10 @@ export class FollowUpMain extends LitElement {
 
   showFindings(type) {
     return !!type && !~['ma', 'sa'].indexOf(type);
+  }
+
+  getFindingsDataFiltered(findings: any[], priority: string) {
+    return (findings || []).filter((item) => item.priority === priority);
   }
 
   _showCard(type: any, validType: string) {
