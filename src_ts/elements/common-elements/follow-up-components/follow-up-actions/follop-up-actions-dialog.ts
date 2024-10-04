@@ -34,6 +34,8 @@ import get from 'lodash-es/get';
  * @appliesMixin TableElementsMixin
  * @appliesMixin CommonMethodsMixin
  */
+const AP_OTHER = 15;
+
 @customElement('follow-up-actions-dialog')
 export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin(DateMixin(LitElement))) {
   static get styles() {
@@ -69,6 +71,15 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
         }
         datepicker-lite::part(dp-calendar) {
           position: fixed;
+        }
+        .category-warning {
+          color: #ea4022;
+          margin-top: -6px;
+          margin-left: 12px;
+          font-size: var(--etools-font-size-12, 12px);
+        }
+        .flex-column {
+          flex-direction: column;
         }
         </style>
         <etools-dialog no-padding keep-dialog-open size="md"
@@ -137,7 +148,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                                     @focus="${this._resetFieldError}">
                             </etools-dropdown>
                         </div>
-                        <div class="col-12 input-container col-lg-6 col-md-6">
+                        <div class="col-12 input-container col-lg-6 col-md-6 flex-column">
                             <!-- Category -->
                             <etools-dropdown
                                     class="${this._setRequired(
@@ -155,10 +166,15 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
                                     ?invalid="${this.errors.category}"
                                     .errorMessage="${this.errors.category}"
                                     trigger-value-change-event
-                                    @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                                      (this.editedItem.category = detail.selectedItem?.value)}"
+                                    @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                                      this.showWarningCategoryMessage(detail.selectedItem?.value);
+                                      this.editedItem.category = detail.selectedItem?.value;
+                                    }}"
                                     @focus="${this._resetFieldError}">
                             </etools-dropdown>
+                            <div class="category-warning" ?hidden="${!this.warningCategoryMessage}">
+                              ${this.warningCategoryMessage}
+                            </div>
                         </div>
                         <div class="col-12 input-container">
                             <!-- Description -->
@@ -354,6 +370,9 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
   @property({type: Number})
   selectedPartnerIdAux!: number | null;
 
+  @property({type: String})
+  warningCategoryMessage!: string;
+
   @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
 
@@ -435,6 +454,14 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
         return value === editedItem[key];
       }
     });
+  }
+
+  showWarningCategoryMessage(category: number) {
+    if (Number(category) === AP_OTHER) {
+      this.warningCategoryMessage = 'Are you sure that no other categories are suitable for this Action Point?';
+    } else {
+      this.warningCategoryMessage = '';
+    }
   }
 
   _allowComplete(editedApBase) {
