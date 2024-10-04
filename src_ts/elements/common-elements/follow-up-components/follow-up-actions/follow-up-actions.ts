@@ -138,10 +138,10 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
           <etools-data-table-column class="col-1" field="status" sortable
             >${getHeadingLabel(this.optionsData, 'status', 'Status')}</etools-data-table-column
           >
-          <etools-data-table-column class="col-2" field="due_date" sortable
+          <etools-data-table-column class="col-1" field="due_date" sortable
             >${getHeadingLabel(this.optionsData, 'due_date', 'Due Date')}</etools-data-table-column
           >
-          <etools-data-table-column class="col-1" field="priority" sortable
+          <etools-data-table-column class="col-2" field="priority" sortable
             >${getHeadingLabel(this.optionsData, 'high_priority', 'Priority')}</etools-data-table-column
           >
         </etools-data-table-header>
@@ -172,12 +172,12 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
                   >${item.status}</span
                 >
                 <span
-                  class="col-data col-2"
+                  class="col-data col-1"
                   data-col-header-label="${getHeadingLabel(this.optionsData, 'due_date', 'Due Date')}"
                   >${this.prettyDate(String(item.due_date), '') || '-'}</span
                 >
                 <span
-                  class="col-data col-1 caps"
+                  class="col-data col-2 caps"
                   data-col-header-label="${getHeadingLabel(this.optionsData, 'high_priority', 'Priority')}"
                   >${item.priority}</span
                 >
