@@ -143,7 +143,7 @@ export class UpdateAttachments extends LitElement {
     if (typeof response === 'string') {
       try {
         response = JSON.parse(response);
-      } catch (e) {
+      } catch {
         response = {};
       }
     }

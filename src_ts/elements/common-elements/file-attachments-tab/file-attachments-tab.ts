@@ -189,44 +189,42 @@ export class FileAttachmentsTab extends CommonMethodsMixin(TableElementsMixin(En
         ${this.isReportTab
           ? ``
           : this.linkedAttachments.map(
-              (item, _index) => html` <etools-data-table-row
-                no-collapse
-                .lowResolutionLayout="${this.lowResolutionLayout}"
-              >
-                <div slot="row-data" class="layout-horizontal editable-row">
-                  <span
-                    class="col-data col-2"
-                    data-col-header-label="${getHeadingLabel(this.optionsData, 'created', 'Created')}"
-                    >${this.prettyDate(String(item.created), '') || '-'}</span
-                  >
-                  <span
-                    class="col-data col-2"
-                    data-col-header-label="${getHeadingLabel(this.optionsData, 'file_type', 'Document Type')}"
-                    >${item.file_type}</span
-                  >
-                  <span
-                    class="col-data col-5 wrap-text"
-                    data-col-header-label="${getHeadingLabel(this.optionsData, 'file', ' File Attachment')}"
-                  >
-                    <etools-icon name="attachment" class="download-icon"> </etools-icon>
-                    <a href="${item.url}" class="truncate" title="${item.filename}" target="_blank"
-                      >${item.filename}
-                    </a>
-                  </span>
-                  <span
-                    class="col-data col-3 ${!this.lowResolutionLayout ? 'center-align' : ''}"
-                    data-col-header-label="${getHeadingLabel(this.optionsData, 'tpm_activities.date', 'Source')}"
-                  >
-                    <span>PMP</span>
-                  </span>
-                  <div class="hover-block" ?hidden="${this.isTabReadonly}">
-                    <etools-icon-button
-                      name="cancel"
-                      @click="${() => this._openDeleteLinkDialog(item.id)}"
-                    ></etools-icon-button>
+              (item, _index) =>
+                html` <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
+                  <div slot="row-data" class="layout-horizontal editable-row">
+                    <span
+                      class="col-data col-2"
+                      data-col-header-label="${getHeadingLabel(this.optionsData, 'created', 'Created')}"
+                      >${this.prettyDate(String(item.created), '') || '-'}</span
+                    >
+                    <span
+                      class="col-data col-2"
+                      data-col-header-label="${getHeadingLabel(this.optionsData, 'file_type', 'Document Type')}"
+                      >${item.file_type}</span
+                    >
+                    <span
+                      class="col-data col-5 wrap-text"
+                      data-col-header-label="${getHeadingLabel(this.optionsData, 'file', ' File Attachment')}"
+                    >
+                      <etools-icon name="attachment" class="download-icon"> </etools-icon>
+                      <a href="${item.url}" class="truncate" title="${item.filename}" target="_blank"
+                        >${item.filename}
+                      </a>
+                    </span>
+                    <span
+                      class="col-data col-3 ${!this.lowResolutionLayout ? 'center-align' : ''}"
+                      data-col-header-label="${getHeadingLabel(this.optionsData, 'tpm_activities.date', 'Source')}"
+                    >
+                      <span>PMP</span>
+                    </span>
+                    <div class="hover-block" ?hidden="${this.isTabReadonly}">
+                      <etools-icon-button
+                        name="cancel"
+                        @click="${() => this._openDeleteLinkDialog(item.id)}"
+                      ></etools-icon-button>
+                    </div>
                   </div>
-                </div>
-              </etools-data-table-row>`
+                </etools-data-table-row>`
             )}
 
         <div class="layout-horizontal editable-row" ?hidden="${!this._isNewEngagement()}">

@@ -79,7 +79,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
         etools-dropdown-multi {
           --esmm-external-wrapper: {
             max-width: 100%;
-          }
+          };
         }
         etools-data-table-row *[slot='row-data-details'] {
           flex-direction: column;
@@ -116,56 +116,52 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
         </etools-data-table-header>
 
         ${(this.dataItems || []).map(
-          (item, index) =>
-            html`
-              <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
-                <div slot="row-data" class="layout-horizontal editable-row">
-                  <span class="col-data col-3" data-col-header-label="Finding Number"
-                    >${getTableRowIndexText(index)}</span
-                  >
-                  <span
-                    class="col-data col-6"
-                    data-col-header-label="${getHeadingLabel(
-                      this.optionsData,
-                      'findings.category_of_observation',
-                      'Subject Area'
-                    )}"
-                    >${this.getCategoryDisplayName(item.category_of_observation, '--')}</span
-                  >
-                  <span
-                    class="col-data col-3"
-                    data-col-header-label="${getHeadingLabel(
-                      this.optionsData,
-                      'findings.deadline_of_action',
-                      'Deadline of Action'
-                    )}"
-                    >${item.deadline_of_action}</span
-                  >
-                  <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
-                    <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
-                    <etools-icon-button
-                      name="delete"
-                      @click="${() => this.openDeleteDialog(index)}"
-                    ></etools-icon-button>
-                  </div>
+          (item, index) => html`
+            <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
+              <div slot="row-data" class="layout-horizontal editable-row">
+                <span class="col-data col-3" data-col-header-label="Finding Number"
+                  >${getTableRowIndexText(index)}</span
+                >
+                <span
+                  class="col-data col-6"
+                  data-col-header-label="${getHeadingLabel(
+                    this.optionsData,
+                    'findings.category_of_observation',
+                    'Subject Area'
+                  )}"
+                  >${this.getCategoryDisplayName(item.category_of_observation, '--')}</span
+                >
+                <span
+                  class="col-data col-3"
+                  data-col-header-label="${getHeadingLabel(
+                    this.optionsData,
+                    'findings.deadline_of_action',
+                    'Deadline of Action'
+                  )}"
+                  >${item.deadline_of_action}</span
+                >
+                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
+                  <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
+                  <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
                 </div>
+              </div>
 
-                <div slot="row-data-details">
-                  <div class="row-details-content col-12">
-                    <span class="rdc-title">
-                      ${getHeadingLabel(this.optionsData, 'findings.recommendation', 'Recommendation')}
-                    </span>
-                    <span>${item.recommendation}</span>
-                  </div>
-                  <div class="row-details-content col-12 mt-30">
-                    <span class="rdc-title">
-                      ${getHeadingLabel(this.optionsData, 'findings.agreed_action_by_ip', 'Agreed Action by IP')}
-                    </span>
-                    <span>${item.agreed_action_by_ip}</span>
-                  </div>
+              <div slot="row-data-details">
+                <div class="row-details-content col-12">
+                  <span class="rdc-title">
+                    ${getHeadingLabel(this.optionsData, 'findings.recommendation', 'Recommendation')}
+                  </span>
+                  <span>${item.recommendation}</span>
                 </div>
-              </etools-data-table-row>
-            `
+                <div class="row-details-content col-12 mt-30">
+                  <span class="rdc-title">
+                    ${getHeadingLabel(this.optionsData, 'findings.agreed_action_by_ip', 'Agreed Action by IP')}
+                  </span>
+                  <span>${item.agreed_action_by_ip}</span>
+                </div>
+              </div>
+            </etools-data-table-row>
+          `
         )}
         <etools-data-table-row no-collapse ?hidden="${(this.dataItems || []).some((item) => this._showFindings(item))}">
           <div slot="row-data" class="layout-horizontal editable-row pl-30 padding-v">
@@ -320,7 +316,6 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
         dataItem = item;
       }
       const compareItems = (changedObj, originalObj) => {
-        // eslint-disable-next-line
         return !(
           (changedObj.category_of_observation &&
             changedObj.category_of_observation !== originalObj.category_of_observation) ||

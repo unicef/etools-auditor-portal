@@ -162,7 +162,8 @@ export class UpdateEngagement extends LitElement {
     this.actionUrl = '';
     let serverErrorText = '';
 
-    let {status, response} = (error || {}) as any;
+    const {status, response: errorResponse} = (error || {}) as any;
+    let response = errorResponse;
     try {
       if (typeof response === 'string') {
         response = JSON.parse(response);
@@ -177,7 +178,7 @@ export class UpdateEngagement extends LitElement {
           }
         }
       }
-    } catch (e) {
+    } catch {
       response = {};
     }
 

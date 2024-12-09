@@ -254,53 +254,57 @@ export class EngagementStaffMembersTab extends connect(store)(
           ${(this.dataItems || [])
             .filter((x) => this._isVisible(x.has_active_realm, this.showInactive))
             .map(
-              (item) => html` <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-                <div slot="row-data" class="layout-horizontal editable-row">
-                  ${this.showHasAccess
-                    ? html` <span
-                        class="col-data col-1"
-                        data-col-header-label="Has Access"
-                        ?hidden="${!this.showHasAccess}"
-                      >
-                        <etools-checkbox
-                          class="checkbox"
-                          ?checked="${item.hasAccess}"
-                          ?disabled="${this._isCheckboxReadonly(
-                            item.hasAccess,
-                            this.engagementStaffs,
-                            this.saveWithButton
-                          )}"
-                          @click="${(e) => this._isActive(e, item)}"
+              (item) =>
+                html` <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
+                  <div slot="row-data" class="layout-horizontal editable-row">
+                    ${this.showHasAccess
+                      ? html` <span
+                          class="col-data col-1"
+                          data-col-header-label="Has Access"
+                          ?hidden="${!this.showHasAccess}"
                         >
-                        </etools-checkbox>
-                      </span>`
-                    : ``}
-                  <span class="col-data col-2 wrap-text" data-col-header-label="Position"
-                    >${item.user.profile.job_title || '–'}</span
-                  >
-                  <span
-                    class="col-data ${this.showHasAccess ? 'col-2' : 'col-3'} wrap-text"
-                    data-col-header-label="First Name"
-                    >${item.user.first_name}</span
-                  >
-                  <span class="col-data col-2 wrap-text" data-col-header-label="Last Name">${item.user.last_name}</span>
-                  <span class="col-data col-2 wrap-text" data-col-header-label="Phone Number"
-                    >${item.user.profile.phone_number || '–'}</span
-                  >
-                  <span class="col-data col-2 wrap-text" data-col-header-label="E-mail Address"
-                    >${item.user.email}</span
-                  >
-                  <span
-                    class="col-data col-1 wrap-text ${!this.lowResolutionLayout ? 'center-align' : ''}"
-                    data-col-header-label="Active"
-                    >${this.computeStaffMembActiveColumn(item) || html`<etools-icon name="check"></etools-icon>`}</span
-                  >
-                </div>
-              </etools-data-table-row>`
+                          <etools-checkbox
+                            class="checkbox"
+                            ?checked="${item.hasAccess}"
+                            ?disabled="${this._isCheckboxReadonly(
+                              item.hasAccess,
+                              this.engagementStaffs,
+                              this.saveWithButton
+                            )}"
+                            @click="${(e) => this._isActive(e, item)}"
+                          >
+                          </etools-checkbox>
+                        </span>`
+                      : ``}
+                    <span class="col-data col-2 wrap-text" data-col-header-label="Position"
+                      >${item.user.profile.job_title || '–'}</span
+                    >
+                    <span
+                      class="col-data ${this.showHasAccess ? 'col-2' : 'col-3'} wrap-text"
+                      data-col-header-label="First Name"
+                      >${item.user.first_name}</span
+                    >
+                    <span class="col-data col-2 wrap-text" data-col-header-label="Last Name"
+                      >${item.user.last_name}</span
+                    >
+                    <span class="col-data col-2 wrap-text" data-col-header-label="Phone Number"
+                      >${item.user.profile.phone_number || '–'}</span
+                    >
+                    <span class="col-data col-2 wrap-text" data-col-header-label="E-mail Address"
+                      >${item.user.email}</span
+                    >
+                    <span
+                      class="col-data col-1 wrap-text ${!this.lowResolutionLayout ? 'center-align' : ''}"
+                      data-col-header-label="Active"
+                      >${this.computeStaffMembActiveColumn(item) ||
+                      html`<etools-icon name="check"></etools-icon>`}</span
+                    >
+                  </div>
+                </etools-data-table-row>`
             )}
           <etools-data-table-row no-collapse ?hidden="${this.dataItems?.length}" .lowResolutionLayout="${
-      this.lowResolutionLayout
-    }">
+            this.lowResolutionLayout
+          }">
             <div slot="row-data" class="layout-horizontal editable-row padding-v">
               <span class="col-data col-12">No records found.</span>
             </div>
