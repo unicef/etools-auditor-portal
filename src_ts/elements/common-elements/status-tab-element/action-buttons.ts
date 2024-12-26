@@ -145,7 +145,6 @@ export class ActionButtons extends LitElement {
   }
 
   fireActionActivated(action: string) {
-    fireEvent(this, `close-toasts`);
     fireEvent(this, `action-activated`, {type: action});
   }
 
