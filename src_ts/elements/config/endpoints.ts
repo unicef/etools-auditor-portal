@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 const famEndpoints = {
   userProfile: {
     url: '/api/v3/users/profile/'

@@ -12,7 +12,7 @@ import '@unicef-polymer/etools-unicef/src/etools-input/etools-textarea';
 import '../follow-up-actions/follow-up-actions';
 import '../follow-up-financial-findings/follow-up-financial-findings';
 import {FollowUpFinancialFindings} from '../follow-up-financial-findings/follow-up-financial-findings';
-// eslint-disable-next-line
+
 import '../../../pages/spot-checks/report-page-components/summary-findings-element/summary-findings-element';
 import '../../../pages/audits/report-page-components/financial-findings/financial-findings';
 import assign from 'lodash-es/assign';

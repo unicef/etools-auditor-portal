@@ -34,11 +34,12 @@ export class AddNewEngagement extends LitElement {
   _handleError(error) {
     fireEvent(this, 'global-loading', {active: false, loadingSource: 'processingAction'});
 
-    let {status, response} = error;
+    const {status, response: errorResponse} = error;
+    let response = errorResponse;
     if (typeof response === 'string') {
       try {
         response = JSON.parse(response);
-      } catch (e) {
+      } catch {
         response = {};
       }
     }

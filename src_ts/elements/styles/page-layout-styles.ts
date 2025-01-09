@@ -37,9 +37,7 @@ export const pageLayoutStyles = css`
   }
 
   section.page-content.filters {
-    padding: 18px 12px;
-    display: flex;
-    position: relative;
+    padding: 8px 24px;
   }
 
   section.page-content.no-padding {
@@ -47,8 +45,11 @@ export const pageLayoutStyles = css`
   }
 
   @media (max-width: 576px) {
+    section.page-content.filters {
+      padding: 5px;
+    }
     .page-content {
-      margin: 8px;
+      margin: 5px;
     }
   }
 `;
