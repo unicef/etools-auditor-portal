@@ -100,18 +100,19 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
       >
       </etools-content-panel>
       ${(this.questionnaire.children || []).map(
-        (item, index) => html`<risk-tab
-          .questionnaire="${item}"
-          .optionsData="${this.optionsData}"
-          class="validatable-tab risk-tab"
-          index="${index}"
-          .firstRun="${this.firstRun}"
-          .currentRequests="${this.currentRequests}"
-          ?completed="${this._checkCompleted(item)}"
-          ?disabled="${this._checkDisabled(index)}"
-          ?editMode="${this.editMode}"
-        >
-        </risk-tab>`
+        (item, index) =>
+          html`<risk-tab
+            .questionnaire="${item}"
+            .optionsData="${this.optionsData}"
+            class="validatable-tab risk-tab"
+            index="${index}"
+            .firstRun="${this.firstRun}"
+            .currentRequests="${this.currentRequests}"
+            ?completed="${this._checkCompleted(item)}"
+            ?disabled="${this._checkDisabled(index)}"
+            ?editMode="${this.editMode}"
+          >
+          </risk-tab>`
       )}
     `;
   }

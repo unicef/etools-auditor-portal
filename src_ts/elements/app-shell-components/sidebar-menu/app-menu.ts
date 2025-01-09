@@ -139,8 +139,8 @@ export class AppMenu extends MatomoMixin(LitElement) {
   showSscPage = false;
 
   @property({type: String})
-  // eslint-disable-next-line max-len
-  etoolsNowLink = `https://app.powerbi.com/groups/me/apps/2c83563f-d6fc-4ade-9c10-bbca57ed1ece/reports/9726e9e7-c72f-4153-9fd2-7b418a1e426c/ReportSection?ctid=77410195-14e1-4fb8-904b-ab1892023667`;
+  etoolsNowLink =
+    `https://app.powerbi.com/groups/me/apps/2c83563f-d6fc-4ade-9c10-bbca57ed1ece/reports/9726e9e7-c72f-4153-9fd2-7b418a1e426c/ReportSection?ctid=77410195-14e1-4fb8-904b-ab1892023667`;
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);

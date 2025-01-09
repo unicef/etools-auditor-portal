@@ -41,10 +41,11 @@ export class ActionButtons extends LitElement {
                 ${(this.actions || [])
                   .filter((x) => this._filterActions(x))
                   .map(
-                    (item: any) => html`<sl-menu-item @click="${() => this._handleSecondaryClick(item)}">
-                      <etools-icon name="${this._setIcon(item, this.icons)}" class="option-icon"></etools-icon>
-                      <span>${this._setButtonText(item)}</span>
-                    </sl-menu-item>`
+                    (item: any) =>
+                      html`<sl-menu-item @click="${() => this._handleSecondaryClick(item)}">
+                        <etools-icon name="${this._setIcon(item, this.icons)}" class="option-icon"></etools-icon>
+                        <span>${this._setButtonText(item)}</span>
+                      </sl-menu-item>`
                   )}
               </sl-menu>
             </sl-dropdown>`
@@ -144,7 +145,6 @@ export class ActionButtons extends LitElement {
   }
 
   fireActionActivated(action: string) {
-    fireEvent(this, `close-toasts`);
     fireEvent(this, `action-activated`, {type: action});
   }
 
