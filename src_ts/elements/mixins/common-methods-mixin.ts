@@ -263,7 +263,7 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       let json;
       try {
         json = JSON.parse(str);
-      } catch (e) {
+      } catch {
         return false;
       }
       return isObject(json);

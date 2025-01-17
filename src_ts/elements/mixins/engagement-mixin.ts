@@ -410,7 +410,8 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       });
 
       // Check basic info
-      let [data, engagementId] = this._getBasicInfo({});
+      const [basicData, engagementId] = this._getBasicInfo({});
+      let data = basicData;
 
       // Add assign report info
       const reportTab = this.getElement('#report');

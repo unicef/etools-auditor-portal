@@ -200,7 +200,7 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
     this.addEventListener('change-drawer-state', this.changeDrawerState);
     this.addEventListener('toggle-small-menu', this.toggleMenu as any);
     installMediaQueryWatcher(`(min-width: 460px)`, () => fireEvent(this, 'change-drawer-state'));
-
+    this.checkAppVersion();
     setTimeout(() => {
       window.EtoolsEsmmFitIntoEl = this._getContentContainer();
       this.etoolsLoadingContainer = window.EtoolsEsmmFitIntoEl as any;

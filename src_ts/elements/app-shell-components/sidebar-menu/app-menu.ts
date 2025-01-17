@@ -72,19 +72,6 @@ export class AppMenu extends MatomoMixin(LitElement) {
         </div>
 
         <a
-          class="nav-menu-item lighter-item no-transform"
-          href="${this.etoolsNowLink}"
-          target="_blank"
-          @click="${this.trackAnalytics}"
-          tracker="Implementation Intelligence"
-        >
-          <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Implementation Intelligence">
-            <etools-icon id="power-bi-icon" name="power-bi"></etools-icon>
-          </sl-tooltip>
-          <div class="name">Implementation Intelligence</div>
-        </a>
-
-        <a
           class="nav-menu-item lighter-item"
           href="http://etools.zendesk.com"
           target="_blank"
@@ -137,10 +124,6 @@ export class AppMenu extends MatomoMixin(LitElement) {
 
   @property({type: Boolean})
   showSscPage = false;
-
-  @property({type: String})
-  // eslint-disable-next-line max-len
-  etoolsNowLink = `https://app.powerbi.com/groups/me/apps/2c83563f-d6fc-4ade-9c10-bbca57ed1ece/reports/9726e9e7-c72f-4153-9fd2-7b418a1e426c/ReportSection?ctid=77410195-14e1-4fb8-904b-ab1892023667`;
 
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);

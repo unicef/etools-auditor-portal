@@ -68,7 +68,6 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         }
         .search-filters {
           flex-grow: 1;
-          margin-block: 8px;
           width: 100%;
         }
         etools-filters::part(filter-search) {
@@ -107,7 +106,7 @@ export class ListViewBase extends connect(store)(CommonMethodsMixin(LitElement))
         ></etools-filters>
       </section>
 
-      <section class="elevation page-content" elevation="1">
+      <section class="elevation page-content no-padding" elevation="1">
         <etools-loading
           ?active="${this.listLoadingActive}"
           loading-text="Loading of engagements list..."

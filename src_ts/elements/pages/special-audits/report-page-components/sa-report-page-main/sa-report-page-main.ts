@@ -7,9 +7,9 @@ import {AssignEngagement} from '../../../../common-elements/engagement-report-co
 import '../../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
 // eslint-disable-next-line
 import {SpecificProcedure} from '../../../../common-elements/engagement-report-components/specific-procedure/specific-procedure';
-// eslint-disable-next-line
+
 import '../other-recommendations/other-recommendations';
-// eslint-disable-next-line
+
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {OtherRecommendations} from '../other-recommendations/other-recommendations';
 import {GenericObject} from '@unicef-polymer/etools-types';

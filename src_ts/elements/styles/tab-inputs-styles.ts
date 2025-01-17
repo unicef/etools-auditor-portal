@@ -62,7 +62,7 @@ export const tabInputsStyles = css`
       right: auto;
       padding-right: 15px;
       color: var(--gray-50);
-    }
+    };
   }
 
   #bottom-actions {
