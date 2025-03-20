@@ -135,7 +135,17 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               ?invalid="${this.errors?.amount_refunded}"
               .errorMessage="${this.errors?.amount_refunded}"
               @value-changed="${({detail}: CustomEvent) => {
+                if (Number(this.engagement.amount_refunded) === Number(detail?.value)) {
+                  return;
+                }
                 this.numberChanged(detail, 'amount_refunded', this.engagement);
+                this.setUnsupportedAmount(
+                  this.engagement,
+                  this.engagement.additional_supporting_documentation_provided,
+                  this.engagement.amount_refunded,
+                  this.engagement.justification_provided_and_accepted,
+                  this.engagement.write_off_required
+                );
               }}"
               @focus="${this._resetFieldError}"
             >
@@ -155,7 +165,17 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               ?invalid="${this.errors?.additional_supporting_documentation_provided}"
               .errorMessage="${this.errors?.additional_supporting_documentation_provided}"
               @value-changed="${({detail}: CustomEvent) => {
+                if (Number(this.engagement.additional_supporting_documentation_provided) === Number(detail?.value)) {
+                  return;
+                }
                 this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement);
+                this.setUnsupportedAmount(
+                  this.engagement,
+                  this.engagement.additional_supporting_documentation_provided,
+                  this.engagement.amount_refunded,
+                  this.engagement.justification_provided_and_accepted,
+                  this.engagement.write_off_required
+                );
               }}"
               @focus="${this._resetFieldError}"
             >
@@ -176,7 +196,17 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               ?invalid="${this.errors?.justification_provided_and_accepted}"
               .errorMessage="${this.errors?.justification_provided_and_accepted}"
               @value-changed="${({detail}: CustomEvent) => {
+                if (Number(this.engagement.justification_provided_and_accepted) === Number(detail?.value)) {
+                  return;
+                }
                 this.numberChanged(detail, 'justification_provided_and_accepted', this.engagement);
+                this.setUnsupportedAmount(
+                  this.engagement,
+                  this.engagement.additional_supporting_documentation_provided,
+                  this.engagement.amount_refunded,
+                  this.engagement.justification_provided_and_accepted,
+                  this.engagement.write_off_required
+                );
               }}"
               @focus="${this._resetFieldError}"
             >
@@ -196,8 +226,19 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               ?readonly="${this.isReadOnly('write_off_required', this.optionsData)}"
               ?invalid="${this.errors?.write_off_required}"
               .errorMessage="${this.errors?.write_off_required}"
-              @value-changed="${({detail}: CustomEvent) =>
-                this.numberChanged(detail, 'write_off_required', this.engagement)}"
+              @value-changed="${({detail}: CustomEvent) => {
+                if (Number(this.engagement.write_off_required) === Number(detail?.value)) {
+                  return;
+                }
+                this.numberChanged(detail, 'write_off_required', this.engagement);
+                this.setUnsupportedAmount(
+                  this.engagement,
+                  this.engagement.additional_supporting_documentation_provided,
+                  this.engagement.amount_refunded,
+                  this.engagement.justification_provided_and_accepted,
+                  this.engagement.write_off_required
+                );
+              }}"
               @focus="${this._resetFieldError}"
             >
             </etools-currency>
@@ -205,13 +246,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           <div class="col-12 input-container col-lg-4 col-md-6">
             <!-- Pending Unsupported Amount -->
             <etools-input
-              .value="${this.setUnsupportedAmount(
-                this.engagement,
-                this.engagement.additional_supporting_documentation_provided,
-                this.engagement.amount_refunded,
-                this.engagement.justification_provided_and_accepted,
-                this.engagement.write_off_required
-              )}"
+              .value="${this.engagement.pending_unsupported_amount}"
               label="${this.getLabel('pending_unsupported_amount', this.optionsData)}"
               placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
               readonly
@@ -306,6 +341,6 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
       value = 0;
     }
 
-    return value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    this.engagement.pending_unsupported_amount = value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
   }
 }
