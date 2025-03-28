@@ -113,6 +113,15 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                       </etools-content-panel>`
                     : ``}
 
+                  <partner-details-tab
+                    .originalData="${this.originalData}"
+                    id="partnerDetails"
+                    .engagement="${this.engagement}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
+                  >
+                  </partner-details-tab>
+
                   <engagement-info-details
                     id="engagementDetails"
                     .data="${this.engagement}"
@@ -122,15 +131,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                     .isStaffSc="${this.isStaffSc}"
                   >
                   </engagement-info-details>
-
-                  <partner-details-tab
-                    .originalData="${this.originalData}"
-                    id="partnerDetails"
-                    .engagement="${this.engagement}"
-                    .errorObject="${this.errorObject}"
-                    .optionsData="${this.engagementOptions}"
-                  >
-                  </partner-details-tab>
 
                   <engagement-staff-members-tab
                     id="staffMembers"

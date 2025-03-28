@@ -117,15 +117,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                       </etools-content-panel>`
                     : ``}
 
-                  <engagement-info-details
-                    id="engagementDetails"
-                    .data="${this.engagement}"
-                    .originalData="${this.originalData}"
-                    .errorObject="${this.errorObject}"
-                    .optionsData="${this.engagementOptions}"
-                  >
-                  </engagement-info-details>
-
                   <partner-details-tab
                     .originalData="${this.originalData}"
                     id="partnerDetails"
@@ -134,6 +125,15 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                     .optionsData="${this.engagementOptions}"
                   >
                   </partner-details-tab>
+
+                  <engagement-info-details
+                    id="engagementDetails"
+                    .data="${this.engagement}"
+                    .originalData="${this.originalData}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
+                  >
+                  </engagement-info-details>
 
                   <specific-procedure
                     id="specificProcedures"

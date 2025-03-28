@@ -118,6 +118,14 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       <div class="view-container">
         <div id="pageContent">
           <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
+            <partner-details-tab
+              id="partnerDetails"
+              .errorObject="${this.errorObject}"
+              .engagement="${this.engagement}"
+              .optionsData="${this.engagementOptions}"
+            >
+            </partner-details-tab>
+
             <engagement-info-details
               .errorObject="${this.errorObject}"
               .data="${this.engagement}"
@@ -126,14 +134,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
               ?isStaffSc="${this.isStaffSc}"
             >
             </engagement-info-details>
-
-            <partner-details-tab
-              id="partnerDetails"
-              .errorObject="${this.errorObject}"
-              .engagement="${this.engagement}"
-              .optionsData="${this.engagementOptions}"
-            >
-            </partner-details-tab>
 
             <specific-procedure
               id="specificProcedures"
