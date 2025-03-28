@@ -110,15 +110,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                       </etools-content-panel>`
                     : ``}
 
-                  <engagement-info-details
-                    id="engagementDetails"
-                    .data="${this.engagement}"
-                    .originalData="${this.originalData}"
-                    .errorObject="${this.errorObject}"
-                    .optionsData="${this.engagementOptions}"
-                  >
-                  </engagement-info-details>
-
                   <partner-details-tab
                     .originalData="${this.originalData}"
                     id="partnerDetails"
@@ -127,6 +118,15 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                     .optionsData="${this.engagementOptions}"
                   >
                   </partner-details-tab>
+
+                  <engagement-info-details
+                    id="engagementDetails"
+                    .data="${this.engagement}"
+                    .originalData="${this.originalData}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
+                  >
+                  </engagement-info-details>
 
                   <engagement-staff-members-tab
                     id="staffMembers"
