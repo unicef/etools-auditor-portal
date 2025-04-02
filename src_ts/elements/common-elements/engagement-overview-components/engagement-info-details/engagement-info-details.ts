@@ -38,6 +38,9 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import {getObjectsIDs} from '../../../utils/utils';
 import {waitForCondition} from '@unicef-polymer/etools-utils/dist/wait.util';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {getEndpoint} from '../../../config/endpoints-controller';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import dayjs from 'dayjs';
 
 /**
  * @customElement
@@ -161,13 +164,13 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
           <div class="col-12 col-lg-4 col-md-4 input-container">
             <etools-dropdown-multi
               id="faceForms"
-              ?hidden="${!this.showFaceForm(this.data.engagement_type)}"
+              ?hidden="${!this.showFaceForm(this.data.engagement_type, this.data.partner?.id)}"
               class="w100 ${this._setRequired('engagement_type', this.optionsData)} validate-field"
-              .selectedValues="${this.data.faceForms}"
+              .selectedValues="${this.data.faceForms || []}"
               label="Face forms"
               .options="${this.faceFormsOption}"
-              option-label="text"
-              option-value="id"
+              option-label="commitment_ref"
+              option-value="commitment_ref"
               ?readonly="${this.itIsReadOnly('engagement_type', this.optionsData)}"
               ?invalid="${this.errors.active_pd}"
               .errorMessage="${this.errors.active_pd}"
@@ -175,8 +178,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               dynamic-align
               trigger-value-change-event
               @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                const newIds = detail.selectedItems.map((i: any) => i.id);
-                this.data.faceForms = newIds;
+                const commRefs = (detail.selectedItems || []).map((i: any) => i.commitment_ref);
+                this.data.faceForms = commRefs;
+                this.onFaceChange(this.data.faceForms);
               }}"
             >
             </etools-dropdown-multi>
@@ -716,11 +720,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: String})
   detailsRoutePath!: string;
 
+  @property({type: Number})
+  prevPartnerId!: number;
+
   @property({type: Array})
-  faceFormsOption = [
-    {text: 'test 1', id: 1},
-    {text: 'test 2', id: 2}
-  ];
+  faceFormsOption = [];
 
   @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
@@ -781,8 +785,49 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return !this.data.partner?.id || this.isReadOnly(field, permissions);
   }
 
-  showFaceForm(engagement_type: string) {
-    return ['audit', 'sc'].includes(engagement_type);
+  showFaceForm(engagement_type: string, partnerId?: number) {
+    const showFaceForm = ['audit', 'sc'].includes(engagement_type);
+
+    if (showFaceForm && partnerId && this.prevPartnerId !== partnerId) {
+      this.prevPartnerId = partnerId;
+      this.loadFaceData(this.prevPartnerId);
+    }
+    return showFaceForm;
+  }
+
+  loadFaceData(partnerId: number) {
+    const url = getEndpoint('linkFace', {id: partnerId}).url;
+    sendRequest({
+      endpoint: {url}
+    })
+      .then((resp) => {
+        this.faceFormsOption = resp.rows || [];
+      })
+      .catch((err) => fireEvent(this, 'toast', {text: `Error fetching Face forms data for ${partnerId}: ${err}`}));
+  }
+
+  onFaceChange(commitment_refs: string[]) {
+    const selectedFaceForms: any[] = this.faceFormsOption.filter((x: any) =>
+      commitment_refs.includes(x.commitment_ref)
+    );
+    let dct_amt_usd = 0;
+    let start_date: any = null;
+    let end_date: any = null;
+    for (const faceForm of selectedFaceForms) {
+      dct_amt_usd += Number(faceForm.dct_amt_usd);
+      if (faceForm.start_date && (!start_date || dayjs(faceForm.start_date) < start_date)) {
+        start_date = dayjs(faceForm.start_date);
+      }
+      if (faceForm.end_date && (!end_date || dayjs(faceForm.end_date) > end_date)) {
+        end_date = dayjs(faceForm.end_date);
+      }
+    }
+    this.data = {
+      ...this.data,
+      total_value: dct_amt_usd,
+      start_date: start_date ? dayjs(start_date).format('YYYY-MM-DD') : start_date,
+      end_date: end_date ? dayjs(end_date).format('YYYY-MM-DD') : end_date
+    };
   }
 
   cleanUpStoredValues() {

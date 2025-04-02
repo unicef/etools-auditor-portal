@@ -83,6 +83,9 @@ const famEndpoints = {
   linkAttachment: {
     template: '/api/v2/attachments/links/<%=id%>/'
   },
+  linkFace: {
+    template: '/api/audit/face-reports/<%=id%>/'
+  },
   static: {
     url: '/api/v2/dropdowns/static/',
     exp: 6 * 60 * 60 * 1000, // 6h
