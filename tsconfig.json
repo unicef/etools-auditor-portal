@@ -16,6 +16,8 @@
     "allowSyntheticDefaultImports": true,
     "noEmitHelpers": true,
     "importHelpers": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "outDir": "src",
     "rootDir": "src_ts"
   },
