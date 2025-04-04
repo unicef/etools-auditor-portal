@@ -63,7 +63,7 @@ const loadPageComponents = (routeDetails: EtoolsRouteDetails) => async (_dispatc
     await import(`../../elements/pages/${page}/${page}-page-main.ts`);
   } catch {
     console.log(`No file imports configuration found: ${page}!`);
-    // EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
+    EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
   }
 
   fireEvent(appShell, 'global-loading', {

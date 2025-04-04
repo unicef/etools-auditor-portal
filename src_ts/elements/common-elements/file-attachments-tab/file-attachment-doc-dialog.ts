@@ -35,7 +35,6 @@ export class FileAttachmentDocDialog extends TableElementsMixin(CommonMethodsMix
         no-padding
         keep-dialog-open
         size="md"
-        keep-dialog-open
         dialog-title="${this.dialogTitle}"
         .okBtnText="${this.confirmBtnText}"
         ?show-spinner="${_showDialogSpinner(this.requestInProcess, this.uploadInProgress)}"

@@ -82,7 +82,7 @@ export class FollowUpActionsDialog extends CommonMethodsMixin(TableElementsMixin
           flex-direction: column;
         }
         </style>
-        <etools-dialog no-padding keep-dialog-open size="md"
+        <etools-dialog no-padding size="md"
                 keep-dialog-open
                 dialog-title="${this.dialogTitle}"
                 .okBtnText="${this.confirmBtnText}"
