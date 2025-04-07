@@ -788,8 +788,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   showFaceForm(engagement_type: string, partnerId?: number) {
     const showFaceForm = ['audit', 'sc'].includes(engagement_type);
 
-    if (showFaceForm && partnerId && this.prevPartnerId !== partnerId) {
+    if (partnerId && this.prevPartnerId !== partnerId) {
       this.prevPartnerId = partnerId;
+      this.data.faceForms = null;
       this.loadFaceData(this.prevPartnerId);
     }
     return showFaceForm;
