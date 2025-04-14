@@ -38,6 +38,9 @@ import cloneDeep from 'lodash-es/cloneDeep';
 import {getObjectsIDs} from '../../../utils/utils';
 import {waitForCondition} from '@unicef-polymer/etools-utils/dist/wait.util';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {getEndpoint} from '../../../config/endpoints-controller';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import dayjs from 'dayjs';
 
 /**
  * @customElement
@@ -120,6 +123,70 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
       <etools-content-panel class="content-section clearfix" panel-title="Engagement Overview">
         <div class="row">
+          <div class="col-12 col-lg-4 col-md-6 input-container">
+            <etools-info-tooltip
+              .hideTooltip="${this._hideTooltip(this.optionsData, this.showInput, this.data.engagement_type)}"
+            >
+              <!-- Engagement Type -->
+              <etools-dropdown
+                slot="field"
+                id="engagementType"
+                class="w100 ${this._setRequired('engagement_type', this.optionsData)} validate-field"
+                .selected="${this.data.engagement_type}"
+                label="${this.getLabel('engagement_type', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('engagement_type', this.optionsData, 'dropdown')}"
+                .options="${this.engagementTypes}"
+                option-label="label"
+                option-value="value"
+                ?required="${this._setRequired('engagement_type', this.optionsData)}"
+                ?readonly="${this.itIsReadOnly('engagement_type', this.optionsData)}"
+                ?invalid="${this._checkInvalid(this.errors.engagement_type)}"
+                .errorMessage="${this.errors.engagement_type}"
+                @focus="${(event: any) => this._resetFieldError(event)}"
+                trigger-value-change-event
+                @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                  this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
+                  if (detail.selectedItem) {
+                    this.onEngagementTypeChanged();
+                  }
+                }}"
+                hide-search
+              >
+              </etools-dropdown>
+              <span slot="message"
+                >Attach FACE Form Requesting Funding, <br />
+                ICE Form, FACE Form Reporting,<br />
+                Statement of Expenditure</span
+              >
+            </etools-info-tooltip>
+          </div>
+
+          <div class="col-12 col-lg-4 col-md-4 input-container">
+            <etools-dropdown-multi
+              id="faceForms"
+              ?hidden="${!this.showFaceForm(this.data.engagement_type, this.data.partner?.id)}"
+              class="w100 ${this._setRequired('engagement_type', this.optionsData)} validate-field"
+              .selectedValues="${this.data.faceForms || []}"
+              label="Face forms"
+              .options="${this.faceFormsOption}"
+              option-label="commitment_ref"
+              option-value="commitment_ref"
+              ?readonly="${this.itIsReadOnly('engagement_type', this.optionsData)}"
+              ?invalid="${this.errors.active_pd}"
+              .errorMessage="${this.errors.active_pd}"
+              @focus="${this._resetFieldError}"
+              dynamic-align
+              trigger-value-change-event
+              @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                const commRefs = (detail.selectedItems || []).map((i: any) => i.commitment_ref);
+                this.data.faceForms = commRefs;
+                this.onFaceChange(this.data.faceForms);
+              }}"
+            >
+            </etools-dropdown-multi>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
             <!-- Purchase Order -->
             <etools-input
@@ -130,7 +197,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               allowed-pattern="[0-9]"
               label="${this.getLabel('agreement.order_number', this.optionsData)}"
               placeholder="Enter ${this.getLabel('agreement.order_number', this.optionsData)}"
-              ?readonly="${this.isReadOnly('agreement', this.optionsData)}"
+              ?readonly="${this.itIsReadOnly('agreement', this.optionsData)}"
               maxlength="30"
               required
               ?invalid="${this._checkInvalid(this.errors.agreement)}"
@@ -218,7 +285,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               label="${this.getLabel('agreement.contract_end_date', this.optionsData)}"
               placeholder="${this.getPlaceholderText('agreement.contract_end_date', this.optionsData, 'datepicker')}"
               ?required="${this._setRequired('related_agreement.contract_end_date', this.optionsData)}"
-              ?readonly="${this.isReadOnly('related_agreement.contract_end_date', this.optionsData)}"
+              ?readonly="${this.itIsReadOnly('related_agreement.contract_end_date', this.optionsData)}"
               ?invalid="${this._checkInvalid(this.errors.contract_end_date)}"
               .errorMessage="${this.errors.contract_end_date}"
               @focus="${(event: any) => this._resetFieldError(event)}"
@@ -242,7 +309,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               label="${this.getLabel('partner_contacted_at', this.optionsData)}"
               placeholder="${this.getPlaceholderText('partner_contacted_at', this.optionsData, 'datepicker')}"
               ?required="${this._setRequired('partner_contacted_at', this.optionsData)}"
-              ?readonly="${this.isReadOnly('partner_contacted_at', this.optionsData)}"
+              ?readonly="${this.itIsReadOnly('partner_contacted_at', this.optionsData)}"
               ?invalid="${this._checkInvalid(this.errors.partner_contacted_at)}"
               .errorMessage="${this.errors.partner_contacted_at}"
               @focus="${(event: any) => this._resetFieldError(event)}"
@@ -254,44 +321,6 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 this.dateHasChanged(detail, 'partner_contacted_at', this.data)}"
             >
             </datepicker-lite>
-          </div>
-
-          <div class="col-12 col-lg-4 col-md-6 input-container">
-            <etools-info-tooltip
-              .hideTooltip="${this._hideTooltip(this.optionsData, this.showInput, this.data.engagement_type)}"
-            >
-              <!-- Engagement Type -->
-              <etools-dropdown
-                slot="field"
-                id="engagementType"
-                class="w100 ${this._setRequired('engagement_type', this.optionsData)} validate-field"
-                .selected="${this.data.engagement_type}"
-                label="${this.getLabel('engagement_type', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('engagement_type', this.optionsData, 'dropdown')}"
-                .options="${this.engagementTypes}"
-                option-label="label"
-                option-value="value"
-                ?required="${this._setRequired('engagement_type', this.optionsData)}"
-                ?readonly="${this.isReadOnly('engagement_type', this.optionsData)}"
-                ?invalid="${this._checkInvalid(this.errors.engagement_type)}"
-                .errorMessage="${this.errors.engagement_type}"
-                @focus="${(event: any) => this._resetFieldError(event)}"
-                trigger-value-change-event
-                @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                  this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
-                  if (detail.selectedItem) {
-                    this.onEngagementTypeChanged();
-                  }
-                }}"
-                hide-search
-              >
-              </etools-dropdown>
-              <span slot="message"
-                >Attach FACE Form Requesting Funding, <br />
-                ICE Form, FACE Form Reporting,<br />
-                Statement of Expenditure</span
-              >
-            </etools-info-tooltip>
           </div>
 
           ${this.showInput
@@ -316,7 +345,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     this.optionsData,
                     this.data.engagement_type
                   )}"
-                  ?readonly="${this.isReadOnly('start_date', this.optionsData)}"
+                  ?readonly="${this.itIsReadOnly('start_date', this.optionsData)}"
                   ?invalid="${this._checkInvalid(this.errors.start_date)}"
                   .errorMessage="${this.errors.start_date}"
                   @focus="${(event: any) => this._resetFieldError(event)}"
@@ -348,7 +377,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                       this.optionsData,
                       this.data.engagement_type
                     )}"
-                    ?readonly="${this.isReadOnly('end_date', this.optionsData)}"
+                    ?readonly="${this.itIsReadOnly('end_date', this.optionsData)}"
                     ?invalid="${this._checkInvalid(this.errors.end_date)}"
                     .errorMessage="${this.errors.end_date}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -380,7 +409,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                       this.optionsData,
                       this.data.engagement_type
                     )}"
-                    ?readonly="${this.isReadOnly('total_value', this.optionsData)}"
+                    ?readonly="${this.itIsReadOnly('total_value', this.optionsData)}"
                     ?invalid="${this._checkInvalid(this.errors.total_value)}"
                     .errorMessage="${this.errors.total_value}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -394,7 +423,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                 <div class="col-md-3 col-lg-2 col-12 join-audit">
                   <etools-checkbox
                     ?checked="${this.data.joint_audit}"
-                    ?disabled="${this.isReadOnly('joint_audit', this.optionsData)}"
+                    ?disabled="${this.itIsReadOnly('joint_audit', this.optionsData)}"
                     @sl-change="${(e: any) => {
                       this.data.joint_audit = e.target.checked;
                     }}"
@@ -414,7 +443,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     option-label="label"
                     option-value="value"
                     ?required="${this.isAuditOrSpecialAudit(this.data.engagement_type)}"
-                    ?readonly="${this.isReadOnly('year_of_audit', this.optionsData)}"
+                    ?readonly="${this.itIsReadOnly('year_of_audit', this.optionsData)}"
                     ?invalid="${this._checkInvalid(this.errors.year_of_audit)}"
                     .errorMessage="${this.errors.year_of_audit}"
                     @focus="${this._resetFieldError}"
@@ -442,7 +471,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     option-value="value"
                     .selectedValues="${this.data.shared_ip_with || []}"
                     ?required="${this._setRequired('shared_ip_with', this.optionsData)}"
-                    ?readonly="${this.isReadOnly('shared_ip_with', this.optionsData)}"
+                    ?readonly="${this.itIsReadOnly('shared_ip_with', this.optionsData)}"
                     ?invalid="${this.errors.shared_ip_with}"
                     .errorMessage="${this.errors.shared_ip_with}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -471,7 +500,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     option-value="id"
                     .selectedValues="${getObjectsIDs(this.data?.sections)}"
                     ?required="${this._setRequired('sections', this.optionsData)}"
-                    ?readonly="${this.isReadOnly('sections', this.optionsData)}"
+                    ?readonly="${this.itIsReadOnly('sections', this.optionsData)}"
                     ?invalid="${this.errors.sections}"
                     .errorMessage="${this.errors.sections}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -501,7 +530,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                     option-value="id"
                     .selectedValues="${getObjectsIDs(this.data?.offices)}"
                     ?required="${this._setRequired('offices', this.optionsData)}"
-                    ?readonly="${this.isReadOnly('offices', this.optionsData)}"
+                    ?readonly="${this.itIsReadOnly('offices', this.optionsData)}"
                     ?invalid="${this.errors.offices}"
                     .errorMessage="${this.errors.offices}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -532,7 +561,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               preserve-search-on-close
               option-label="name"
               option-value="id"
-              ?hidden="${this.isReadOnly('users_notified', this.optionsData)}"
+              ?hidden="${this.itIsReadOnly('users_notified', this.optionsData)}"
               .selectedValues="${getObjectsIDs(this.data?.users_notified)}"
               ?required="${this._setRequired('users_notified', this.optionsData)}"
               ?invalid="${this.errors.users_notified}"
@@ -547,7 +576,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
               }}"
             >
             </etools-dropdown-multi>
-            <div class="pad-lr" ?hidden="${!this.isReadOnly('users_notified', this.optionsData)}">
+            <div class="pad-lr" ?hidden="${!this.itIsReadOnly('users_notified', this.optionsData)}">
               <label for="notifiedLbl" class="paper-label">${this.getLabel('users_notified', this.optionsData)}</label>
               <div class="input-label" ?empty="${this._emptyArray(this.data.users_notified)}">
                 ${(this.data.users_notified || []).map(
@@ -691,6 +720,12 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: String})
   detailsRoutePath!: string;
 
+  @property({type: Number})
+  prevPartnerId!: number;
+
+  @property({type: Array})
+  faceFormsOption = [];
+
   @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
 
@@ -744,6 +779,56 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       return false;
     }
     return true;
+  }
+
+  itIsReadOnly(field: string, permissions: AnyObject) {
+    return !this.data.partner?.id || this.isReadOnly(field, permissions);
+  }
+
+  showFaceForm(engagement_type: string, partnerId?: number) {
+    const showFaceForm = ['audit', 'sc'].includes(engagement_type);
+
+    if (partnerId && this.prevPartnerId !== partnerId) {
+      this.prevPartnerId = partnerId;
+      this.data.faceForms = null;
+      this.loadFaceData(this.prevPartnerId);
+    }
+    return showFaceForm;
+  }
+
+  loadFaceData(partnerId: number) {
+    const url = getEndpoint('linkFace', {id: partnerId}).url;
+    sendRequest({
+      endpoint: {url}
+    })
+      .then((resp) => {
+        this.faceFormsOption = resp.rows || [];
+      })
+      .catch((err) => fireEvent(this, 'toast', {text: `Error fetching Face forms data for ${partnerId}: ${err}`}));
+  }
+
+  onFaceChange(commitment_refs: string[]) {
+    const selectedFaceForms: any[] = this.faceFormsOption.filter((x: any) =>
+      commitment_refs.includes(x.commitment_ref)
+    );
+    let dct_amt_usd = 0;
+    let start_date: any = null;
+    let end_date: any = null;
+    for (const faceForm of selectedFaceForms) {
+      dct_amt_usd += Number(faceForm.dct_amt_usd);
+      if (faceForm.start_date && (!start_date || dayjs(faceForm.start_date) < start_date)) {
+        start_date = dayjs(faceForm.start_date);
+      }
+      if (faceForm.end_date && (!end_date || dayjs(faceForm.end_date) > end_date)) {
+        end_date = dayjs(faceForm.end_date);
+      }
+    }
+    this.data = {
+      ...this.data,
+      total_value: dct_amt_usd,
+      start_date: start_date ? dayjs(start_date).format('YYYY-MM-DD') : start_date,
+      end_date: end_date ? dayjs(end_date).format('YYYY-MM-DD') : end_date
+    };
   }
 
   cleanUpStoredValues() {
@@ -1114,7 +1199,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   }
 
   _hideTooltip(options: AnyObject, showInput: any, type: any) {
-    return this.isReadOnly('engagement_type', options) || this.isSpecialAudit(type) || !showInput;
+    return this.itIsReadOnly('engagement_type', options) || this.isSpecialAudit(type) || !showInput;
   }
 
   _setEngagementTypes(options: AnyObject) {
@@ -1164,7 +1249,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if (!agreement) {
       return false;
     }
-    return this.isReadOnly(field, permissions) || !agreement.id;
+    return this.itIsReadOnly(field, permissions) || !agreement.id;
   }
 
   _hideField(fieldName: any, optionsData: AnyObject) {
