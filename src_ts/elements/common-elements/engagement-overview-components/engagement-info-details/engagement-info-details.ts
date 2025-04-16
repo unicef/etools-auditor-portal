@@ -165,22 +165,24 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
             <etools-dropdown-multi
               id="faceForms"
               ?hidden="${!this.showFaceForm(this.data.engagement_type, this.data.partner?.id)}"
-              class="w100 ${this._setRequired('engagement_type', this.optionsData)} validate-field"
-              .selectedValues="${this.data.faceForms || []}"
-              label="Face forms"
+              class="w100 ${this._setRequired('face_forms', this.optionsData)} validate-field"
+              .selectedValues="${this.data.face_forms || []}"
+              label="${this.getLabel('face_forms', this.optionsData)}"
               .options="${this.faceFormsOption}"
               option-label="commitment_ref"
               option-value="commitment_ref"
-              ?readonly="${this.itIsReadOnly('engagement_type', this.optionsData)}"
-              ?invalid="${this.errors.active_pd}"
-              .errorMessage="${this.errors.active_pd}"
+              ?required="${!this.itIsReadOnly('face_forms', this.optionsData) &&
+              this.showFaceForm(this.data.engagement_type, this.data.partner?.id)}"
+              ?readonly="${this.itIsReadOnly('face_forms', this.optionsData)}"
+              ?invalid="${this.errors.face_forms}"
+              .errorMessage="${this.errors.face_forms}"
               @focus="${this._resetFieldError}"
               dynamic-align
               trigger-value-change-event
               @etools-selected-items-changed="${({detail}: CustomEvent) => {
                 const commRefs = (detail.selectedItems || []).map((i: any) => i.commitment_ref);
-                this.data.faceForms = commRefs;
-                this.onFaceChange(this.data.faceForms);
+                this.data.face_forms = commRefs;
+                this.onFaceChange(this.data.face_forms);
               }}"
             >
             </etools-dropdown-multi>
@@ -409,7 +411,8 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
                       this.optionsData,
                       this.data.engagement_type
                     )}"
-                    ?readonly="${this.itIsReadOnly('total_value', this.optionsData)}"
+                    ?readonly="${this.itIsReadOnly('total_value', this.optionsData) ||
+                    this.showFaceForm(this.data.engagement_type, this.data.partner?.id)}}"
                     ?invalid="${this._checkInvalid(this.errors.total_value)}"
                     .errorMessage="${this.errors.total_value}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -669,7 +672,15 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: Object})
   tabTexts = {
     name: 'Engagement Overview',
-    fields: ['agreement', 'end_date', 'start_date', 'engagement_type', 'partner_contacted_at', 'total_value']
+    fields: [
+      'agreement',
+      'end_date',
+      'start_date',
+      'engagement_type',
+      'partner_contacted_at',
+      'total_value',
+      'face_forms'
+    ]
   };
 
   @property({type: Array})
@@ -803,6 +814,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     })
       .then((resp) => {
         this.faceFormsOption = resp.rows || [];
+        this.requestUpdate();
       })
       .catch((err) => fireEvent(this, 'toast', {text: `Error fetching Face forms data for ${partnerId}: ${err}`}));
   }
@@ -1143,6 +1155,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     const sectionIDs = (this.data?.sections || []).map((section) => +section.id);
     if (this.collectionChanged(originalSectionIDs, sectionIDs)) {
       data.sections = sectionIDs;
+    }
+
+    const originalFaceIDs = (this.originalData.face_forms || []).map((face) => face.commitment_ref);
+    if (this.collectionChanged(originalFaceIDs, this.data?.face_forms)) {
+      data.face_forms = [...(this.data?.face_forms || [])];
     }
 
     return data;
