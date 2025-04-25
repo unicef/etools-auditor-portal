@@ -79,7 +79,6 @@ export class PagesHeaderElement extends MatomoMixin(LitElement) {
               ?hidden="${this.hideAddButton || typeof this.hideAddButton === 'undefined'}"
               tracker="Add New Engagement"
               @click="${this.trackAnalytics}"
-              tracker="Agreements export"
               href="${this.link}"
             >
               <etools-icon slot="prefix" name="add"></etools-icon>

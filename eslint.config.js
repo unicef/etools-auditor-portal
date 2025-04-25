@@ -1,5 +1,7 @@
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import lit from 'eslint-plugin-lit';
 import prettier from 'eslint-plugin-prettier';
+import litA11Y from 'eslint-plugin-lit-a11y';
 import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
 import path from 'node:path';
@@ -16,11 +18,19 @@ const compat = new FlatCompat({
 });
 
 export default [
-  ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'),
+  ...compat.extends(
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:lit/recommended',
+    'plugin:lit-a11y/recommended',
+    'plugin:prettier/recommended'
+  ),
   {
     plugins: {
       '@typescript-eslint': typescriptEslint,
-      prettier
+      lit,
+      prettier,
+      'lit-a11y': litA11Y
     },
 
     languageOptions: {
@@ -34,15 +44,17 @@ export default [
 
       parser: tsParser,
       ecmaVersion: 2018,
-      sourceType: 'module',
-
-      parserOptions: {
-        project: './tsconfig.json'
-      }
+      sourceType: 'module'
     },
 
     rules: {
+      'lit-a11y/anchor-is-valid': 'off',
+      'lit-a11y/click-events-have-key-events': 'off',
+      'lit-a11y/no-autofocus': 'warn',
+      'lit-a11y/aria-attrs': 'warn',
       'prettier/prettier': 'error',
+      'lit/attribute-value-entities': 'off',
+      'lit/no-legacy-template-syntax': 'off',
       'linebreak-style': 'off',
       'padded-blocks': 'off',
 
