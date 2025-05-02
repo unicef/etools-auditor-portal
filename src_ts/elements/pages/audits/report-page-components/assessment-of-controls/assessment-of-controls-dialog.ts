@@ -29,85 +29,80 @@ export class AssessmentOfControlsDialog extends CommonMethodsMixin(TableElements
     return html`
       ${sharedStyles}
       <etools-dialog
-          no-padding
-          keep-dialog-open
-          size="lg"
-          dialog-title="${this.dialogTitle}"
-          .okBtnText="${this.confirmBtnText}"
-          ?show-spinner="${this.requestInProcess}"
-          ?disable-confirm-btn="${this.requestInProcess}"
-          @confirm-btn-clicked="${this.onSave}"
-          @close="${this._onClose}"
-        >
-          <div class="container-dialog">
-            <div class="row">
-                <div class="col-12 input-container">
-                  <!-- Recommendation -->
-                  <etools-textarea
-                    class="w100 ${this._setRequired(
-                      'key_internal_controls.recommendation',
-                      this.optionsData
-                    )} validate-input"
-                    .value="${this.editedItem.recommendation}"
-                    label="${this.getLabel('key_internal_controls.recommendation', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('key_internal_controls.recommendation', this.optionsData)}"
-                    ?required="${this._setRequired('key_internal_controls.recommendation', this.optionsData)}"
-                    ?disabled="${this.requestInProcess}"
-                    ?invalid="${this.errors.recommendation}"
-                    .errorMessage="${this.errors.recommendation}"
-                    @focus="${this._resetFieldError}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      this.valueChanged(detail, 'recommendation', this.editedItem)}""
-                  >
-                  </etools-textarea>
-                </div>
-              
-                <div class="col-12 input-container">
-                  <!-- Audit Observation -->
-                  <etools-textarea
-                    class="w100 ${this._setRequired(
-                      'key_internal_controls.audit_observation',
-                      this.optionsData
-                    )} validate-input"
-                    .value="${this.editedItem.audit_observation}"
-                    label="${this.getLabel('key_internal_controls.audit_observation', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText(
-                      'key_internal_controls.audit_observation',
-                      this.optionsData
-                    )}"
-                    ?required="${this._setRequired('key_internal_controls.audit_observation', this.optionsData)}"
-                    ?disabled="${this.requestInProcess}"
-                    ?invalid="${this.errors.audit_observation}"
-                    .errorMessage="${this.errors.audit_observation}"
-                    @focus="${this._resetFieldError}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      this.valueChanged(detail, 'audit_observation', this.editedItem)}""
-                  >
-                  </etools-textarea>
-                </div>
-              
-                <div class="col-12 input-container">
-                  <!-- IP Response -->
-                  <etools-textarea
-                    class="w100 ${this._setRequired('key_internal_controls.ip_response', this.optionsData)}
-                                          validate-input"
-                    .value="${this.editedItem.ip_response}"
-                    label="${this.getLabel('key_internal_controls.ip_response', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('key_internal_controls.ip_response', this.optionsData)}"
-                    ?required="${this._setRequired('key_internal_controls.ip_response', this.optionsData)}"
-                    ?disabled="${this.requestInProcess}"
-                    ?invalid="${this.errors.ip_response}"
-                    .errorMessage="${this.errors.ip_response}"
-                    @focus="${this._resetFieldError}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      this.valueChanged(detail, 'ip_response', this.editedItem)}""
-                  >
-                  </etools-textarea>
-                </div>
-              </div>
+        no-padding
+        keep-dialog-open
+        size="lg"
+        dialog-title="${this.dialogTitle}"
+        .okBtnText="${this.confirmBtnText}"
+        ?show-spinner="${this.requestInProcess}"
+        ?disable-confirm-btn="${this.requestInProcess}"
+        @confirm-btn-clicked="${this.onSave}"
+        @close="${this._onClose}"
+      >
+        <div class="container-dialog">
+          <div class="row">
+            <div class="col-12 input-container">
+              <!-- Recommendation -->
+              <etools-textarea
+                class="w100 ${this._setRequired(
+                  'key_internal_controls.recommendation',
+                  this.optionsData
+                )} validate-input"
+                .value="${this.editedItem.recommendation}"
+                label="${this.getLabel('key_internal_controls.recommendation', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('key_internal_controls.recommendation', this.optionsData)}"
+                ?required="${this._setRequired('key_internal_controls.recommendation', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                ?invalid="${this.errors.recommendation}"
+                .errorMessage="${this.errors.recommendation}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) =>
+                  this.valueChanged(detail, 'recommendation', this.editedItem)}"
+              >
+              </etools-textarea>
             </div>
-        </etools-dialog>
-        `;
+
+            <div class="col-12 input-container">
+              <!-- Audit Observation -->
+              <etools-textarea
+                class="w100 ${this._setRequired(
+                  'key_internal_controls.audit_observation',
+                  this.optionsData
+                )} validate-input"
+                .value="${this.editedItem.audit_observation}"
+                label="${this.getLabel('key_internal_controls.audit_observation', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('key_internal_controls.audit_observation', this.optionsData)}"
+                ?required="${this._setRequired('key_internal_controls.audit_observation', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                ?invalid="${this.errors.audit_observation}"
+                .errorMessage="${this.errors.audit_observation}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) =>
+                  this.valueChanged(detail, 'audit_observation', this.editedItem)}"
+              >
+              </etools-textarea>
+            </div>
+
+            <div class="col-12 input-container">
+              <!-- IP Response -->
+              <etools-textarea
+                class="w100 ${this._setRequired('key_internal_controls.ip_response', this.optionsData)} validate-input"
+                .value="${this.editedItem.ip_response}"
+                label="${this.getLabel('key_internal_controls.ip_response', this.optionsData)}"
+                placeholder="${this.getPlaceholderText('key_internal_controls.ip_response', this.optionsData)}"
+                ?required="${this._setRequired('key_internal_controls.ip_response', this.optionsData)}"
+                ?disabled="${this.requestInProcess}"
+                ?invalid="${this.errors.ip_response}"
+                .errorMessage="${this.errors.ip_response}"
+                @focus="${this._resetFieldError}"
+                @value-changed="${({detail}: CustomEvent) => this.valueChanged(detail, 'ip_response', this.editedItem)}"
+              >
+              </etools-textarea>
+            </div>
+          </div>
+        </div>
+      </etools-dialog>
+    `;
   }
 
   @property({type: Object})

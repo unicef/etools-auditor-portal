@@ -56,7 +56,7 @@ export class QuestionnairePageMainDialog extends CommonMethodsMixin(LitElement) 
                 <!-- Risk Assessment -->
                 <etools-dropdown
                   id="riskAssessmentDropdown"
-                  required validate-input"
+                  class="required validate-input"
                   .selected="${this.editedItem?.risk?.value}"
                   label="Risk Assessment"
                   placeholder="Select Risk Assessment"

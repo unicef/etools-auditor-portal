@@ -14,7 +14,7 @@ export class SendBackComments extends LitElement {
 
       <etools-content-panel class="content-section comment-container clearfx" panel-title="">
         <div class="flag-container">
-          <img class="flag-icon" src="${Environment.basePath}assets/images/flag-icon.svg" />
+          <img class="flag-icon" src="${Environment.basePath}assets/images/flag-icon.svg" alt="flag" />
         </div>
         <div class="row">
           <div class="col-12 m-l4">
