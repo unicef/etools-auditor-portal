@@ -1,6 +1,7 @@
 import omit from 'lodash-es/omit';
 import get from 'lodash-es/get';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 
 export function addAllowedActions(options: AnyObject) {
   if (!options || !options.actions) {

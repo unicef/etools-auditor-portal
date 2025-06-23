@@ -254,7 +254,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
   onEngagementLoaded() {
     if (this.engagementOptions && this.engagement && this.user) {
       this.tabsList = [
-        {tab: 'overview', tabLabel: 'Engagement Overview'},
+        {tab: 'overview', tabLabel: 'Engagement Details'},
         {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
         {tab: 'follow-up', hidden: !this._showFollowUpTabs(this.apOptions), tabLabel: 'Follow-Up'},
         {tab: 'attachments', tabLabel: 'Attachments'}

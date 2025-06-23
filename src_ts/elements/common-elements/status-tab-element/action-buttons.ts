@@ -28,9 +28,9 @@ export class ActionButtons extends LitElement {
       ${ActionButtonsStyles}
       <etools-button-group>
         <etools-button id="primary" variant="primary" @click="${this._handlePrimaryClick}">
-          ${this._setButtonText(this.actions[0])}
+          ${this.actions?.length ? this._setButtonText(this.actions[0]) : ''}
         </etools-button>
-        ${this._showOtherActions(this.actions.length)
+        ${this._showOtherActions(this.actions?.length)
           ? html`<sl-dropdown
               id="splitBtn"
               placement="bottom-end"

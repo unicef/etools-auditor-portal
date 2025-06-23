@@ -11,6 +11,9 @@ const famEndpoints = {
   engagementInfo: {
     template: '/api/audit/<%=type%>/<%=id%>/'
   },
+  partnerEngagements: {
+    url: '/api/audit/engagements/hact/'
+  },
   createEngagement: {
     url: '/api/audit/engagements/'
   },

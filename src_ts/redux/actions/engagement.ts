@@ -7,7 +7,8 @@ import {
   SET_CURRENT_ENGAGEMENT,
   SET_ENGAGEMENT_ERROR,
   UPDATE_CURRENT_ENGAGEMENT,
-  UPDATE_ENGAGEMENT_ALL_OPTIONS
+  UPDATE_ENGAGEMENT_ALL_OPTIONS,
+  SET_ENGAGEMENT_PARTNER
 } from './actionsConstants';
 
 export interface EngagementActionSetData extends Action<'SET_CURRENT_ENGAGEMENT'> {
@@ -18,7 +19,11 @@ export interface EngagementActionUpdateData extends Action<'UPDATE_CURRENT_ENGAG
   payload: AnyObject;
 }
 
-export type EngagementAction = EngagementActionSetData | EngagementActionUpdateData;
+export interface EngagementActionSetPartner extends Action<'SET_ENGAGEMENT_PARTNER'> {
+  payload: AnyObject;
+}
+
+export type EngagementAction = EngagementActionSetData | EngagementActionUpdateData | EngagementActionSetPartner;
 
 export const setEngagementData: ActionCreator<EngagementAction> = (payload: AnyObject) => {
   return {
@@ -87,4 +92,11 @@ export const getActionPointOptions = (id: number) => {
     endpoint: {url: `${apBaseUrl}action-points/`}
   };
   return sendRequest(options);
+};
+
+export const setEngagementPartner: ActionCreator<EngagementAction> = (payload: AnyObject) => {
+  return {
+    type: SET_ENGAGEMENT_PARTNER,
+    payload
+  };
 };

@@ -153,10 +153,10 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
 
             <engagement-staff-members-tab
               id="staffMembers"
-              .errorObject="${this.errorObject}"
-              save-with-button
               .engagement="${this.engagement}"
               .optionsData="${this.engagementOptions}"
+              .errorObject="${this.errorObject}"
+              save-with-button
             >
             </engagement-staff-members-tab>
           </div>
@@ -212,7 +212,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
 
   @property({type: Array})
   tabsList: AnyObject[] = [
-    {tab: 'overview', tabLabel: 'Engagement Overview'},
+    {tab: 'overview', tabLabel: 'Engagement Details'},
     {tab: 'attachments', tabLabel: 'Attachments'}
   ];
 

@@ -5,6 +5,7 @@ import isString from 'lodash-es/isString';
 import each from 'lodash-es/each';
 import filter from 'lodash-es/filter';
 import isObject from 'lodash-es/isObject';
+import {prettyDate} from '@unicef-polymer/etools-utils/dist/date.util';
 import {readonlyPermission, isRequired, getOptionsChoices, getCollection} from './permission-controller';
 import {GenericObject} from '../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -246,7 +247,7 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     isAuditOrSpecialAudit(type: string) {
-      return ['audit', 'sa'].includes(type);
+      return ['audit', 'sa', 'sc'].includes(type);
     }
 
     getFileNameFromURL(url: string) {
@@ -274,6 +275,37 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       window.dispatchEvent(new CustomEvent('popstate'));
     }
 
+    /**
+     * Prepare date string and return it in a user readable format
+     */
+    getDateDisplayValue(dateString: string) {
+      const formatedDate = prettyDate(dateString);
+      return formatedDate ? formatedDate : '-';
+    }
+
+    public getRiskRatingClass(riskRating: string) {
+      let riskRatingClass = '';
+      if (riskRating) {
+        if (riskRating.includes('High')) {
+          riskRating = 'high';
+        } else if (riskRating.includes('Moderate')) {
+          riskRating = 'moderate';
+        } else if (riskRating.includes('Low')) {
+          riskRating = 'low';
+        } else if (riskRating.includes('Significant')) {
+          riskRating = 'significant';
+        } else if (riskRating.includes('Required')) {
+          riskRating = 'not-required';
+        } else if (riskRating.includes('Assessed')) {
+          riskRating = 'not-assessed';
+        }
+        riskRatingClass = riskRating.toLowerCase().split(' ').join('-');
+      } else {
+        riskRatingClass = 'unavailable';
+      }
+      return riskRatingClass + ' risk-rating-field';
+    }
+
     handleUsersNoLongerAssignedToCurrentCountry = (availableUsers: any[], savedUsers: any[]) => {
       savedUsers = savedUsers || [];
       availableUsers = availableUsers || [];
@@ -291,6 +323,7 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
     };
   }
+
   return CommonMethodsMixinClass;
 }
 

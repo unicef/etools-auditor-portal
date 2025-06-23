@@ -214,6 +214,7 @@ export const tabInputsStyles = css`
     padding-left: 12px;
   }
 
+  .etools-container,
   etools-dropdown,
   etools-dropdown-multi,
   etools-input,

@@ -4,7 +4,8 @@ import {
   SET_CURRENT_ENGAGEMENT,
   SET_ENGAGEMENT_ERROR,
   UPDATE_CURRENT_ENGAGEMENT,
-  UPDATE_ENGAGEMENT_ALL_OPTIONS
+  UPDATE_ENGAGEMENT_ALL_OPTIONS,
+  SET_ENGAGEMENT_PARTNER
 } from '../actions/actionsConstants';
 import {RootAction} from '../store';
 import {AnyObject} from '@unicef-polymer/etools-types';
@@ -17,6 +18,7 @@ export interface EngagementState {
   reportAttachmentOptions: AnyObject | null;
   apOptions: AnyObject | null;
   errorObject: AnyObject | null;
+  partner: AnyObject | null;
 }
 
 const INITIAL_ENGAGEMENT_DATA: EngagementState = {
@@ -26,7 +28,8 @@ const INITIAL_ENGAGEMENT_DATA: EngagementState = {
   attachmentOptions: {},
   reportAttachmentOptions: {},
   apOptions: {},
-  errorObject: {}
+  errorObject: {},
+  partner: {}
 };
 
 const engagement: Reducer<EngagementState, RootAction> = (state = INITIAL_ENGAGEMENT_DATA, action) => {
@@ -71,6 +74,12 @@ const engagement: Reducer<EngagementState, RootAction> = (state = INITIAL_ENGAGE
         ...state,
         errorObject: action.payload
       };
+    case SET_ENGAGEMENT_PARTNER:
+      return {
+        ...state,
+        partner: action.payload
+      };
+
     default:
       return state;
   }

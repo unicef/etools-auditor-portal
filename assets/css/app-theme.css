@@ -28,9 +28,9 @@
   --dark-hover-color: rgba(0, 0, 0, 0.01);
   --light-hover-color: rgba(255, 255, 255, 0.01);
   --dark-ink-color: rgba(0, 0, 0, 0.3);
-  --light-ink-color: rgba(255, 255, 255, 0.30);
+  --light-ink-color: rgba(255, 255, 255, 0.3);
   --light-theme-background-color: var(--paper-grey-50);
-  --light-theme-content-color: #FFFFFF;
+  --light-theme-content-color: #ffffff;
   --dark-theme-background-color: #233944;
   --medium-primary-text-color: #9d9d9d;
   --content--panel-icon-color: #ffffff;
@@ -43,7 +43,7 @@
   --work-planning-color: var(--paper-light-green-500);
   --field-monitering-color: var(--paper-green-500);
 
-  --title-toolbar-secondary-text-color : #C7CED2;
+  --title-toolbar-secondary-text-color: #c7ced2;
   --subtitle-background-color: #eeeeee;
   --toolbar-height: 60px;
   --side-bar-scrolling: visible;
@@ -96,6 +96,14 @@
   --sl-color-danger-600: var(--error-color);
   --sl-color-danger-500: var(--error-color-darker);
 
+  /* partner risk ratings colors */
+  --risk-rating-not-assesed-color: #dcd8d8;
+  --risk-rating-high-color: #740e0e;
+  --risk-rating-significant-color: #f05454;
+  --risk-rating-moderate-color: #ffca3a;
+  --risk-rating-low-color: #2fb0f2;
+  --risk-rating-not-required-color: #d8d8d8;
+
   /* sl-tooltip styles */
   --sl-tooltip-background-color: rgba(97, 97, 97, 0.9);
 
@@ -109,17 +117,16 @@
   --etools-loading-shadow-color: #333333;
 }
 
-html[dir="rtl"] {
+html[dir='rtl'] {
   --required-star-style: {
     background: url('./assets/images/required.svg') no-repeat 0 20%/8px;
     right: auto;
     padding-inline-end: 15px;
-  }
+  };
 }
 
-  
 html.contrastSoft {
-  --primary-color: #0077C7;
+  --primary-color: #0077c7;
   --primary-background-color: #ffffff;
   --secondary-background-color: #eeeeee;
   --medium-theme-background-color: #eeeeee;
@@ -170,7 +177,7 @@ html.contrastSoft {
   --error-box-bg-color: #f2dede;
   --error-box-border-color: #ebccd1;
   --error-box-text-color: var(--error-color);
-  --primary-color-hover: #0063A5;
+  --primary-color-hover: #0063a5;
   --default-btn-bg-hover-color: #000000;
   --error-hover-color: #d1391e;
 
@@ -191,8 +198,8 @@ html.contrastSoft {
 }
 
 html.readableText {
-  --sl-font-mono: Arial,Helvetica,sans-serif!important;
-  --sl-font-sans: Arial,Helvetica,sans-serif!important;
-  --sl-font-serif: Arial,Helvetica,sans-serif!important;
+  --sl-font-mono: Arial, Helvetica, sans-serif !important;
+  --sl-font-sans: Arial, Helvetica, sans-serif !important;
+  --sl-font-serif: Arial, Helvetica, sans-serif !important;
   font-family: var(--sl-font-sans);
 }

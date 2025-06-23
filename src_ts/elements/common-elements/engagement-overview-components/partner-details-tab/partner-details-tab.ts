@@ -8,26 +8,31 @@ import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-pa
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
-import {EtoolsDropdownMultiEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.js';
-
-import findIndex from 'lodash-es/findIndex';
-import get from 'lodash-es/get';
 import isEqual from 'lodash-es/isEqual';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import PaginationMixin from '@unicef-polymer/etools-unicef/src/mixins/pagination-mixin';
+import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/mixins/currency.js';
 import {readonlyPermission} from '../../../mixins/permission-controller';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
+import dayjs from 'dayjs';
 
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
+import {riskRatingStyles} from '../../../styles/risk-rating-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 import '../../../data-elements/get-partner-data';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
-import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
+import {setEngagementPartner, updateCurrentEngagement} from '../../../../redux/actions/engagement';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-request';
+import {getEndpoint} from '../../../config/endpoints-controller';
+import {parseRequestErrorsAndShowAsToastMsgs} from '@unicef-polymer/etools-utils/dist/etools-ajax/ajax-error-parser';
 
 /**
  * main menu
@@ -35,16 +40,16 @@ import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styl
  * @customElement
  */
 @customElement('partner-details-tab')
-export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElement)) {
+export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMethodsMixin(EtoolsCurrency(LitElement)))) {
   static get styles() {
-    return [moduleStyles, tabLayoutStyles, tabInputsStyles, layoutStyles];
+    return [moduleStyles, tabLayoutStyles, tabInputsStyles, layoutStyles, riskRatingStyles];
   }
 
   render() {
     return html`
       ${sharedStyles}
       <style>
-        .partner-loading {
+        ${dataTableStylesLit} .partner-loading {
           position: absolute;
           top: 28px;
           left: auto;
@@ -56,13 +61,33 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
         .input-container {
           display: flex;
         }
+        etools-data-table-header {
+          --list-bg-color: var(--medium-theme-background-color, #eeeeee);
+        }
+        etools-data-table-row.no-divider,
+        etools-data-table-header.no-divider {
+          --list-divider-color: none !important;
+        }
+        .overview-row {
+          padding-inline-start: 34px;
+        }
+        *[slot='row-data'] .col-data.center-align {
+          justify-content: center;
+        }
       </style>
 
       <get-partner-data .partnerId="${this.partnerId}" @partner-loaded="${this._partnerLoaded}"></get-partner-data>
 
+      <etools-media-query
+        query="(max-width: 1200px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
+
       <etools-content-panel class="content-section clearfix" panel-title="Partner Details" show-expand-btn>
         <div class="row">
-          <div class="col-12 col-lg-4 col-md-4 input-container">
+          <div class="col-12 col-lg-6 col-md-6 input-container">
             <!-- Partner -->
             ${this.isReadOnly('partner', this.optionsData)
               ? html`<etools-input
@@ -95,95 +120,127 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
             <etools-loading .active="${this.requestInProcess}" no-overlay loading-text="" class="partner-loading">
             </etools-loading>
           </div>
-          <div class="col-md-8 col-12 input-container">
-            <!-- Partner Address -->
+          <div class="col-12 col-lg-4 col-md-6 input-container">
+            <!-- Partner Vendor Number -->
             <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
-              .value="${this._setPartnerAddress(this.partner)}"
-              label="Partner Address"
+              .value="${this.partner?.vendor_number}"
+              label="Vendor Number"
               placeholder="${this.getReadonlyPlaceholder(this.partner)}"
               readonly
             >
             </etools-input>
           </div>
-          <div class="col-12 col-xl-4 col-lg-4 col-md-4 input-container">
-            <!-- Partner Phone Number -->
-            <etools-input
-              class="${this._setReadonlyFieldClass(this.partner)}"
-              .value="${this.partner?.phone_number}"
-              label="${this.getLabel('partner.phone_number', this.optionsData)}"
-              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
-              readonly
-            >
-            </etools-input>
-          </div>
-
-          <div class="col-12 col-xl-4 col-lg-8 col-md-8 input-container">
-            <!-- Partner E-mail Address -->
-            <etools-input
-              class="${this._setReadonlyFieldClass(this.partner)}"
-              .value="${this.partner?.email}"
-              label="${this.getLabel('partner.email', this.optionsData)}"
-              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
-              readonly
-            >
-            </etools-input>
-          </div>
-
-          <div class="col-12 col-xl-4 col-lg-6 col-md-6 input-container">
-            <!-- Partner  Officers-->
-            <etools-dropdown
-              id="authorizedOfficer"
-              class="${this._setRequired('authorized_officers', this.optionsData)} ${this._setPlaceholderColor(
-                this.partner
-              )}"
-              .selected="${this.authorizedOfficer?.id}"
-              label="${this.getLabel('authorized_officers', this.optionsData)}"
-              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
-              .options="${this.partner?.partnerOfficers}"
-              option-label="fullName"
-              option-value="id"
-              ?required="${this._setRequired('authorized_officers', this.optionsData)}"
-              ?invalid="${this._checkInvalid(this.errors.authorized_officers)}"
-              ?readonly="${this.isOfficersReadonly(this.optionsData, this.requestInProcess, this.partner)}"
-              .errorMessage="${this.errors.authorized_officers}"
-              @focus="${this._resetFieldError}"
-              dynamic-align
-              @etools-selected-item-changed="${(event: CustomEvent) => {
-                if (this.authorizedOfficer) {
-                  this.authorizedOfficer = event.detail.selectedItem;
-                }
-              }}"
-              trigger-value-change-event
-            >
-            </etools-dropdown>
-          </div>
-          ${this._showActivePd(this.partner?.partner_type, this.specialPartnerTypes)
-            ? html`<div class="col-12 input-container">
-                <!-- Active PD -->
-                <etools-dropdown-multi
-                  id="activePd"
-                  class="${this._setPlaceholderColor(this.partner)}"
-                  .selectedValues="${this.activePdIds}"
-                  label="${this.getLabel('active_pd', this.optionsData)}"
-                  placeholder="${this.activePdPlaceholder(this.optionsData, this.partner)}"
-                  .options="${this.partner?.interventions}"
-                  option-label="number"
-                  option-value="id"
-                  ?readonly="${this.isPdReadonly(this.optionsData, this.requestInProcess, this.partner)}"
-                  ?invalid="${this.errors.active_pd}"
-                  .errorMessage="${this.errors.active_pd}"
-                  @focus="${this._resetFieldError}"
-                  dynamic-align
-                  trigger-value-change-event
-                  @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                    const newIds = detail.selectedItems.map((i: any) => i.id);
-                    this.activePdIds = newIds;
-                  }}"
+          <div class="col-12 col-xl-6 layout-horizontal layout-wrap no-padding">
+            <div class="col-xl-4 col-6 input-container">
+              <!-- HACT Risk rating -->
+              <div class="etools-container">
+                <label class="paper-label">HACT Risk Rating</label>
+                <div
+                  class="${this.getRiskRatingClass(this.partner?.rating)} input-label"
+                  ?empty="${!this.partner.rating}"
                 >
-                </etools-dropdown-multi>
-              </div>`
-            : ``}
+                  ${this.partner?.rating}
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-4 col-6 input-container">
+              <!-- Type of assessment -->
+              <etools-input
+                readonly
+                placeholder="—"
+                label="Type of Assesmment"
+                .value="${this.partner?.type_of_assessment}"
+              >
+              </etools-input>
+            </div>
+            <div class="col-xl-4 col-6 input-container">
+              <!--Date last assessed-->
+              <etools-input
+                readonly
+                placeholder="—"
+                label="${'Date of Report'}"
+                .value="${this.getDateDisplayValue(this.partner.last_assessment_date)}"
+              >
+                <etools-icon name="date-range" slot="prefix"></etools-icon>
+              </etools-input>
+            </div>
+          </div>
+          <div class="col-12 col-xl-6 layout-horizontal layout-wrap no-padding">
+            <div class="col-12 col-lg-6 input-container">
+              <!-- Total of Amount tested -->
+              <etools-input
+                readonly
+                placeholder="—"
+                label="Total of Amount tested"
+                .value=" ${this.displayCurrencyAmount(this.totalAmountTested, 0, 0)}"
+              >
+              </etools-input>
+            </div>
+            <div class="col-12 col-lg-6 input-container">
+              <!-- Amount of Financial Findings -->
+              <etools-input
+                readonly
+                placeholder="—"
+                label="Amount of Financial Findings (percentage)"
+                .value=" ${this.displayCurrencyAmount(this.amountFinancialFindingsPercentage, 0, 0)}"
+              >
+              </etools-input>
+            </div>
+          </div>
+
+          <div class="col-12 padding-v" ?hidden="${!this.partner?.id}">
+            <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
+              <etools-data-table-column class="col-2">Engagement Type</etools-data-table-column>
+              <etools-data-table-column class="col-2">Date</etools-data-table-column>
+              <etools-data-table-column class="col-2">Amount Tested <br />(USD)</etools-data-table-column>
+              <etools-data-table-column class="col-2 col">Financial Findings <br />(USD)</etools-data-table-column>
+              <etools-data-table-column class="col-2 col">
+                Pending Unsupported Amount <br />(USD)</etools-data-table-column
+              >
+              <etools-data-table-column class="col-2"> Report </etools-data-table-column>
+            </etools-data-table-header>
+            ${(this.paginatedEngagements || []).map(
+              (item) => html`
+                <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
+                  <div slot="row-data" class="layout-horizontal">
+                    <div class="col-data col-2" data-col-header-label="Engagement Type">${item.engagement_type}</div>
+                    <div class="col-data col-2" data-col-header-label="Date">
+                      ${this.getDateDisplayValue(item.status_date)}
+                    </div>
+                    <div class="col-data col-2" data-col-header-label="Amount Tested">
+                      ${this.displayCurrencyAmount(item.amount_tested, 0, 0)}
+                    </div>
+                    <div class="col-data col-2 col" data-col-header-label="Financial Findings">
+                      ${this.displayCurrencyAmount(item.outstanding_findings, 0, 0)}
+                    </div>
+                    <div class="col-data col-2 col" data-col-header-label="Pending Unsupported Amount">
+                      ${this.displayCurrencyAmount(item.pending_unsupported_amount, 0, 0)}
+                    </div>
+                    <a
+                      class="col-data ${this.lowResolutionLayout ? '' : 'report'} col-2"
+                      data-col-header-label="Report"
+                      target="_blank"
+                      href="${this.linkFixUp(item.object_url)}"
+                    >
+                      <etools-icon-button name="open-in-new"></etools-icon-button>
+                      View Report
+                    </a>
+                  </div>
+                </etools-data-table-row>
+              `
+            )}
+            <etools-data-table-footer
+              .lowResolutionLayout="${this.lowResolutionLayout}"
+              .pageSize="${this.paginator.page_size}"
+              .pageNumber="${this.paginator.page}"
+              .totalResults="${this.paginator.count}"
+              .visibleRange="${this.paginator.visible_range}"
+              @page-size-changed="${this.pageSizeChanged}"
+              @page-number-changed="${this.pageNumberChanged}"
+            >
+            </etools-data-table-footer>
+          </div>
         </div>
       </etools-content-panel>
     `;
@@ -198,6 +255,9 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
   @property({type: Boolean})
   requestInProcess = false;
 
+  @property({type: Boolean})
+  lowResolutionLayout = false;
+
   @property({type: Object})
   errors: GenericObject = {};
 
@@ -206,6 +266,18 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
 
   @property({type: Object})
   originalData!: GenericObject;
+
+  @property({type: Array})
+  allEngagements: any[] = [];
+
+  @property({type: Number})
+  totalAmountTested = 0;
+
+  @property({type: Number})
+  amountFinancialFindingsPercentage = 0;
+
+  @property({type: Array})
+  paginatedEngagements: any[] = [];
 
   @property({type: Object})
   tabTexts: GenericObject = {
@@ -267,57 +339,15 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
     if (event.detail) {
       this.partner = event.detail;
     }
-    this.setOfficers(this.partner, this.engagement);
-    this._setActivePd(this.engagement, this.partner?.interventions);
+    store.dispatch(setEngagementPartner(this.partner));
     this.partnerId = null;
     this.errors = {};
     this.requestInProcess = false;
     this.validatePartner();
   }
 
-  setOfficers(partner, engagement) {
-    if (!partner || !partner.id) {
-      this.authorizedOfficer = null;
-      return;
-    }
-    const engagementOfficer = engagement && engagement.authorized_officers && engagement.authorized_officers[0];
-    const partnerOfficer = partner && partner.partnerOfficers && partner.partnerOfficers[0];
-    if (engagementOfficer) {
-      engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`;
-    }
-
-    if (this.isReadOnly('partner', this.optionsData) && engagementOfficer) {
-      this.partner.partnerOfficers = [engagementOfficer];
-      this.authorizedOfficer = engagementOfficer;
-    } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
-      const officerIndex = !!(
-        engagementOfficer &&
-        ~findIndex(partner.partnerOfficers, (officer: any) => {
-          return officer.id === engagementOfficer.id;
-        })
-      );
-
-      this.authorizedOfficer = officerIndex ? engagementOfficer : partnerOfficer;
-    }
-  }
-
   validate() {
-    return this.validatePartner() && this.validateActivePd();
-  }
-
-  validateActivePd() {
-    // TODO - this logic doesn't seem to be needed, because activePdInput.required is always false, confirm & remove
-    const activePdInput = this.shadowRoot?.querySelector('#activePd') as EtoolsDropdownMultiEl;
-    const partnerType = this.engagement.partner?.partner_type;
-    const partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
-
-    if (activePdInput && activePdInput.required && partnerRequiresActivePd && !activePdInput.validate()) {
-      activePdInput.invalid = true;
-      activePdInput.errorMessage = 'Active PD is required';
-      return false;
-    }
-
-    return true;
+    return this.validatePartner();
   }
 
   validatePartner() {
@@ -354,36 +384,6 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
     return typeof partnerType === 'string' && types.every((type) => !~partnerType.indexOf(type));
   }
 
-  _setActivePd(engagement, partnerInterv) {
-    if (!engagement || !partnerInterv) {
-      this.activePdIds = [];
-      return;
-    }
-    // let partnerType = this.get('engagement.partner.partner_type');
-
-    // check <etools-searchable-multiselection-menu> debouncer state
-    // TODO: polymer 3 migration, need to be tested mught not be needed(to be removed)
-    // INFINITE LOOP on engagements list :) ... to be removed soon
-    // if (this.specialPartnerTypes.indexOf(partnerType) === -1) {
-    //   microTask.run(this._setActivePd.bind(this));
-    //   return false;
-    // }
-
-    const originalPartnerId = this.originalData?.partner?.id;
-    const partnerId = this.partner.id;
-
-    if (!Number.isInteger(originalPartnerId) || !Number.isInteger(partnerId) || originalPartnerId !== partnerId) {
-      this.activePdIds = [];
-      this.validateActivePd();
-      return false;
-    }
-
-    const activePd = this.engagement.active_pd || [];
-    this.activePdIds = activePd.map((pd) => pd.id);
-    this.validateActivePd();
-    return true;
-  }
-
   _requestPartner(event, id) {
     if (this.requestInProcess) {
       return;
@@ -399,9 +399,12 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
       return;
     }
 
+    this._getPartnerEngagements(partnerId);
+
     if (this.isReadOnly('partner', this.optionsData)) {
       this.partner = this.engagement.partner;
       this.partner.interventions = this.engagement.active_pd;
+      store.dispatch(setEngagementPartner(this.partner));
       return;
     } else {
       this.engagement.partner = selectedPartner;
@@ -413,6 +416,66 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
     return true;
   }
 
+  _getPartnerEngagements(partnerId: string) {
+    if (!partnerId) {
+      return;
+    }
+    const requestOptions = {
+      endpoint: getEndpoint('partnerEngagements'),
+      params: {
+        ordering: 'unique_id',
+        status: 'final',
+        partner: partnerId
+      },
+      csrf: true
+    };
+
+    sendRequest(requestOptions)
+      .then((results: any) => {
+        this._initEngagements(results);
+      })
+      .catch((err: any) => {
+        console.log(err);
+        parseRequestErrorsAndShowAsToastMsgs(err, this);
+      });
+  }
+
+  _initEngagements(engagements: any[]) {
+    this.allEngagements = engagements;
+    this.totalAmountTested = (this.allEngagements || []).map((x: any) => x.amount_tested).reduce((a, b) => a + b);
+    this.paginatedEngagements = [];
+    this.paginator = JSON.parse(
+      JSON.stringify({
+        count: engagements.length,
+        page: 1,
+        page_size: 5
+      })
+    );
+  }
+
+  // Override from PaginationMixin
+  paginatorChanged() {
+    this._paginate(this.paginator.page, this.paginator.page_size);
+  }
+
+  _paginate(pageNumber: number, pageSize: number) {
+    if (!this.allEngagements) {
+      return;
+    }
+    let engagements = cloneDeep(this.allEngagements);
+    engagements = engagements
+      .sort((a: any, b: any) => dayjs(b.status_date).unix() - dayjs(a.status_date).unix())
+      .slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+    this.paginatedEngagements = engagements;
+  }
+
+  linkFixUp(url: string) {
+    if (url && !url.includes('https://') && !url.includes('localhost')) {
+      return 'https://' + url;
+    }
+    return url;
+  }
+
   _engagementChanged(engagement) {
     if (!engagement || !engagement.partner) {
       this.partner = {};
@@ -420,8 +483,6 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
     } else {
       this._requestPartner(null, engagement.partner.id);
     }
-    this._setActivePd(this.engagement, this.partner?.interventions);
-    this.setOfficers(this.partner, this.engagement);
   }
 
   getPartnerData() {
@@ -451,14 +512,6 @@ export class PartnerDetailsTab extends connect(store)(CommonMethodsMixin(LitElem
     }
 
     return data;
-  }
-
-  getAuthorizedOfficer() {
-    if (this.isReadOnly('partner', this.optionsData) || !this.authorizedOfficer || !this.authorizedOfficer.id) {
-      return null;
-    }
-    const engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
-    return this.authorizedOfficer.id === engagementOfficer ? null : this.authorizedOfficer.id;
   }
 
   isPdReadonly(permissions: AnyObject, requestInProcess, partner) {
