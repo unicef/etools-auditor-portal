@@ -462,11 +462,13 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _validateBasicInfo(property?) {
+      debugger;
       const detailsValid = this.getElement('#engagementDetails').validate();
       const partnerDetailsValid = this.getElement('#partnerDetails').validate();
+      const assigneeValid = this.getElement('#staffMembers').validate();
 
-      if (!detailsValid || !partnerDetailsValid) {
-        const openTab = partnerDetailsValid && detailsValid ? 'attachments' : 'overview';
+      if (!detailsValid || !partnerDetailsValid || !assigneeValid) {
+        const openTab = partnerDetailsValid && detailsValid && assigneeValid ? 'attachments' : 'overview';
         this[property || 'tab'] = openTab;
         fireEvent(this, 'toast', {text: 'Fix invalid fields before saving'});
         return false;
@@ -498,11 +500,12 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     _getBasicInfo(data) {
       data = data || {};
-
+      debugger;
       //@dci
-      const engagementDetailsData = this.getElement('#engagementDetails').getEngagementData();
       const partnerDetailsData = this.getElement('#partnerDetails').getPartnerData();
-      const authorizedOfficer = this.getElement('#partnerDetails').getAuthorizedOfficer();
+      const engagementDetailsData = this.getElement('#engagementDetails').getEngagementData();
+
+      // const authorizedOfficer = this.getElement('#staffMembers').getAuthorizedOfficer();
       const staffMembersData = this.getElement('#staffMembers').getTabData();
 
       if (engagementDetailsData) {
@@ -512,11 +515,12 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         assign(data, partnerDetailsData);
       }
       if (staffMembersData) {
-        data.staff_members = staffMembersData;
+        assign(data, staffMembersData);
+        // data.staff_members = staffMembersData;
       }
-      if (authorizedOfficer) {
-        data.authorized_officers = [authorizedOfficer];
-      }
+      // if (authorizedOfficer) {
+      //   data.authorized_officers = [authorizedOfficer];
+      // }
 
       return [data, this.engagement.id];
     }

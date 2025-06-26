@@ -25,8 +25,6 @@ import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import PaginationMixin from '@unicef-polymer/etools-unicef/src/mixins/pagination-mixin';
 import {collectionExists, getOptionsChoices} from '../../../mixins/permission-controller';
-import '../../../data-elements/get-agreement-data';
-import '../../../data-elements/update-agreement-data';
 import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import clone from 'lodash-es/clone';
@@ -95,34 +93,14 @@ export class EngagementInfoDetails extends connect(store)(
           margin-bottom: 8px;
           display: flex;
         }
-        .pad-lr {
-          padding: 0 12px;
-        }
-        .year-of-audit.hide {
-          visibility: hidden;
+        .error-label {
+          color: var(--error-color, #ea4022);        
         }
         etools-data-table-header {
           --list-bg-color: var(--medium-theme-background-color, #eeeeee);
         }
-        eto
       </style>
 
-      <get-agreement-data
-        .agreement="${this.data.agreement}"
-        .orderNumber="${this.orderNumber}"
-        @agreement-loaded="${this._agreementLoaded}"
-      >
-      </get-agreement-data>
-
-      <update-agreement-data
-        .agreement="${this.data.agreement}"
-        .newDate="${this.contractExpiryDate}"
-        @loading-state-changed="${this._poUpdatingStateChanged}"
-        @agreement-changed="${this._agreementLoaded}"
-      >
-      </update-agreement-data>
-
-      
       <etools-media-query
         query="(max-width: 1200px)"
         @query-matches-changed="${(e: CustomEvent) => {
@@ -283,7 +261,7 @@ export class EngagementInfoDetails extends connect(store)(
                                   this.data.engagement_type
                                 )}"
                     field="total_value"
-                    .value="${this.data.total_value}"
+                    .value="${this.data.total_value || 0}"
                     currency="$"
                     label="Total Value of Selected FACE form(s)"
                     placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
@@ -316,7 +294,7 @@ export class EngagementInfoDetails extends connect(store)(
                                   this.data.engagement_type
                                 )}"
                     field="total_value"
-                    .value="${this.data.total_value}"
+                    .value="${this.data.total_value || 0}"
                     currency="$"
                     label="Total Value of Selected FACE form(s) in Local Currency"
                     placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
@@ -342,7 +320,9 @@ export class EngagementInfoDetails extends connect(store)(
 
         <div class="col-12 padding-v" ?hidden="${!this.showFaceForm(this.data.engagement_type, this.data.partner?.id)}">
          
-
+            <label class="error-label" id="lblFaceRequired" ?hidden="${!this.showFaceRequired}">
+              Please select at least one Face item
+            </label>
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <etools-data-table-column class="col-2">FACE No.</etools-data-table-column>
               <etools-data-table-column class="col-2">Amount (local)</etools-data-table-column>
@@ -364,8 +344,10 @@ export class EngagementInfoDetails extends connect(store)(
                     <div class="col-data col-2" data-col-header-label="FACE No.">
                       <etools-checkbox
                         ?checked="${item.selected}"
+                        ?disabled="${this.itIsReadOnly('engagement_type', this.optionsData)}"
                         id="${item.commitment_ref}"
                         @sl-change="${(e: any) => {
+                          this.showFaceRequired = false;
                           this.allFaceData[_index].selected = e.target.checked;
                           this.onFaceChange(this.allFaceData);
                         }}"
@@ -475,25 +457,11 @@ export class EngagementInfoDetails extends connect(store)(
   @property({type: Date})
   maxDate = new Date();
 
-  @property({type: String})
-  contractExpiryDate!: string | undefined;
-
   @property({type: Object})
   tabTexts = {
     name: 'Engagement Details',
-    fields: [
-      'agreement',
-      'end_date',
-      'start_date',
-      'engagement_type',
-      'partner_contacted_at',
-      'total_value',
-      'face_forms'
-    ]
+    fields: ['agreement', 'end_date', 'start_date', 'engagement_type', 'total_value', 'face_forms']
   };
-
-  @property({type: Array})
-  sharedIpWithOptions: [] = [];
 
   @property({type: Boolean})
   showJoinAudit = false;
@@ -503,18 +471,6 @@ export class EngagementInfoDetails extends connect(store)(
 
   @property({type: Boolean})
   showFace!: boolean;
-
-  @property({type: Object})
-  orderNumber!: GenericObject | null;
-
-  @property({type: Array})
-  sectionOptions!: GenericObject[];
-
-  @property({type: Array})
-  sectionIDs: number[] = [];
-
-  @property({type: Array})
-  officeOptions!: GenericObject[];
 
   @property({type: Array})
   users!: GenericObject[];
@@ -527,9 +483,6 @@ export class EngagementInfoDetails extends connect(store)(
 
   @property({type: Object})
   user!: GenericObject;
-
-  @property({type: Array})
-  usersNotifiedOptions: GenericObject[] = [];
 
   @property({type: Boolean})
   poUpdating!: boolean;
@@ -552,13 +505,11 @@ export class EngagementInfoDetails extends connect(store)(
   @property({type: Boolean})
   lowResolutionLayout = false;
 
-  @property({type: Object})
-  loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
+  @property({type: Boolean})
+  showFaceRequired = false;
 
   connectedCallback() {
     super.connectedCallback();
-
-    this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
   }
 
   stateChanged(state: RootState) {
@@ -575,13 +526,6 @@ export class EngagementInfoDetails extends connect(store)(
     }
   }
 
-  firstUpdated(changedProperties: PropertyValues): void {
-    super.firstUpdated(changedProperties);
-
-    // const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
-    // purchaseOrderEl.validate = this._validatePurchaseOrder.bind(this, purchaseOrderEl);
-  }
-
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
@@ -590,7 +534,6 @@ export class EngagementInfoDetails extends connect(store)(
     }
     if (changedProperties.has('optionsData')) {
       this._setEngagementTypes(this.optionsData);
-      this._setSharedIpWith(this.optionsData);
     }
   }
 
@@ -611,10 +554,9 @@ export class EngagementInfoDetails extends connect(store)(
   showFaceForm(engagement_type: string, partnerId?: number) {
     this.showFace = !!engagement_type && engagement_type !== 'ma';
     this.showJoinAudit = !!engagement_type && ['audit', 'sa'].includes(engagement_type);
-
     if (partnerId && this.prevPartnerId !== partnerId) {
       this.prevPartnerId = partnerId;
-      this.data.faceForms = null;
+      //@dci this.data.face_forms = [];
       this.loadFaceData(this.prevPartnerId);
     }
     return this.showFace;
@@ -636,7 +578,6 @@ export class EngagementInfoDetails extends connect(store)(
   setFaceData(faceData: any[]) {
     this.allFaceData = faceData;
     this.allFaceData.forEach((x: any) => (x.selected = false));
-    console.log('all face data', this.allFaceData);
     this.paginatedFaceData = [];
     this.paginator = JSON.parse(
       JSON.stringify({
@@ -660,11 +601,15 @@ export class EngagementInfoDetails extends connect(store)(
     faceData = faceData
       .sort((a: any, b: any) => dayjs(b.status_date).unix() - dayjs(a.status_date).unix())
       .slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+    const selectedFaceForms = this.data.face_forms || [];
+    (faceData || []).forEach((item) => (item.selected = selectedFaceForms.includes(item.commitment_ref)));
     this.paginatedFaceData = faceData;
   }
 
   onFaceChange(allFaceData: any[]) {
     const selectedFaceForms: any[] = allFaceData.filter((x: any) => x.selected);
+    this.data.face_forms = (selectedFaceForms || []).map((x) => x.commitment_ref);
     let dct_amt_usd = 0;
     let start_date: any = null;
     let end_date: any = null;
@@ -683,16 +628,17 @@ export class EngagementInfoDetails extends connect(store)(
       start_date: start_date ? dayjs(start_date).format('YYYY-MM-DD') : start_date,
       end_date: end_date ? dayjs(end_date).format('YYYY-MM-DD') : end_date
     };
+    store.dispatch(updateCurrentEngagement(this.data));
   }
 
   cleanUpStoredValues() {
     this.data = {};
-    this.orderNumber = null;
   }
 
   onEngagementTypeChanged(updateEngagement = true) {
     this._setShowInput(this.data.engagement_type, updateEngagement);
     if (updateEngagement) {
+      debugger;
       store.dispatch(updateCurrentEngagement(this.data));
     }
   }
@@ -716,28 +662,11 @@ export class EngagementInfoDetails extends connect(store)(
     return cssClasses;
   }
 
-  _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
-    const endpoint = clone(famEndpoints.users);
-    endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
-    return sendRequest({
-      method: 'GET',
-      endpoint: {
-        url: endpoint.url
-      }
-    }).then((resp: GenericObject) => {
-      this.users = page > 1 ? [...this.users, ...resp.results] : resp.results;
-      this.setUsersNotifiedOptions();
-      return resp;
-    });
-  }
-
   _prepareData() {
     // reset orderNumber
     if (!this.user || !this.data) {
       return;
     }
-    this.orderNumber = null;
-    this.populateDropdownsAndSetSelectedValues();
 
     const poItemId = get(this.data, 'po_item.id');
     if (poItemId && poItemId !== this.data.po_item) {
@@ -758,44 +687,7 @@ export class EngagementInfoDetails extends connect(store)(
     return this.getLabel(field, options);
   }
 
-  populateDropdownsAndSetSelectedValues() {
-    // For firm staff auditors certain endpoints return 403
-    const userIsFirmStaffAuditor = !this.user.is_unicef_user;
-
-    const savedSections = this.data.sections || [];
-    this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData?.sections) || [];
-
-    const savedOffices = this.data.offices || [];
-    this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : this.reduxCommonData?.offices) || [];
-
-    if (!this.users) {
-      this.users = this.reduxCommonData?.users || [];
-    }
-    this.setUsersNotifiedOptions();
-
-    this.setYearOfAuditOptions(this.data.year_of_audit);
-  }
-
-  setUsersNotifiedOptions() {
-    const availableUsers = [...this.users];
-    const notifiedUsers = this.data.users_notified || [];
-    this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
-    this.usersNotifiedOptions = availableUsers;
-  }
-
-  populateUsersNotifiedDropDown() {
-    this.usersNotifiedOptions = [...this.users];
-  }
-
-  _setSharedIpWith(optionsData: AnyObject) {
-    const sharedIpWithOptions = getOptionsChoices(optionsData, 'shared_ip_with.child');
-    this.sharedIpWithOptions = sharedIpWithOptions || [];
-  }
-
   validate() {
-    const orderField = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
-    const orderValid = orderField && orderField.validate();
-
     const elements = this.shadowRoot!.querySelectorAll('.validate-field');
     let valid = true;
     elements.forEach((element: any) => {
@@ -806,6 +698,16 @@ export class EngagementInfoDetails extends connect(store)(
         valid = false;
       }
     });
+
+    this.showFaceRequired = false;
+    if (
+      this.data.engagement_type &&
+      ['audit', 'sa', 'sc'].includes(this.data.engagement_type) &&
+      !this.data?.face_forms?.length
+    ) {
+      this.showFaceRequired = true;
+      valid = false;
+    }
 
     const periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as EtoolsInput;
     const periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as EtoolsInput;
@@ -818,7 +720,7 @@ export class EngagementInfoDetails extends connect(store)(
       valid = false;
     }
 
-    return orderValid && valid;
+    return valid;
   }
 
   resetValidationErrors() {
@@ -839,101 +741,16 @@ export class EngagementInfoDetails extends connect(store)(
     })[0];
   }
 
-  poKeydown(event: any) {
-    if (event.keyCode === 13) {
-      this._requestAgreement(event);
-    }
-  }
-
-  _requestAgreement(event: any) {
-    if (this.requestInProcess) {
-      return;
-    }
-
-    const input = event && event.target;
-    const value = input && input.value;
-
-    if ((+value || +value === 0) && value === this.orderNumber) {
-      return;
-    }
-    this.resetAgreement();
-
-    if (!value) {
-      this.orderNumber = null;
-      return;
-    }
-
-    if (!this._validatePOLength(value)) {
-      this.errors = {...this.errors, agreement: 'Purchase order number must be 10 digits'};
-      this.orderNumber = null;
-      return;
-    }
-
-    this.requestInProcess = true;
-    this.orderNumber = value;
-    return true;
-  }
-
-  _agreementLoaded(event: CustomEvent) {
-    if (event.detail?.success) {
-      this.data = {...this.data, agreement: event.detail.agreement};
-      store.dispatch(updateCurrentEngagement(this.data));
-    } else if (event.detail?.errors) {
-      this.errors = event.detail.errors;
-    }
-    this.requestInProcess = false;
-
-    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
-    purchaseOrderEl.validate();
-  }
-
   _poUpdatingStateChanged(event: CustomEvent): void {
     this.poUpdating = event.detail.state;
   }
 
-  resetAgreement() {
-    this.contractExpiryDate = undefined;
-    this.orderNumber = null;
-    const agreementNewValue = {order_number: this.data && this.data.agreement && this.data.agreement.order_number};
-    if (!isJsonStrMatch(agreementNewValue, this.data.agreement)) {
-      this.data.agreement = {order_number: this.data && this.data.agreement && this.data.agreement.order_number};
-      store.dispatch(updateCurrentEngagement(this.data));
-    }
-  }
-
-  _validatePurchaseOrder(orderInput: any) {
-    if (orderInput && (orderInput.readonly || orderInput.disabled)) {
-      return true;
-    }
-    if (this.requestInProcess) {
-      this.errors = {...this.errors, agreement: 'Please, wait until Purchase Order loaded'};
-      return false;
-    }
-    const value = orderInput && orderInput.value;
-    if (!value && orderInput && orderInput.required) {
-      this.errors = {...this.errors, agreement: 'Purchase order is required'};
-      return false;
-    }
-    if (!this._validatePOLength(value)) {
-      this.errors = {...this.errors, agreement: 'Purchase order number must be 10 digits'};
-      return false;
-    }
-    if (!this.data || !this.data.agreement || !this.data.agreement.id) {
-      this.errors = {...this.errors, agreement: 'Purchase order not found'};
-      return false;
-    }
-    this.errors = {...this.errors, agreement: false};
-    return true;
-  }
-
-  _validatePOLength(po: any) {
-    return !po || `${po}`.length === 10;
-  }
-
   getEngagementData() {
     const data: any = {};
-    const agreementId = String(get(this, 'data.agreement.id'));
-    const originalAgreementId = String(get(this, 'originalData.agreement.id'));
+
+    if (this.originalData.engagement_type !== this.data.engagement_type && !this.isStaffSc) {
+      data.engagement_type = this.data.engagement_type;
+    }
 
     if (this.originalData.start_date !== this.data.start_date) {
       data.start_date = this.data.start_date;
@@ -941,13 +758,10 @@ export class EngagementInfoDetails extends connect(store)(
     if (this.originalData.end_date !== this.data.end_date) {
       data.end_date = this.data.end_date;
     }
-    if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) {
-      data.partner_contacted_at = this.data.partner_contacted_at;
-    }
-
-    if ((!originalAgreementId && agreementId) || originalAgreementId !== agreementId) {
-      data.agreement = this.data.agreement.id;
-    }
+    // @dci
+    // if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) {
+    //   data.partner_contacted_at = this.data.partner_contacted_at;
+    // }
 
     if (this.showFace) {
       if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
@@ -958,13 +772,10 @@ export class EngagementInfoDetails extends connect(store)(
       data.total_value = this.data.total_value;
     }
 
-    if (this.originalData.engagement_type !== this.data.engagement_type && !this.isStaffSc) {
-      data.engagement_type = this.data.engagement_type;
-    }
-
-    if (this.data.po_item && (!this.originalData.po_item || this.originalData.po_item.id !== +this.data.po_item)) {
-      data.po_item = this.data.po_item;
-    }
+    //@dci
+    // if (this.data.po_item && (!this.originalData.po_item || this.originalData.po_item.id !== +this.data.po_item)) {
+    //   data.po_item = this.data.po_item;
+    // }
 
     if (['audit', 'sa', 'sc'].includes(this.data.engagement_type)) {
       data.joint_audit = !!this.data.joint_audit;
@@ -974,33 +785,34 @@ export class EngagementInfoDetails extends connect(store)(
       data.year_of_audit = this.data.year_of_audit;
     }
 
-    const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
-    const usersNotifiedIDs = (this.data?.users_notified || []).map((user) => +user.id);
-    if (this.collectionChanged(originalUsersNotifiedIDs, usersNotifiedIDs)) {
-      data.users_notified = usersNotifiedIDs;
-    }
-
-    const originalSharedIpWith = this.originalData?.shared_ip_with || [];
-    const sharedIpWith = this.data.shared_ip_with || [];
-    if (sharedIpWith.length && sharedIpWith.filter((x) => !originalSharedIpWith.includes(x)).length > 0) {
-      data.shared_ip_with = sharedIpWith;
-    }
-
-    const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
-    const officeIDs = (this.data?.offices || []).map((office) => +office.id);
-    if (this.collectionChanged(originalOfficeIDs, officeIDs)) {
-      data.offices = officeIDs;
-    }
-
-    const originalSectionIDs = (this.originalData.sections || []).map((section) => +section.id);
-    const sectionIDs = (this.data?.sections || []).map((section) => +section.id);
-    if (this.collectionChanged(originalSectionIDs, sectionIDs)) {
-      data.sections = sectionIDs;
-    }
     const originalFaceIDs = (this.originalData.face_forms || []).map((face) => face.commitment_ref);
     if (this.collectionChanged(originalFaceIDs, this.data?.face_forms)) {
       data.face_forms = [...(this.data?.face_forms || [])];
     }
+    //dci
+    // const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
+    // const usersNotifiedIDs = (this.data?.users_notified || []).map((user) => +user.id);
+    // if (this.collectionChanged(originalUsersNotifiedIDs, usersNotifiedIDs)) {
+    //   data.users_notified = usersNotifiedIDs;
+    // }
+
+    // const originalSharedIpWith = this.originalData?.shared_ip_with || [];
+    // const sharedIpWith = this.data.shared_ip_with || [];
+    // if (sharedIpWith.length && sharedIpWith.filter((x) => !originalSharedIpWith.includes(x)).length > 0) {
+    //   data.shared_ip_with = sharedIpWith;
+    // }
+
+    // const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
+    // const officeIDs = (this.data?.offices || []).map((office) => +office.id);
+    // if (this.collectionChanged(originalOfficeIDs, officeIDs)) {
+    //   data.offices = officeIDs;
+    // }
+
+    // const originalSectionIDs = (this.originalData.sections || []).map((section) => +section.id);
+    // const sectionIDs = (this.data?.sections || []).map((section) => +section.id);
+    // if (this.collectionChanged(originalSectionIDs, sectionIDs)) {
+    //   data.sections = sectionIDs;
+    // }
 
     return data;
   }
@@ -1028,24 +840,7 @@ export class EngagementInfoDetails extends connect(store)(
       this.data.total_value = 0;
       this.data.start_date = undefined;
       this.data.end_date = undefined;
-      this.data.sections = [];
-      this.data.offices = [];
     }
-  }
-
-  _contractEndDateHasChanged(event: CustomEvent) {
-    if (!this.data?.agreement?.id) {
-      return;
-    }
-    this.contractExpiryDate = event.detail.date;
-  }
-
-  _setExpiryMinDate(minDate: any) {
-    if (!minDate) {
-      return false;
-    }
-    const today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(), new Date(minDate).getDate());
-    return new Date(today.getDate() - 1);
   }
 
   _hideTooltip(options: AnyObject, showInput: any, type: any) {

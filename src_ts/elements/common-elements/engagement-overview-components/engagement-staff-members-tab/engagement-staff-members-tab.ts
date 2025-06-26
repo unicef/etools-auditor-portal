@@ -32,13 +32,14 @@ import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
 import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
-import {readonlyPermission} from '../../../mixins/permission-controller';
+import {getOptionsChoices, readonlyPermission} from '../../../mixins/permission-controller';
 import {EtoolsDropdownMultiEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi';
 import {getObjectsIDs} from '../../../utils/utils';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
 import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import clone from 'lodash-es/clone';
+import assign from 'lodash-es/assign';
 
 /**
  * @LitElement
@@ -184,7 +185,8 @@ export class EngagementStaffMembersTab extends connect(store)(
         }
         .section-bottom {
           border-bottom: solid 2px var(--primary-color);
-          margin-block-end: 12px;
+          margin-block-start: 8px;
+          margin-block-end: 16px;
         }
         .m-24-top {
           margin-block-start: 24px;
@@ -196,6 +198,9 @@ export class EngagementStaffMembersTab extends connect(store)(
           .search-input-container {
             width: 110px;
           }
+        }
+        .pad-lr {
+          padding: 0 12px;
         }
       </style>
 
@@ -221,11 +226,6 @@ export class EngagementStaffMembersTab extends connect(store)(
         class="content-section clearfix"
         panel-title="Assignee & Contact"
       >
-        <div slot="panel-btns">
-        
-        </div>
-
-
         <div>
           <engagement-purchase-details
               id="engagementPurchaseDetails"
@@ -493,6 +493,41 @@ export class EngagementStaffMembersTab extends connect(store)(
             <div class="col-12">
                 <label class="section-title">Unicef Contact</label>
             </div>
+               ${
+                 this.showSharedAuditField(this.engagement.engagement_type)
+                   ? html` <!-- Shared Audit with-->
+                       <div
+                         class="col-12 col-lg-4 col-md-6 input-container"
+                         ?hidden="${this._hideField('shared_ip_with', this.optionsData)}"
+                       >
+                         <etools-dropdown-multi
+                           id="sharedWith"
+                           class="w100 validate-input ${this._setRequired('shared_ip_with', this.optionsData)}"
+                           label="${this.getLabel('shared_ip_with', this.optionsData)}"
+                           placeholder="${this.getPlaceholderText('shared_ip_with', this.optionsData)}"
+                           .options="${this.sharedIpWithOptions}"
+                           option-label="display_name"
+                           option-value="value"
+                           .selectedValues="${this.engagement.shared_ip_with || []}"
+                           ?required="${this._setRequired('shared_ip_with', this.optionsData)}"
+                           ?readonly="${this.itIsReadOnly('shared_ip_with', this.optionsData)}"
+                           ?invalid="${this.errors.shared_ip_with}"
+                           .errorMessage="${this.errors.shared_ip_with}"
+                           @focus="${(event: any) => this._resetFieldError(event)}"
+                           dynamic-align
+                           hide-search
+                           trigger-value-change-event
+                           @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                             const selected = (detail.selectedItems || []).map((x) => x.value);
+                             if (!isJsonStrMatch(this.engagement.shared_ip_with, selected)) {
+                               this.engagement.shared_ip_with = selected;
+                             }
+                           }}"
+                         >
+                         </etools-dropdown-multi>
+                       </div>`
+                   : ``
+               }    
                 ${
                   this.showAdditionalField(this.engagement.engagement_type)
                     ? html` <!-- Sections -->
@@ -647,6 +682,9 @@ export class EngagementStaffMembersTab extends connect(store)(
   @property({type: Object})
   engagement!: GenericObject;
 
+  @property({type: Object})
+  originalData!: GenericObject;
+
   @property({type: Number})
   organizationId!: number;
 
@@ -686,6 +724,9 @@ export class EngagementStaffMembersTab extends connect(store)(
   @property({type: Array})
   specialPartnerTypes = ['Bilateral / Multilateral', 'Government'];
 
+  @property({type: Array})
+  sharedIpWithOptions: [] = [];
+
   @property({type: Object})
   loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
 
@@ -708,6 +749,9 @@ export class EngagementStaffMembersTab extends connect(store)(
       this.partner = cloneDeep(state.engagement?.partner);
       this.partnerLoaded();
     }
+    if (state.engagement?.originalData && !isJsonStrMatch(this.originalData, state.engagement.originalData)) {
+      this.originalData = cloneDeep(state.engagement.originalData);
+    }
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -715,6 +759,7 @@ export class EngagementStaffMembersTab extends connect(store)(
 
     if (changedProperties.has('optionsData')) {
       this.setPermission(this.optionsData);
+      this._setSharedIpWith(this.optionsData);
     }
     if (changedProperties.has('errorObject')) {
       this._handleUpdateError(this.errorObject?.staff_members);
@@ -729,6 +774,11 @@ export class EngagementStaffMembersTab extends connect(store)(
     if (changedProperties.has('dataItems')) {
       this._dataItemsChanged(this.dataItems);
     }
+  }
+
+  _setSharedIpWith(optionsData: AnyObject) {
+    const sharedIpWithOptions = getOptionsChoices(optionsData, 'shared_ip_with.child');
+    this.sharedIpWithOptions = sharedIpWithOptions || [];
   }
 
   partnerLoaded() {
@@ -775,15 +825,6 @@ export class EngagementStaffMembersTab extends connect(store)(
       this.activePdIds = [];
       return;
     }
-    // let partnerType = this.get('engagement.partner.partner_type');
-
-    // check <etools-searchable-multiselection-menu> debouncer state
-    // TODO: polymer 3 migration, need to be tested mught not be needed(to be removed)
-    // INFINITE LOOP on engagements list :) ... to be removed soon
-    // if (this.specialPartnerTypes.indexOf(partnerType) === -1) {
-    //   microTask.run(this._setActivePd.bind(this));
-    //   return false;
-    // }
 
     const originalPartnerId = this.originalData?.partner?.id;
     const partnerId = this.partner.id;
@@ -813,6 +854,13 @@ export class EngagementStaffMembersTab extends connect(store)(
     }
 
     return true;
+  }
+
+  validate() {
+    const el: any = this.shadowRoot?.querySelector('#engagementPurchaseDetails');
+    const purchaseValid = el ? el.validate() : false;
+
+    return purchaseValid;
   }
 
   setPermission(optionsData: AnyObject) {
@@ -899,6 +947,8 @@ export class EngagementStaffMembersTab extends connect(store)(
       this.users = this.reduxCommonData?.users || [];
     }
     this.setUsersNotifiedOptions();
+
+    this.requestUpdate();
   }
 
   _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
@@ -1078,6 +1128,10 @@ export class EngagementStaffMembersTab extends connect(store)(
     }
   }
 
+  showSharedAuditField(engagement_type: string) {
+    return !!engagement_type && engagement_type !== 'sc';
+  }
+
   showAdditionalField(engagement_type: string) {
     return ['sa', 'audit', 'sc'].includes(engagement_type);
   }
@@ -1094,6 +1148,14 @@ export class EngagementStaffMembersTab extends connect(store)(
     if (!this._canBeChanged(this.optionsData)) {
       return null;
     }
+
+    const data: any = {};
+
+    const el: any = this.shadowRoot?.querySelector('#engagementPurchaseDetails');
+    if (el) {
+      assign(data, el.getEngagementData());
+    }
+
     const staffs: any[] = [];
     each(this.engagementStaffs, (value) => {
       staffs.push(value);
@@ -1109,8 +1171,61 @@ export class EngagementStaffMembersTab extends connect(store)(
         }
       });
     }
+    if (dataChanged) {
+      data.staff_members = staffs;
+    }
 
-    return dataChanged ? staffs : null;
+    const authorizedOfficer = this.getAuthorizedOfficer();
+
+    if (authorizedOfficer) {
+      data.authorized_officers = [authorizedOfficer];
+    }
+
+    const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
+    const usersNotifiedIDs = (this.engagement?.users_notified || []).map((user) => +user.id);
+    if (this.collectionChanged(originalUsersNotifiedIDs, usersNotifiedIDs)) {
+      data.users_notified = usersNotifiedIDs;
+    }
+
+    const originalSharedIpWith = this.originalData?.shared_ip_with || [];
+    const sharedIpWith = this.engagement.shared_ip_with || [];
+    if (sharedIpWith.length && sharedIpWith.filter((x) => !originalSharedIpWith.includes(x)).length > 0) {
+      data.shared_ip_with = sharedIpWith;
+    }
+
+    const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
+    const officeIDs = (this.engagement?.offices || []).map((office) => +office.id);
+    if (this.collectionChanged(originalOfficeIDs, officeIDs)) {
+      data.offices = officeIDs;
+    }
+
+    const originalSectionIDs = (this.originalData.sections || []).map((section) => +section.id);
+    const sectionIDs = (this.engagement?.sections || []).map((section) => +section.id);
+    if (this.collectionChanged(originalSectionIDs, sectionIDs)) {
+      data.sections = sectionIDs;
+    }
+
+    const activePds = (this.originalData.active_pd || []).map((pd) => pd.id);
+    if (this.collectionChanged(this.activePdIds, activePds)) {
+      data.active_pd = this.activePdIds;
+    }
+
+    return data;
+  }
+
+  collectionChanged(originalCollection: any[], newCollection: any[]) {
+    return (
+      this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
+      this.collectionsAreDifferent(originalCollection, newCollection)
+    );
+  }
+
+  collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
+    return originalCollection.length !== newCollection.length;
+  }
+
+  collectionsAreDifferent(originalCollection: any[], newCollection: any[]) {
+    return newCollection.filter((id) => !originalCollection.includes(+id)).length > 0;
   }
 
   _searchChanged(searchString) {

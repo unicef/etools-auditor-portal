@@ -162,7 +162,6 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
                 label="${'Date of Report'}"
                 .value="${this.getDateDisplayValue(this.partner.last_assessment_date)}"
               >
-                <etools-icon name="date-range" slot="prefix"></etools-icon>
               </etools-input>
             </div>
           </div>
@@ -288,9 +287,6 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
   @property({type: Object})
   partner!: GenericObject;
 
-  @property({type: Array})
-  activePdIds!: any[];
-
   @property({type: Object})
   authorizedOfficer: GenericObject | null = null;
 
@@ -390,7 +386,6 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
     }
 
     this.partner = {};
-    this.activePdIds = [];
     this.authorizedOfficer = null;
     const selectedPartner = event && event.detail && event.detail.selectedItem;
 
@@ -479,7 +474,6 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
   _engagementChanged(engagement) {
     if (!engagement || !engagement.partner) {
       this.partner = {};
-      this.activePdIds = [];
     } else {
       this._requestPartner(null, engagement.partner.id);
     }
@@ -493,18 +487,9 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
     const data = {} as any;
     const originalPartnerId = this.originalData?.partner?.id;
     const partnerId = this.engagement?.partner?.id;
-    const partnerType = this.engagement?.partner?.partner_type;
-    let originalActivePd = this.originalData?.active_pd || [];
-    const activePdIds = (this.activePdIds || []).map((id) => +id);
-
-    originalActivePd = originalActivePd.map((pd) => +pd.id);
 
     if (originalPartnerId !== partnerId) {
       data.partner = partnerId;
-    }
-
-    if (!isEqual(originalActivePd.sort(), activePdIds.sort()) && this.specialPartnerTypes.indexOf(partnerType) === -1) {
-      data.active_pd = activePdIds;
     }
 
     if (isEqual(data, {})) {
@@ -514,30 +499,8 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
     return data;
   }
 
-  isPdReadonly(permissions: AnyObject, requestInProcess, partner) {
-    return this.isReadOnly('active_pd', permissions, requestInProcess) || !partner.id;
-  }
-
-  activePdPlaceholder(permissions: AnyObject, partner) {
-    if (!partner || !partner.id) {
-      return '–';
-    }
-    return readonlyPermission('active_pd', permissions) ? '–' : 'Select Relevant PD(s) or SSFA(s)';
-    // return this.getPlaceholderText('active_pd', permissions, 'selector');
-  }
-
   _setPlaceholderColor(partner) {
     return !partner || !partner.id ? 'no-data-fetched' : '';
-  }
-
-  isOfficersReadonly(permissions: AnyObject, requestInProcess, partner) {
-    return (
-      this.isReadOnly('authorized_officers', permissions, requestInProcess) ||
-      !partner ||
-      !partner.partnerOfficers ||
-      !partner.partnerOfficers.length ||
-      partner.partnerOfficers.length < 2
-    );
   }
 
   _setPartnerAddress(partner) {
