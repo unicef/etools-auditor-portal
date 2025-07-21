@@ -25,10 +25,11 @@ import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import PaginationMixin from '@unicef-polymer/etools-unicef/src/mixins/pagination-mixin';
 import {collectionExists, getOptionsChoices} from '../../../mixins/permission-controller';
+import {getArraysDiff} from '@unicef-polymer/etools-utils/dist/array.util';
 import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
 import clone from 'lodash-es/clone';
-import {AnyObject, GenericObject} from '@unicef-polymer/etools-types';
+import {AnyObject, GenericObject, ListItemIntervention} from '@unicef-polymer/etools-types';
 import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../../redux/store';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
@@ -41,6 +42,7 @@ import {getEndpoint} from '../../../config/endpoints-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import dayjs from 'dayjs';
 import {repeat} from 'lit/directives/repeat.js';
+import {forEach} from 'lodash-es';
 
 /**
  * @customElement
@@ -133,7 +135,7 @@ export class EngagementInfoDetails extends connect(store)(
                 trigger-value-change-event
                 @etools-selected-item-changed="${({detail}: CustomEvent) => {
                   this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
-                  if (detail.selectedItem) {
+                  if (detail.selectedItem && this.data?.engagement_type !== detail.selectedItem?.value) {
                     this.onEngagementTypeChanged();
                   }
                 }}"
@@ -205,12 +207,8 @@ export class EngagementInfoDetails extends connect(store)(
                   label="${this.getStartEndDateLabel(this.data.engagement_type, 'start_date', this.optionsData)}"
                   placeholder="${this.getPlaceholderText('start_date', this.optionsData, 'datepicker')}"
                   selected-date-display-format="D MMM YYYY"
-                  ?required="${this._isAdditionalFieldRequired(
-                    'start_date',
-                    this.optionsData,
-                    this.data.engagement_type
-                  )}"                  
-                  readonly
+                  ?required="${this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"              
+                  ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
                   ?invalid="${this._checkInvalid(this.errors.start_date)}"
                   .errorMessage="${this.errors.start_date}"
                   @focus="${(event: any) => this._resetFieldError(event)}"
@@ -233,12 +231,8 @@ export class EngagementInfoDetails extends connect(store)(
                     label="${this.getStartEndDateLabel(this.data.engagement_type, 'end_date', this.optionsData)}"
                     placeholder="${this.getPlaceholderText('end_date', this.optionsData, 'datepicker')}"
                     data-selector="periodEndDate"
-                    ?required="${this._isAdditionalFieldRequired(
-                      'end_date',
-                      this.optionsData,
-                      this.data.engagement_type
-                    )}"
-                    readonly
+                    ?required="${this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                    ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
                     ?invalid="${this._checkInvalid(this.errors.end_date)}"
                     .errorMessage="${this.errors.end_date}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -250,7 +244,7 @@ export class EngagementInfoDetails extends connect(store)(
                 </div>
                 <div
                   class="col-12 col-lg-3 col-md-6 input-container"
-                  ?hidden="${this._hideField('total_value', this.optionsData)}"
+                  ?hidden="${!this.showFace}"
                 >
                   <!-- Total Value of Selected FACE Forms -->
                   <etools-currency
@@ -265,15 +259,11 @@ export class EngagementInfoDetails extends connect(store)(
                     currency="$"
                     label="Total Value of Selected FACE form(s)"
                     placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
-                    ?required="${this._isAdditionalFieldRequired(
-                      'total_value',
-                      this.optionsData,
-                      this.data.engagement_type
-                    )}"
+                    ?required="${this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
                     ?readonly="${
-                      this.itIsReadOnly('total_value', this.optionsData) ||
-                      this.showFaceForm(this.data.engagement_type, this.data.partner?.id)
-                    }}"
+                      this.itIsReadOnly('total_value', this.optionsData) &&
+                      !this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)
+                    }"
                     ?invalid="${this._checkInvalid(this.errors.total_value)}"
                     .errorMessage="${this.errors.total_value}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
@@ -283,34 +273,28 @@ export class EngagementInfoDetails extends connect(store)(
                 </div>
                  <div
                   class="col-12 col-lg-3 col-md-6 input-container"
-                  ?hidden="${this._hideField('total_value', this.optionsData)}"
+                  ?hidden="${!this.showFace}"
                 >
                   <!-- Total Value of Selected FACE Forms -->
                   <etools-currency
                     class="w100 validate-field
                                 ${this._isAdditionalFieldRequired(
-                                  'total_value',
+                                  'total_value_local',
                                   this.optionsData,
                                   this.data.engagement_type
                                 )}"
-                    field="total_value"
-                    .value="${this.data.total_value || 0}"
+                    field="total_value_local"
+                    .value="${this.data.total_value_local || 0}"
                     currency="$"
                     label="Total Value of Selected FACE form(s) in Local Currency"
-                    placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
-                    ?required="${this._isAdditionalFieldRequired(
-                      'total_value',
-                      this.optionsData,
-                      this.data.engagement_type
-                    )}"
-                    ?readonly="${
-                      this.itIsReadOnly('total_value', this.optionsData) ||
-                      this.showFaceForm(this.data.engagement_type, this.data.partner?.id)
-                    }}"
-                    ?invalid="${this._checkInvalid(this.errors.total_value)}"
-                    .errorMessage="${this.errors.total_value}"
+                    placeholder="${this.getPlaceholderText('total_value_local', this.optionsData)}"
+                    ?required="${this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                    ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                    ?invalid="${this._checkInvalid(this.errors.total_value_local)}"
+                    .errorMessage="${this.errors.total_value_local}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
-                    @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'total_value', this.data)}"
+                    @value-changed="${({detail}: CustomEvent) =>
+                      this.numberChanged(detail, 'total_value_local', this.data)}"
                   >
                   </etools-currency>
                 </div>
@@ -325,7 +309,8 @@ export class EngagementInfoDetails extends connect(store)(
             </label>
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <etools-data-table-column class="col-2">FACE No.</etools-data-table-column>
-              <etools-data-table-column class="col-2">Amount (local)</etools-data-table-column>
+              <etools-data-table-column class="col-1">Amount (USD)</etools-data-table-column>
+              <etools-data-table-column class="col-1">Amount (local)</etools-data-table-column>
               <etools-data-table-column class="col-2"
                 >Date of <br />
                 Liquidation</etools-data-table-column
@@ -344,7 +329,7 @@ export class EngagementInfoDetails extends connect(store)(
                     <div class="col-data col-2" data-col-header-label="FACE No.">
                       <etools-checkbox
                         ?checked="${item.selected}"
-                        ?disabled="${this.itIsReadOnly('engagement_type', this.optionsData)}"
+                        ?disabled="${!!this.data?.id}"
                         id="${item.commitment_ref}"
                         @sl-change="${(e: any) => {
                           this.showFaceRequired = false;
@@ -355,7 +340,8 @@ export class EngagementInfoDetails extends connect(store)(
                         ${item.commitment_ref}
                       </etools-checkbox>
                     </div>
-                    <div class="col-data col-2" data-col-header-label="Amount (local)">${item.dct_amt_usd}</div>
+                    <div class="col-data col-1" data-col-header-label="Amount (USD)">${item.dct_amt_usd}</div>
+                    <div class="col-data col-1" data-col-header-label="Amount (local)">${item.dct_amt_local}</div>
                     <div class="col-data col-2" data-col-header-label="Date of Liquidation">${item.status_date}</div>
                     <div class="col-data col-2" data-col-header-label="Start Date">${item.start_date}</div>
                     <div class="col-data col-2" data-col-header-label="End Date">${item.end_date}</div>
@@ -435,6 +421,7 @@ export class EngagementInfoDetails extends connect(store)(
     if (idChanged) {
       // needed when we load an engagement to set visible fields
       this.onEngagementTypeChanged(false);
+      this.setYearOfAuditOptions(this.data.year_of_audit);
       waitForCondition(() => !!this.user).then(() => {
         this._prepareData();
       });
@@ -547,6 +534,10 @@ export class EngagementInfoDetails extends connect(store)(
     return true;
   }
 
+  isSpecialAuditEditable(id: string, engagement_type: string) {
+    return !id && this.isSpecialAudit(engagement_type);
+  }
+
   itIsReadOnly(field: string, permissions: AnyObject) {
     return !this.data.partner?.id || this.isReadOnly(field, permissions);
   }
@@ -554,7 +545,7 @@ export class EngagementInfoDetails extends connect(store)(
   showFaceForm(engagement_type: string, partnerId?: number) {
     this.showFace = !!engagement_type && engagement_type !== 'ma';
     this.showJoinAudit = !!engagement_type && ['audit', 'sa'].includes(engagement_type);
-    if (partnerId && this.prevPartnerId !== partnerId) {
+    if (this.showFace && partnerId && this.prevPartnerId !== partnerId) {
       this.prevPartnerId = partnerId;
       //@dci this.data.face_forms = [];
       this.loadFaceData(this.prevPartnerId);
@@ -563,6 +554,12 @@ export class EngagementInfoDetails extends connect(store)(
   }
 
   loadFaceData(partnerId: number) {
+    if (this.data?.id) {
+      // for existing engagements table is not editable, just show selected face_forms for info,
+      //  no need to request all existing forms,
+      this.setFaceData([...(this.data.face_forms || [])], true);
+      return;
+    }
     const url = getEndpoint('linkFace', {id: partnerId}).url;
     sendRequest({
       endpoint: {url}
@@ -575,9 +572,9 @@ export class EngagementInfoDetails extends connect(store)(
       .catch((err) => fireEvent(this, 'toast', {text: `Error fetching Face forms data for ${partnerId}: ${err}`}));
   }
 
-  setFaceData(faceData: any[]) {
+  setFaceData(faceData: any[], defaultSelection = false) {
     this.allFaceData = faceData;
-    this.allFaceData.forEach((x: any) => (x.selected = false));
+    this.allFaceData.forEach((x: any) => (x.selected = defaultSelection));
     this.paginatedFaceData = [];
     this.paginator = JSON.parse(
       JSON.stringify({
@@ -602,19 +599,21 @@ export class EngagementInfoDetails extends connect(store)(
       .sort((a: any, b: any) => dayjs(b.status_date).unix() - dayjs(a.status_date).unix())
       .slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
-    const selectedFaceForms = this.data.face_forms || [];
+    const selectedFaceForms = (this.data.face_forms || []).map((x: any) => x.commitment_ref);
     (faceData || []).forEach((item) => (item.selected = selectedFaceForms.includes(item.commitment_ref)));
     this.paginatedFaceData = faceData;
   }
 
   onFaceChange(allFaceData: any[]) {
-    const selectedFaceForms: any[] = allFaceData.filter((x: any) => x.selected);
-    this.data.face_forms = (selectedFaceForms || []).map((x) => x.commitment_ref);
+    const selectedFaceForms: any[] = (allFaceData || []).filter((x: any) => x.selected);
+    this.data.face_forms = [...selectedFaceForms];
     let dct_amt_usd = 0;
+    let dct_amt_local = 0;
     let start_date: any = null;
     let end_date: any = null;
     for (const faceForm of selectedFaceForms) {
       dct_amt_usd += Number(faceForm.dct_amt_usd);
+      dct_amt_local += Number(faceForm.dct_amt_local);
       if (faceForm.start_date && (!start_date || dayjs(faceForm.start_date) < start_date)) {
         start_date = dayjs(faceForm.start_date);
       }
@@ -625,6 +624,7 @@ export class EngagementInfoDetails extends connect(store)(
     this.data = {
       ...this.data,
       total_value: dct_amt_usd,
+      total_value_local: dct_amt_local,
       start_date: start_date ? dayjs(start_date).format('YYYY-MM-DD') : start_date,
       end_date: end_date ? dayjs(end_date).format('YYYY-MM-DD') : end_date
     };
@@ -638,10 +638,10 @@ export class EngagementInfoDetails extends connect(store)(
   onEngagementTypeChanged(updateEngagement = true) {
     this._setShowInput(this.data.engagement_type, updateEngagement);
     if (updateEngagement) {
-      debugger;
       store.dispatch(updateCurrentEngagement(this.data));
     }
   }
+
   setYearOfAuditOptions(savedYearOfAudit: number) {
     const currYear = new Date().getFullYear();
     this.yearOfAuditOptions = [
@@ -688,6 +688,11 @@ export class EngagementInfoDetails extends connect(store)(
   }
 
   validate() {
+    if (this.itIsReadOnly('engagement_type', this.optionsData)) {
+      // type is not editable (and the other fields)
+      return true;
+    }
+
     const elements = this.shadowRoot!.querySelectorAll('.validate-field');
     let valid = true;
     elements.forEach((element: any) => {
@@ -702,7 +707,7 @@ export class EngagementInfoDetails extends connect(store)(
     this.showFaceRequired = false;
     if (
       this.data.engagement_type &&
-      ['audit', 'sa', 'sc'].includes(this.data.engagement_type) &&
+      ['audit', 'sc'].includes(this.data.engagement_type) &&
       !this.data?.face_forms?.length
     ) {
       this.showFaceRequired = true;
@@ -748,6 +753,11 @@ export class EngagementInfoDetails extends connect(store)(
   getEngagementData() {
     const data: any = {};
 
+    if (this.data?.id) {
+      // type is not editable (and the other fields)
+      return data;
+    }
+
     if (this.originalData.engagement_type !== this.data.engagement_type && !this.isStaffSc) {
       data.engagement_type = this.data.engagement_type;
     }
@@ -763,32 +773,35 @@ export class EngagementInfoDetails extends connect(store)(
     //   data.partner_contacted_at = this.data.partner_contacted_at;
     // }
 
-    if (this.showFace) {
+    if (['audit', 'sa', 'sc'].includes(this.data.engagement_type)) {
       if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
         this.data.total_value = null;
       }
-    }
-    if (this.originalData.total_value !== this.data.total_value) {
-      data.total_value = this.data.total_value;
-    }
 
-    //@dci
-    // if (this.data.po_item && (!this.originalData.po_item || this.originalData.po_item.id !== +this.data.po_item)) {
-    //   data.po_item = this.data.po_item;
-    // }
+      if (this.originalData.total_value !== this.data.total_value) {
+        data.total_value = this.data.total_value;
+      }
+      if (this.originalData.total_value_local !== this.data.total_value_local) {
+        data.total_value_local = this.data.total_value_local;
+      }
 
-    if (['audit', 'sa', 'sc'].includes(this.data.engagement_type)) {
+      //@dci
+      // if (this.data.po_item && (!this.originalData.po_item || this.originalData.po_item.id !== +this.data.po_item)) {
+      //   data.po_item = this.data.po_item;
+      // }
+
       data.joint_audit = !!this.data.joint_audit;
-    }
 
-    if (['sa', 'audit', 'sc'].includes(this.data.engagement_type)) {
       data.year_of_audit = this.data.year_of_audit;
+      const diff = getArraysDiff(this.originalData.face_forms || [], this.data?.face_forms || [], 'commitment_ref');
+      if (diff.length) {
+        data.face_forms = this.getFaceFormsToSave(this.data?.face_forms);
+      }
     }
-
-    const originalFaceIDs = (this.originalData.face_forms || []).map((face) => face.commitment_ref);
-    if (this.collectionChanged(originalFaceIDs, this.data?.face_forms)) {
-      data.face_forms = [...(this.data?.face_forms || [])];
-    }
+    // const originalFaceIDs = (this.originalData.face_forms || []).map((face) => face.commitment_ref);
+    // if (this.collectionChanged(originalFaceIDs, this.data?.face_forms)) {
+    //   data.face_forms = [...(this.data?.face_forms || [])];
+    // }
     //dci
     // const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
     // const usersNotifiedIDs = (this.data?.users_notified || []).map((user) => +user.id);
@@ -817,20 +830,34 @@ export class EngagementInfoDetails extends connect(store)(
     return data;
   }
 
-  collectionChanged(originalCollection: any[], newCollection: any[]) {
-    return (
-      this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
-      this.collectionsAreDifferent(originalCollection, newCollection)
+  getFaceFormsToSave(face_forms: any[]) {
+    const faceToSave: any[] = [];
+    (face_forms || []).forEach((item: any) =>
+      faceToSave.push({
+        commitment_ref: item.commitment_ref,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        dct_amt_usd: item.dct_amt_usd,
+        dct_amt_local: item.dct_amt_local
+      })
     );
+    return faceToSave;
   }
 
-  collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
-    return originalCollection.length !== newCollection.length;
-  }
+  // collectionChanged(originalCollection: any[], newCollection: any[]) {
+  //   return (
+  //     this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
+  //     this.collectionsAreDifferent(originalCollection, newCollection)
+  //   );
+  // }
 
-  collectionsAreDifferent(originalCollection: any[], newCollection: any[]) {
-    return newCollection.filter((id) => !originalCollection.includes(+id)).length > 0;
-  }
+  // collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
+  //   return originalCollection.length !== newCollection.length;
+  // }
+
+  // collectionsAreDifferent(originalCollection: any[], newCollection: any[]) {
+  //   return newCollection.filter((id) => !originalCollection.includes(+id)).length > 0;
+  // }
 
   _setShowInput(type: string, resetValues: boolean) {
     this.showFace = !!type && type !== 'ma';
@@ -838,6 +865,7 @@ export class EngagementInfoDetails extends connect(store)(
     if (!this.showFace && resetValues) {
       // reset values
       this.data.total_value = 0;
+      this.data.total_value_local = 0;
       this.data.start_date = undefined;
       this.data.end_date = undefined;
     }

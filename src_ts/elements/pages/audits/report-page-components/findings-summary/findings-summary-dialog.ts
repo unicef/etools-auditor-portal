@@ -78,9 +78,36 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
               </etools-input>
             </div>
 
+            <div class="col-12 input-container col-md-6 col-lg-4">
+              <!--  ?hidden="${!this.showLocalCurrency}" -->
+              <!-- Audited expenditure (Local) -->
+              <etools-currency
+                id="audited-expenditure-local"
+                class="w100 validate-input ${this._setRequired('audited_expenditure_local', this.optionsData)}"
+                .value="${this.editedItem.audited_expenditure_local}"
+                .currency="${this.currency}"
+                label="${this.getLocalLabel('audited_expenditure_local', this.optionsData)}"
+                placeholder="${this.getNumericPlaceholderText('audited_expenditure_local', this.optionsData)}"
+                ?required="${this._setRequired('audited_expenditure_local', this.optionsData)}"
+                ?readonly="${this.requestInProcess}"
+                .wrapTextInReadonly="${false}"
+                ?invalid="${this.errors.audited_expenditure_local}"
+                .errorMessage="${this.errors.audited_expenditure_local}"
+                @value-changed="${({detail}: CustomEvent) => {
+                  debugger;
+                  detail.value = detail.value || 0;
+                  this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
+                  detail.value *= this.exchangeRate;
+                  this.numberChanged(detail, 'audited_expenditure', this.editedItem);
+                }}"
+                @blur="${this.customValidation}"
+                @focus="${this._resetFieldError}"
+              >
+              </etools-currency>
+            </div>
+
             <div class="col-12 input-container col-md-6 col-lg-4 flex-column">
               <!-- Audited expenditure (USD) -->
-              <span class="red" ?hidden="${!this.showUSDWarning}">Please ensure that the value is in USD</span>
               <etools-currency
                 id="audited-expenditure"
                 class="w100 ${this._setRequired('audited_expenditure', this.optionsData)} validate-input"
@@ -100,16 +127,40 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 }}"
                 @blur="${this.customValidation}"
                 @focus="${() => {
-                  this.showUSDWarning = true;
                   this._resetFieldError;
                 }}"
               >
               </etools-currency>
             </div>
 
+            <div class="col-12 input-container col-md-6 col-lg-4">
+              <!--  ?hidden="${!this.showLocalCurrency}" -->
+              <!-- Financial findings (Local) -->
+              <etools-currency
+                id="financial-findings-local"
+                class="w100 validate-input ${this._setRequired('financial_findings_local', this.optionsData)}"
+                .value="${this.editedItem.financial_findings_local}"
+                .currency="${this.currency}"
+                label="${this.getLocalLabel('financial_findings_local', this.optionsData)}"
+                placeholder="${this.getNumericPlaceholderText('financial_findings_local', this.optionsData)}"
+                ?required="${this._setRequired('financial_findings_local', this.optionsData)}"
+                ?readonly="${this.isReadOnly('financial_findings_local', this.optionsData, this.requestInProcess)}"
+                .wrapTextInReadonly="${false}"
+                ?invalid="${this.errors.financial_findings_local}"
+                .errorMessage="${this.errors.financial_findings_local}"
+                @value-changed="${({detail}: CustomEvent) => {
+                  debugger;
+                  detail.value = detail.value || 0;
+                  this.numberChanged(detail, 'financial_findings_local', this.editedItem);
+                }}"
+                @blur="${this.customValidation}"
+                @focus="${this._resetFieldError}"
+              >
+              </etools-currency>
+            </div>
+
             <div class="col-12 input-container col-md-6 col-lg-4 flex-column">
               <!-- Financial findings (USD) -->
-              <span class="red" ?hidden="${!this.showUSDWarning}">Please ensure that the value is in USD</span>
               <etools-currency
                 id="financial-findings"
                 class="w100 ${this._setRequired('financial_findings', this.optionsData)} validate-input"
@@ -118,7 +169,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 label="${this.getLabel('financial_findings', this.optionsData)}"
                 placeholder="${this.getNumericPlaceholderText('financial_findings', this.optionsData)}"
                 ?required="${this._setRequired('financial_findings', this.optionsData)}"
-                ?readonly="${this.requestInProcess}"
+                ?readonly="${this.isReadOnly('financial_findings', this.optionsData, this.requestInProcess)}"
                 .wrapTextInReadonly="${false}"
                 ?invalid="${this.errors.financial_findings}"
                 .errorMessage="${this.errors.financial_findings}"
@@ -129,56 +180,8 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 }}"
                 @blur="${this.customValidation}"
                 @focus="${() => {
-                  this.showUSDWarning = true;
                   this._resetFieldError;
                 }}"
-              >
-              </etools-currency>
-            </div>
-            <div class="col-12 input-container col-md-6 col-lg-4" ?hidden="${!this.showLocalCurrency}">
-              <!-- Audited expenditure (Local) -->
-              <etools-currency
-                id="audited-expenditure-local"
-                class="w100 validate-input ${this._setRequired('audited_expenditure_local', this.optionsData)}"
-                .value="${this.editedItem.audited_expenditure_local}"
-                .currency="${this.currency}"
-                label="${this.getLocalLabel('audited_expenditure_local', this.optionsData)}"
-                placeholder="${this.getNumericPlaceholderText('audited_expenditure_local', this.optionsData)}"
-                ?required="${this._setRequired('audited_expenditure_local', this.optionsData)}"
-                ?readonly="${this.requestInProcess}"
-                .wrapTextInReadonly="${false}"
-                ?invalid="${this.errors.audited_expenditure_local}"
-                .errorMessage="${this.errors.audited_expenditure_local}"
-                @value-changed="${({detail}: CustomEvent) => {
-                  detail.value = detail.value || 0;
-                  this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
-                }}"
-                @blur="${this.customValidation}"
-                @focus="${this._resetFieldError}"
-              >
-              </etools-currency>
-            </div>
-
-            <div class="col-12 input-container col-md-6 col-lg-4" ?hidden="${!this.showLocalCurrency}">
-              <!-- Financial findings (Local) -->
-              <etools-currency
-                id="financial-findings-local"
-                class="w100 validate-input ${this._setRequired('financial_findings_local', this.optionsData)}"
-                .value="${this.editedItem.financial_findings_local}"
-                .currency="${this.currency}"
-                label="${this.getLocalLabel('financial_findings_local', this.optionsData)}"
-                placeholder="${this.getNumericPlaceholderText('financial_findings_local', this.optionsData)}"
-                ?required="${this._setRequired('financial_findings_local', this.optionsData)}"
-                ?readonly="${this.requestInProcess}"
-                .wrapTextInReadonly="${false}"
-                ?invalid="${this.errors.financial_findings_local}"
-                .errorMessage="${this.errors.financial_findings_local}"
-                @value-changed="${({detail}: CustomEvent) => {
-                  detail.value = detail.value || 0;
-                  this.numberChanged(detail, 'financial_findings_local', this.editedItem);
-                }}"
-                @blur="${this.customValidation}"
-                @focus="${this._resetFieldError}"
               >
               </etools-currency>
             </div>
@@ -295,17 +298,26 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
   @property({type: String})
   currency!: string;
 
+  @property({type: Number})
+  exchangeRate = 1;
+
   @property({type: Boolean})
   showLocalCurrency!: boolean;
 
   @property({type: String})
   msgUSDConfirm = '';
 
-  @property({type: Boolean})
-  showUSDWarning = false;
-
   set dialogData(data: any) {
-    const {optionsData, editedItem, opener, dialogTitle, auditOpinions, currency, showLocalCurrency}: any = data;
+    const {
+      optionsData,
+      editedItem,
+      opener,
+      dialogTitle,
+      auditOpinions,
+      currency,
+      exchangeRate,
+      showLocalCurrency
+    }: any = data;
 
     this.optionsData = optionsData;
     this.originalData = cloneDeep(editedItem);
@@ -314,19 +326,21 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
     this.opener = opener;
     this.auditOpinions = auditOpinions;
     this.currency = currency;
+    this.exchangeRate = exchangeRate;
     this.showLocalCurrency = showLocalCurrency;
   }
 
   onSave() {
+    debugger;
     if (!this.validate() || !this.customValidation(true)) {
       return;
     }
-    if (this.msgUSDConfirm) {
-      this.openConfirmDialog();
-    } else {
-      this.requestInProcess = true;
-      this.opener._addItemFromDialog();
-    }
+    //if (this.msgUSDConfirm) {
+    //  this.openConfirmDialog();
+    // } else {
+    this.requestInProcess = true;
+    this.opener._addItemFromDialog();
+    // }
   }
 
   openConfirmDialog() {
@@ -352,23 +366,24 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
     this.editedItem.percent_of_audited_expenditure = val;
   }
 
-  customValidation(isForSaving?: boolean) {
+  customValidation(_isForSaving?: boolean) {
+    debugger;
     const ffElement = this.shadowRoot!.querySelector('#financial-findings') as unknown as EtoolsCurrency;
     const ffNumber = ffElement && toNumber(ffElement.value);
     const aeElement = this.shadowRoot!.querySelector('#audited-expenditure') as unknown as EtoolsCurrency;
     const aeNumber = aeElement && toNumber(aeElement.value);
 
     this.msgUSDConfirm = '';
-    if (
-      isForSaving &&
-      ((this.originalData.audited_expenditure !== this.editedItem.audited_expenditure &&
-        this.editedItem.audited_expenditure > 0) ||
-        (this.originalData.financial_findings !== this.editedItem.financial_findings &&
-          this.editedItem.financial_findings > 0))
-    ) {
-      this.msgUSDConfirm = `Please confirm that the values for Audited Expenditure:
-        ${aeNumber} and Financial Findings: ${ffNumber} are in USD`;
-    }
+    // if (
+    //   isForSaving &&
+    //   ((this.originalData.audited_expenditure !== this.editedItem.audited_expenditure &&
+    //     this.editedItem.audited_expenditure > 0) ||
+    //     (this.originalData.financial_findings !== this.editedItem.financial_findings &&
+    //       this.editedItem.financial_findings > 0))
+    // ) {
+    //   this.msgUSDConfirm = `Please confirm that the values for Audited Expenditure:
+    //     ${aeNumber} and Financial Findings: ${ffNumber} are in USD`;
+    // }
     let isvalid = true;
     if (aeNumber <= ffNumber) {
       ffElement.invalid = true;
@@ -378,19 +393,19 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
       ffElement.invalid = false;
     }
 
-    if (this.showLocalCurrency) {
-      const ffElementLocal = this.shadowRoot!.querySelector('#financial-findings-local') as unknown as EtoolsCurrency;
-      const ffNumberLocal = ffElementLocal && toNumber(ffElementLocal.value);
-      const aeElementLocal = this.shadowRoot!.querySelector('#audited-expenditure-local') as unknown as EtoolsCurrency;
-      const aeNumberLocal = aeElementLocal && toNumber(aeElementLocal.value);
-      if (aeNumberLocal <= ffNumberLocal) {
-        ffElementLocal.invalid = true;
-        ffElementLocal.errorMessage = 'Must be less than Audited Expenditure Local';
-        isvalid = false;
-      } else {
-        ffElementLocal.invalid = false;
-      }
+    //if (this.showLocalCurrency) {
+    const ffElementLocal = this.shadowRoot!.querySelector('#financial-findings-local') as unknown as EtoolsCurrency;
+    const ffNumberLocal = ffElementLocal && toNumber(ffElementLocal.value);
+    const aeElementLocal = this.shadowRoot!.querySelector('#audited-expenditure-local') as unknown as EtoolsCurrency;
+    const aeNumberLocal = aeElementLocal && toNumber(aeElementLocal.value);
+    if (aeNumberLocal <= ffNumberLocal) {
+      aeElementLocal.invalid = true;
+      aeElementLocal.errorMessage = 'Must be higher than Financial Findings Local';
+      isvalid = false;
+    } else {
+      aeElementLocal.invalid = false;
     }
+    //}
     return isvalid;
   }
 

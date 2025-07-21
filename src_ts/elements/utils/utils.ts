@@ -92,6 +92,16 @@ export const setDataOnSessionStorage = (key: string, data: any): void => {
   sessionStorage.setItem(key, JSON.stringify(data));
 };
 
+export const multiplyWithExchangeRate = (value: number, exchange_rate: number): number => {
+  if (!value) {
+    value = 0;
+  }
+  if (!exchange_rate) {
+    exchange_rate = 1;
+  }
+  return Math.round(value * exchange_rate * 100) / 100;
+};
+
 export const getDataFromSessionStorage = (key: string): any => {
   const data = sessionStorage.getItem(key);
   if (data) {

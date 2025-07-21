@@ -46,6 +46,9 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Object})
     optionsData!: AnyObject;
 
+    @property({type: Boolean})
+    lowResolutionLayout = false;
+
     _resetFieldError(event) {
       if (!event || !event.target) {
         return false;

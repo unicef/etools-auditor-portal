@@ -68,6 +68,9 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
         etools-data-table-header.no-divider {
           --list-divider-color: none !important;
         }
+        etools-data-table-column::part(edt-list-column-label) {
+          line-height: 14px;
+        }
         .overview-row {
           padding-inline-start: 34px;
         }
@@ -190,20 +193,24 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
 
           <div class="col-12 padding-v" ?hidden="${!this.partner?.id}">
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <etools-data-table-column class="col-2">Engagement Type</etools-data-table-column>
+              <etools-data-table-column class="col-1">Engagement Type</etools-data-table-column>
               <etools-data-table-column class="col-2">Date</etools-data-table-column>
               <etools-data-table-column class="col-2">Amount Tested <br />(USD)</etools-data-table-column>
               <etools-data-table-column class="col-2 col">Financial Findings <br />(USD)</etools-data-table-column>
               <etools-data-table-column class="col-2 col">
                 Pending Unsupported Amount <br />(USD)</etools-data-table-column
               >
-              <etools-data-table-column class="col-2"> Report </etools-data-table-column>
+              <etools-data-table-column class="col-2">Report</etools-data-table-column>
+              <etools-data-table-column class="col-1"
+                ># Open High Priority <br />
+                Action Points</etools-data-table-column
+              >
             </etools-data-table-header>
             ${(this.paginatedEngagements || []).map(
               (item) => html`
                 <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
                   <div slot="row-data" class="layout-horizontal">
-                    <div class="col-data col-2" data-col-header-label="Engagement Type">${item.engagement_type}</div>
+                    <div class="col-data col-1" data-col-header-label="Engagement Type">${item.engagement_type}</div>
                     <div class="col-data col-2" data-col-header-label="Date">
                       ${this.getDateDisplayValue(item.status_date)}
                     </div>
@@ -225,6 +232,9 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
                       <etools-icon-button name="open-in-new"></etools-icon-button>
                       View Report
                     </a>
+                    <div class="col-data col-1" data-col-header-label="# Open High Priority Action Points">
+                      ${item.open_high_priority_count}
+                    </div>
                   </div>
                 </etools-data-table-row>
               `

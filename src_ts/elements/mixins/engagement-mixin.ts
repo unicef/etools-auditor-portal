@@ -399,6 +399,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _prepareData(submit?: boolean, finalize?: boolean) {
+      debugger;
       if (!this.engagement) {
         return Promise.reject(new Error('You need engagement object'));
       }
@@ -424,7 +425,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!this.isStaffSc) {
         data.engagement_type = this.engagement.engagement_type;
       }
-
+      debugger;
       // @ts-ignore Defined in derived class when needed
       if (this.customDataPrepare) {
         // @ts-ignore Defined in derived class when needed

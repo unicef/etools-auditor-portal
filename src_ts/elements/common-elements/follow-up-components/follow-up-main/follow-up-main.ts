@@ -68,6 +68,7 @@ export class FollowUpMain extends LitElement {
             class="mb-24"
             .errorObject="${this.errorObject}"
             .dataItems="${this.engagement.financial_finding_set}"
+            .exchangeRate="${this.engagement?.exchange_rate}"
             .optionsData="${this.optionsData}"
           >
           </financial-findings>`

@@ -145,6 +145,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
               .dataItems="${this.engagement.specific_procedures}"
               .optionsData="${this.engagementOptions}"
               @data-items-changed="${({detail}) => {
+                debugger;
                 this.engagement.specific_procedures = detail || [];
                 store.dispatch(updateCurrentEngagement(this.engagement));
               }}"
@@ -292,6 +293,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
   }
 
   _saveNewEngagement() {
+    debugger;
     if (!this._validateBasicInfo(this.tab)) {
       return;
     }
@@ -302,6 +304,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
   }
 
   customDataPrepare(data) {
+    debugger;
     if (!this.isSpecialAudit(this.engagement.engagement_type)) {
       return data;
     }

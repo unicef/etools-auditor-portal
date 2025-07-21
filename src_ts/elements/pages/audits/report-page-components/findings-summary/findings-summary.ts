@@ -31,7 +31,7 @@ import values from 'lodash-es/values';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
-import {getOptionsChoices} from '../../../../mixins/permission-controller';
+import {getOptionsChoices, readonlyPermission} from '../../../../mixins/permission-controller';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 
 /**
@@ -128,7 +128,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                 <span class="col-data col-1" data-col-header-label="Low Risk"
                   >${item.key_internal_weakness.low_risk_count}</span
                 >
-                <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
+                <div class="hover-block" ?hidden="${this.itIsReadOnly(this.optionsData)}">
                   <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                 </div>
               </div>
@@ -295,6 +295,15 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
     }
   }
 
+  itIsReadOnly(options: any) {
+    let readOnly = readonlyPermission('audited_expenditure_local', options);
+    if (readOnly === null) {
+      readOnly = true;
+    }
+
+    return readOnly;
+  }
+
   setColumnsAndHeaders() {
     // if local currency it's not used, local columns will not be displayed
     // and the size of some displayed columns will be increased
@@ -337,6 +346,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         dialogTitle: this.dialogTitle,
         auditOpinions: this.auditOpinions,
         currency: this.data.currency_of_report,
+        exchangeRate: this.data.exchange_rate,
         showLocalCurrency: this.showLocalCurrency
       }
     }).then(() => (this.isAddDialogOpen = false));

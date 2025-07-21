@@ -89,8 +89,12 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
                 ?invalid="${this.errors.local_amount}"
                 .errorMessage="${this.errors.local_amount}"
                 @focus="${this._resetFieldError}"
-                @value-changed="${({detail}: CustomEvent) =>
-                  this.numberChanged(detail, 'local_amount', this.editedItem)}"
+                @value-changed="${({detail}: CustomEvent) => {
+                  debugger;
+                  this.numberChanged(detail, 'local_amount', this.editedItem);
+                  detail.value *= this.editedItem.exchange_rate;
+                  this.numberChanged(detail, 'amount', this.editedItem);
+                }}"
               >
               </etools-currency>
             </div>
@@ -103,8 +107,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
                 currency="$"
                 label="${this.getLabel('financial_finding_set.amount', this.optionsData)}"
                 placeholder="${this.getPlaceholderText('financial_finding_set.amount', this.optionsData)}"
-                ?required="${this._setRequired('financial_finding_set.amount', this.optionsData)}"
-                ?readonly="${this.requestInProcess}"
+                readonly
                 ?invalid="${this.errors.amount}"
                 .errorMessage="${this.errors.amount}"
                 @focus="${this._resetFieldError}"

@@ -191,6 +191,9 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
   @property({type: Array})
   dataItems!: any[];
 
+  @property({type: Number})
+  exchangeRate = 1;
+
   @property({type: String})
   mainProperty = 'financial_finding_set';
 
@@ -201,7 +204,8 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
     amount: '',
     description: '',
     recommendation: '',
-    ip_comments: ''
+    ip_comments: '',
+    exchange_rate: 1
   };
 
   @property({type: Object})
@@ -251,6 +255,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
   }
 
   openAddEditDialog() {
+    this.editedItem.exchange_rate = this.exchangeRate;
     openDialog({
       dialog: this.dialogKey,
       dialogData: {
