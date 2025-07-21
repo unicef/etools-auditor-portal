@@ -26,10 +26,8 @@ import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins
 import PaginationMixin from '@unicef-polymer/etools-unicef/src/mixins/pagination-mixin';
 import {collectionExists, getOptionsChoices} from '../../../mixins/permission-controller';
 import {getArraysDiff} from '@unicef-polymer/etools-utils/dist/array.util';
-import famEndpoints from '../../../config/endpoints';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
-import clone from 'lodash-es/clone';
-import {AnyObject, GenericObject, ListItemIntervention} from '@unicef-polymer/etools-types';
+import {AnyObject, GenericObject} from '@unicef-polymer/etools-types';
 import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../../redux/store';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
@@ -42,7 +40,6 @@ import {getEndpoint} from '../../../config/endpoints-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import dayjs from 'dayjs';
 import {repeat} from 'lit/directives/repeat.js';
-import {forEach} from 'lodash-es';
 
 /**
  * @customElement
@@ -134,8 +131,8 @@ export class EngagementInfoDetails extends connect(store)(
                 @focus="${(event: any) => this._resetFieldError(event)}"
                 trigger-value-change-event
                 @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                  this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
                   if (detail.selectedItem && this.data?.engagement_type !== detail.selectedItem?.value) {
+                    this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
                     this.onEngagementTypeChanged();
                   }
                 }}"
@@ -329,7 +326,7 @@ export class EngagementInfoDetails extends connect(store)(
                     <div class="col-data col-2" data-col-header-label="FACE No.">
                       <etools-checkbox
                         ?checked="${item.selected}"
-                        ?disabled="${!!this.data?.id}"
+                        ?disabled="${this.isFaceFormReadonly}"
                         id="${item.commitment_ref}"
                         @sl-change="${(e: any) => {
                           this.showFaceRequired = false;
@@ -422,9 +419,6 @@ export class EngagementInfoDetails extends connect(store)(
       // needed when we load an engagement to set visible fields
       this.onEngagementTypeChanged(false);
       this.setYearOfAuditOptions(this.data.year_of_audit);
-      waitForCondition(() => !!this.user).then(() => {
-        this._prepareData();
-      });
     }
   }
 
@@ -490,10 +484,10 @@ export class EngagementInfoDetails extends connect(store)(
   faceFormsOption = [];
 
   @property({type: Boolean})
-  lowResolutionLayout = false;
+  showFaceRequired = false;
 
   @property({type: Boolean})
-  showFaceRequired = false;
+  isFaceFormReadonly = false;
 
   connectedCallback() {
     super.connectedCallback();
@@ -521,6 +515,7 @@ export class EngagementInfoDetails extends connect(store)(
     }
     if (changedProperties.has('optionsData')) {
       this._setEngagementTypes(this.optionsData);
+      this.isFaceFormReadonly = this.isReadOnly('face_forms', this.optionsData);
     }
   }
 
@@ -637,6 +632,7 @@ export class EngagementInfoDetails extends connect(store)(
 
   onEngagementTypeChanged(updateEngagement = true) {
     this._setShowInput(this.data.engagement_type, updateEngagement);
+    debugger;
     if (updateEngagement) {
       store.dispatch(updateCurrentEngagement(this.data));
     }
@@ -660,19 +656,6 @@ export class EngagementInfoDetails extends connect(store)(
       cssClasses += ' hide';
     }
     return cssClasses;
-  }
-
-  _prepareData() {
-    // reset orderNumber
-    if (!this.user || !this.data) {
-      return;
-    }
-
-    const poItemId = get(this.data, 'po_item.id');
-    if (poItemId && poItemId !== this.data.po_item) {
-      this.data.po_item = poItemId;
-      store.dispatch(updateCurrentEngagement(this.data));
-    }
   }
 
   getStartEndDateLabel(engType: string, field: string, options: AnyObject) {
@@ -753,79 +736,43 @@ export class EngagementInfoDetails extends connect(store)(
   getEngagementData() {
     const data: any = {};
 
-    if (this.data?.id) {
-      // type is not editable (and the other fields)
-      return data;
-    }
-
-    if (this.originalData.engagement_type !== this.data.engagement_type && !this.isStaffSc) {
-      data.engagement_type = this.data.engagement_type;
-    }
-
-    if (this.originalData.start_date !== this.data.start_date) {
-      data.start_date = this.data.start_date;
-    }
-    if (this.originalData.end_date !== this.data.end_date) {
-      data.end_date = this.data.end_date;
-    }
-    // @dci
-    // if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) {
-    //   data.partner_contacted_at = this.data.partner_contacted_at;
-    // }
-
-    if (['audit', 'sa', 'sc'].includes(this.data.engagement_type)) {
-      if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
-        this.data.total_value = null;
-      }
-
-      if (this.originalData.total_value !== this.data.total_value) {
-        data.total_value = this.data.total_value;
-      }
-      if (this.originalData.total_value_local !== this.data.total_value_local) {
-        data.total_value_local = this.data.total_value_local;
-      }
-
-      //@dci
-      // if (this.data.po_item && (!this.originalData.po_item || this.originalData.po_item.id !== +this.data.po_item)) {
-      //   data.po_item = this.data.po_item;
-      // }
-
-      data.joint_audit = !!this.data.joint_audit;
-
-      data.year_of_audit = this.data.year_of_audit;
-      const diff = getArraysDiff(this.originalData.face_forms || [], this.data?.face_forms || [], 'commitment_ref');
-      if (diff.length) {
-        data.face_forms = this.getFaceFormsToSave(this.data?.face_forms);
+    if (!this.isReadOnly('engagement_type', this.optionsData)) {
+      if (this.originalData.engagement_type !== this.data.engagement_type && !this.isStaffSc) {
+        data.engagement_type = this.data.engagement_type;
       }
     }
-    // const originalFaceIDs = (this.originalData.face_forms || []).map((face) => face.commitment_ref);
-    // if (this.collectionChanged(originalFaceIDs, this.data?.face_forms)) {
-    //   data.face_forms = [...(this.data?.face_forms || [])];
-    // }
-    //dci
-    // const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
-    // const usersNotifiedIDs = (this.data?.users_notified || []).map((user) => +user.id);
-    // if (this.collectionChanged(originalUsersNotifiedIDs, usersNotifiedIDs)) {
-    //   data.users_notified = usersNotifiedIDs;
-    // }
 
-    // const originalSharedIpWith = this.originalData?.shared_ip_with || [];
-    // const sharedIpWith = this.data.shared_ip_with || [];
-    // if (sharedIpWith.length && sharedIpWith.filter((x) => !originalSharedIpWith.includes(x)).length > 0) {
-    //   data.shared_ip_with = sharedIpWith;
-    // }
+    if (!this.isReadOnly('start_date', this.optionsData)) {
+      if (this.originalData.start_date !== this.data.start_date) {
+        data.start_date = this.data.start_date;
+      }
+      if (this.originalData.end_date !== this.data.end_date) {
+        data.end_date = this.data.end_date;
+      }
+    }
 
-    // const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
-    // const officeIDs = (this.data?.offices || []).map((office) => +office.id);
-    // if (this.collectionChanged(originalOfficeIDs, officeIDs)) {
-    //   data.offices = officeIDs;
-    // }
+    if (!this.isFaceFormReadonly) {
+      if (['audit', 'sa', 'sc'].includes(this.data.engagement_type)) {
+        if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
+          this.data.total_value = null;
+        }
 
-    // const originalSectionIDs = (this.originalData.sections || []).map((section) => +section.id);
-    // const sectionIDs = (this.data?.sections || []).map((section) => +section.id);
-    // if (this.collectionChanged(originalSectionIDs, sectionIDs)) {
-    //   data.sections = sectionIDs;
-    // }
+        if (this.originalData.total_value !== this.data.total_value) {
+          data.total_value = this.data.total_value;
+        }
+        if (this.originalData.total_value_local !== this.data.total_value_local) {
+          data.total_value_local = this.data.total_value_local;
+        }
+
+        data.joint_audit = !!this.data.joint_audit;
+
+        data.year_of_audit = this.data.year_of_audit;
+        const diff = getArraysDiff(this.originalData.face_forms || [], this.data?.face_forms || [], 'commitment_ref');
+        if (diff.length) {
+          data.face_forms = this.getFaceFormsToSave(this.data?.face_forms);
+        }
+      }
+    }
 
     return data;
   }

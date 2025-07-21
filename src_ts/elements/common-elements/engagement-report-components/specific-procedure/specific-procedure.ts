@@ -154,6 +154,12 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
   @property({type: Boolean, attribute: 'save-with-button'})
   saveWithButton = false;
 
+  @property({type: Object})
+  tabTexts = {
+    name: 'Specific Procedure To Be Performed',
+    fields: ['specific_procedures']
+  };
+
   @property({type: Boolean, attribute: 'readonly-tab'})
   readonlyTab = false;
 
@@ -176,7 +182,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
     super.updated(changedProperties);
 
     if (changedProperties.has('errorObject')) {
-      this._errorHandler(this.errorObject?.specific_procedures, this.errorObject);
+      this._errorHandler(this.errorObject, this.errorObject);
       this._checkNonField(this.errorObject?.specific_procedures);
     }
   }

@@ -402,7 +402,6 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
   }
 
   onEngagementTypeChanged(updateEngagement = true) {
-    debugger;
     if (updateEngagement) {
       store.dispatch(updateCurrentEngagement(this.data));
     }
@@ -417,7 +416,6 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
 
     const poItemId = get(this.data, 'po_item.id');
     if (poItemId && poItemId !== this.data.po_item) {
-      debugger;
       this.data.po_item = poItemId;
       store.dispatch(updateCurrentEngagement(this.data));
     }
@@ -437,18 +435,6 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
         valid = false;
       }
     });
-
-    //@dci
-    // const periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as EtoolsInput;
-    // const periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as EtoolsInput;
-    // const startValue = periodStart ? Date.parse(periodStart.value! as string) : 0;
-    // const endValue = periodEnd ? Date.parse(periodEnd.value! as string) : 0;
-
-    // if (periodEnd && periodStart && periodEnd && startValue && startValue > endValue) {
-    //   periodEnd.errorMessage = 'This date should be after Period Start Date';
-    //   periodEnd.invalid = true;
-    //   valid = false;
-    // }
 
     return orderValid && valid;
   }

@@ -1145,11 +1145,17 @@ export class EngagementStaffMembersTab extends connect(store)(
   }
 
   getTabData() {
-    if (!this._canBeChanged(this.optionsData)) {
-      return null;
+    const data: any = {};
+
+    const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
+    const usersNotifiedIDs = (this.engagement?.users_notified || []).map((user) => +user.id);
+    if (this.collectionChanged(originalUsersNotifiedIDs, usersNotifiedIDs)) {
+      data.users_notified = usersNotifiedIDs;
     }
 
-    const data: any = {};
+    if (!this._canBeChanged(this.optionsData)) {
+      return data?.users_notified ? data : null;
+    }
 
     const el: any = this.shadowRoot?.querySelector('#engagementPurchaseDetails');
     if (el) {
@@ -1179,12 +1185,6 @@ export class EngagementStaffMembersTab extends connect(store)(
 
     if (authorizedOfficer) {
       data.authorized_officers = [authorizedOfficer];
-    }
-
-    const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
-    const usersNotifiedIDs = (this.engagement?.users_notified || []).map((user) => +user.id);
-    if (this.collectionChanged(originalUsersNotifiedIDs, usersNotifiedIDs)) {
-      data.users_notified = usersNotifiedIDs;
     }
 
     const originalSharedIpWith = this.originalData?.shared_ip_with || [];
