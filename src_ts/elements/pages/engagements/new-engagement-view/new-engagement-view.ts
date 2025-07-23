@@ -288,7 +288,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
   }
 
   _saveNewEngagement() {
-    debugger;
     if (!this._validateBasicInfo(this.tab)) {
       return;
     }

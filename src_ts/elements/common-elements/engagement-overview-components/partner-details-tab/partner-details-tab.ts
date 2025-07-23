@@ -194,17 +194,14 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
           <div class="col-12 padding-v" ?hidden="${!this.partner?.id}">
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <etools-data-table-column class="col-1">Engagement Type</etools-data-table-column>
-              <etools-data-table-column class="col-2">Date</etools-data-table-column>
+              <etools-data-table-column class="col-2 center-align">Date</etools-data-table-column>
               <etools-data-table-column class="col-2">Amount Tested <br />(USD)</etools-data-table-column>
               <etools-data-table-column class="col-2 col">Financial Findings <br />(USD)</etools-data-table-column>
               <etools-data-table-column class="col-2 col">
                 Pending Unsupported Amount <br />(USD)</etools-data-table-column
               >
               <etools-data-table-column class="col-2">Report</etools-data-table-column>
-              <etools-data-table-column class="col-1"
-                ># Open High Priority <br />
-                Action Points</etools-data-table-column
-              >
+              <etools-data-table-column class="col-1"># Open High Priority AP</etools-data-table-column>
             </etools-data-table-header>
             ${(this.paginatedEngagements || []).map(
               (item) => html`
@@ -232,7 +229,7 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
                       <etools-icon-button name="open-in-new"></etools-icon-button>
                       View Report
                     </a>
-                    <div class="col-data col-1" data-col-header-label="# Open High Priority Action Points">
+                    <div class="col-data col-1" data-col-header-label="# Open High Priority AP">
                       ${item.open_high_priority_count}
                     </div>
                   </div>

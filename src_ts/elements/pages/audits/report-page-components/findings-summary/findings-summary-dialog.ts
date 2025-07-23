@@ -94,7 +94,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 ?invalid="${this.errors.audited_expenditure_local}"
                 .errorMessage="${this.errors.audited_expenditure_local}"
                 @value-changed="${({detail}: CustomEvent) => {
-                  debugger;
                   detail.value = detail.value || 0;
                   this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
                   detail.value *= this.exchangeRate;
@@ -149,7 +148,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 ?invalid="${this.errors.financial_findings_local}"
                 .errorMessage="${this.errors.financial_findings_local}"
                 @value-changed="${({detail}: CustomEvent) => {
-                  debugger;
                   detail.value = detail.value || 0;
                   this.numberChanged(detail, 'financial_findings_local', this.editedItem);
                 }}"
@@ -331,7 +329,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
   }
 
   onSave() {
-    debugger;
     if (!this.validate() || !this.customValidation(true)) {
       return;
     }
@@ -367,7 +364,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
   }
 
   customValidation(_isForSaving?: boolean) {
-    debugger;
     const ffElement = this.shadowRoot!.querySelector('#financial-findings') as unknown as EtoolsCurrency;
     const ffNumber = ffElement && toNumber(ffElement.value);
     const aeElement = this.shadowRoot!.querySelector('#audited-expenditure') as unknown as EtoolsCurrency;

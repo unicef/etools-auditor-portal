@@ -399,7 +399,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _prepareData(submit?: boolean, finalize?: boolean) {
-      debugger;
       if (!this.engagement) {
         return Promise.reject(new Error('You need engagement object'));
       }
@@ -425,7 +424,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!this.isStaffSc) {
         data.engagement_type = this.engagement.engagement_type;
       }
-      debugger;
       // @ts-ignore Defined in derived class when needed
       if (this.customDataPrepare) {
         // @ts-ignore Defined in derived class when needed
@@ -463,7 +461,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _validateBasicInfo(property?) {
-      debugger;
       const detailsValid = this.getElement('#engagementDetails').validate();
       const partnerDetailsValid = this.getElement('#partnerDetails').validate();
       const assigneeValid = this.getElement('#staffMembers').validate();
@@ -501,7 +498,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     _getBasicInfo(data) {
       data = data || {};
-      debugger;
       //@dci
       const partnerDetailsData = this.getElement('#partnerDetails').getPartnerData();
       const engagementDetailsData = this.getElement('#engagementDetails').getEngagementData();

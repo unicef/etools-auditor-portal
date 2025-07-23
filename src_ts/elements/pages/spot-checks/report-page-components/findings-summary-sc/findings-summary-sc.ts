@@ -26,8 +26,8 @@ import {multiplyWithExchangeRate} from '../../../../utils/utils';
  * @appliesMixin DateMixin
  * @appliesMixin CommonMethodsMixin
  */
-@customElement('overview-element')
-export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMixin(LitElement))) {
+@customElement('findings-summary-sc')
+export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(DateMixin(LitElement))) {
   static get styles() {
     return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
@@ -57,7 +57,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
           flex-direction: column; 
         }
         .tbl-currency {
-          font-weight: 700;          
+          font-weight: 700;
         }
       </style>
 
@@ -76,13 +76,13 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
               <etools-data-table-column class="col-2">Value of Selected FACE</etools-data-table-column>
               <etools-data-table-column class="col-2">Total Amount Tested</etools-data-table-column>
               <etools-data-table-column class="col-2 col">Amount of Financial Findings</etools-data-table-column>
-              <etools-data-table-column class="col-2 center-align">& of audited Expenditure</etools-data-table-column>
+              <etools-data-table-column class="col-2 center-align">% of audited Expenditure</etools-data-table-column>
               <etools-data-table-column class="col-2"></etools-data-table-column>
             </etools-data-table-header>
             <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal">
-                <div class="col-data col-2 layout-vertical center-align" data-col-header-label="Engagement Type"><label class='tbl-currency centered'>Local currency<label></div>
-                <div class="col-data col-2" data-col-header-label="Date">
+                <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label=" "><label class='tbl-currency centered'>Local currency<label></div>
+                <div class="col-data col-2 no-colon" data-col-header-label="Value of Selected FACE">
                   <etools-currency
                     class="w100"
                     .value="${this.data?.total_value_local}"
@@ -92,7 +92,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Amount Tested">
+                <div class="col-data col-2 no-colon" data-col-header-label="Total Amount Tested">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_tested_local', this.optionsData)}"
                     .value="${this.data?.total_amount_tested_local}"
@@ -103,8 +103,9 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                     .errorMessage="${this.errors?.total_amount_tested_local}"
                     @value-changed="${({detail}: CustomEvent) => {
                       this.numberChanged(detail, 'total_amount_tested_local', this.data);
-                      detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
+                      detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
                       this.numberChanged(detail, 'total_amount_tested', this.data);
+                      this.setPercentExpenditure();
                     }}"
                     @focus="${() => {
                       this._resetFieldError;
@@ -112,7 +113,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 col" data-col-header-label="Financial Findings">
+                <div class="col-data col-2 no-colon col" data-col-header-label="Amount of Financial Findings">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure_local', this.optionsData)}"
                     .value="${this.data?.total_amount_of_ineligible_expenditure_local}"
@@ -126,7 +127,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                     .errorMessage="${this.errors?.total_amount_of_ineligible_expenditure_local}"
                     @value-changed="${({detail}: CustomEvent) => {
                       this.numberChanged(detail, 'total_amount_of_ineligible_expenditure_local', this.data);
-                      detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
+                      detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
                       this.numberChanged(detail, 'total_amount_of_ineligible_expenditure', this.data);
                     }}"
                     @focus="${() => {
@@ -135,14 +136,14 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 layout-vertical center-align" data-col-header-label="Engagement Type"></div>
-                <div class="col-data col-2 col"></div>
+                <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label=""></div>
+                <div class="col-data col-2 no-colon col" data-col-header-label=""></div>
               </div>
             </etools-data-table-row>
             <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal">
-              <div class="col-data col-2 layout-vertical center-align" data-col-header-label="Engagement Type"><label class='tbl-currency centered'>USD<label></div>
-                <div class="col-data col-2" data-col-header-label="Date">
+              <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label=""><label class='tbl-currency centered'>USD<label></div>
+                <div class="col-data col-2 no-colon" data-col-header-label="Value of Selected FACE">
                   <etools-currency
                     class="w100"
                     .value="${this.data?.total_value}"
@@ -153,7 +154,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Amount Tested">
+                <div class="col-data col-2 no-colon" data-col-header-label="Total Amount Tested">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_tested', this.optionsData)}"
                     .value="${this.data?.total_amount_tested}"
@@ -171,7 +172,7 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 col" data-col-header-label="Financial Findings">
+                <div class="col-data col-2 col no-colon" data-col-header-label="Amount of Financial Findings">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
                     .value="${this.data?.total_amount_of_ineligible_expenditure}"
@@ -188,11 +189,23 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 layout-vertical center-align" data-col-header-label="Pending Unsupported Amount">
-                  <label class="centered">$ ${(this.data?.total_amount_tested || 0 / this.data?.total_amount_of_ineligible_expenditure || 0).toFixed(2)}</label>
-                <div class="col-data col-2 col"></div>
-              </div>
+                <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label="% of audited Expenditure">
+                  <label class="centered">$ ${this.data?.percent_of_audited_expenditure}</label>
+                <div class="col-data col-2 no-colon col" data-col-header-label="&nbsp;"></div>
+               </div>
+             </div>
             </etools-data-table-row>
+            <div class="col-12 padding-v"></div>
+            <div class="col-12 col-lg-4 col-md-6 input-container">
+              <etools-input
+                class="w100"
+                .value="${this.data.exchange_rate}"
+                label="Exchange rate"
+                placeholder="${this.getNumericPlaceholderText('exchange_rate', this.optionsData)}"
+                readonly
+              >
+              </etools-input>
+            </div>
           </div>
         </div>
       </etools-content-panel>
@@ -237,22 +250,22 @@ export class OverviewElement extends CommonMethodsMixin(ModelChangedMixin(DateMi
     }
   }
 
-  getOverviewData() {
+  getFindingsSummarySCData() {
     return pickBy(this.data, (value, key) => {
       return (
-        ~[
-          'total_value',
-          'total_value_local',
-          'total_amount_tested',
-          'total_amount_tested_local',
-          'total_amount_of_ineligible_expenditure',
-          'total_amount_of_ineligible_expenditure_local'
-        ].indexOf(key) && value !== (this.originalData ? this.originalData[key] : undefined)
+        ~['total_amount_tested_local', 'total_amount_of_ineligible_expenditure_local'].indexOf(key) &&
+        value !== (this.originalData ? this.originalData[key] : undefined)
       );
     });
   }
 
   _checkInvalid(value) {
     return !!value;
+  }
+
+  setPercentExpenditure() {
+    this.data.percent_of_audited_expenditure = (
+      (100 * this.data.total_amount_of_ineligible_expenditure_local) / this.data.total_amount_tested_local || 0
+    ).toFixed(2);
   }
 }

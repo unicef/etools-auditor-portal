@@ -101,7 +101,7 @@ export class EngagementInfoDetails extends connect(store)(
       </style>
 
       <etools-media-query
-        query="(max-width: 1200px)"
+        query="(max-width: 1400px)"
         @query-matches-changed="${(e: CustomEvent) => {
           this.lowResolutionLayout = e.detail.value;
         }}"
@@ -632,7 +632,6 @@ export class EngagementInfoDetails extends connect(store)(
 
   onEngagementTypeChanged(updateEngagement = true) {
     this._setShowInput(this.data.engagement_type, updateEngagement);
-    debugger;
     if (updateEngagement) {
       store.dispatch(updateCurrentEngagement(this.data));
     }

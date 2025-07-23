@@ -293,7 +293,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
     if (!reportPage) {
       return data;
     }
-    debugger;
     const specificProceduresData = reportPage.getSpecificProceduresData();
     const otherRecommendationsData = reportPage.getOtherRecommendationsData();
 
