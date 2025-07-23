@@ -90,7 +90,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
           this.lowResolutionLayout = e.detail.value;
         }}"
       ></etools-media-query>
-      <etools-content-panel list panel-title="Summary of Engagement Findings">
+      <etools-content-panel class="content-section clearfx" panel-title="Summary of Engagement Findings">
 
         <div class="row">                 
                  <div class="col-12 padding-v">
