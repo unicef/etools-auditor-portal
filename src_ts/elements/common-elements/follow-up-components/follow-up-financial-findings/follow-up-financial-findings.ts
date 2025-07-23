@@ -98,7 +98,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     <!-- Financial Findings (USD)-->
                     <etools-currency
                       .value="${this.engagement.financial_findings_local}"
-                      label="${this.getLabel('financial_findings_local', this.optionsData)}"
+                      label="Financial Findings (Local)"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                       readonly
                     >
@@ -109,7 +109,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     <etools-currency
                       .value="${this.engagement.financial_findings}"
                       currency="$"
-                      label="${this.getLabel('financial_findings', this.optionsData)}"
+                      label="Financial Findings ($)"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                       readonly
                     >
@@ -125,6 +125,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     <!-- Total amount of ineligible expenditure-->
                     <etools-currency
                       .value="${this.engagement.total_amount_of_ineligible_expenditure_local}"
+                      label="Total Amount of Ineligible Expenditure (local)"
                       label="${this.getLabel('total_amount_of_ineligible_expenditure_local', this.optionsData)}"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                       readonly
@@ -136,7 +137,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     <etools-currency
                       .value="${this.engagement.total_amount_of_ineligible_expenditure}"
                       currency="$"
-                      label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"
+                      label="Total Amount of Ineligible Expenditure ($)"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                       readonly
                     >
