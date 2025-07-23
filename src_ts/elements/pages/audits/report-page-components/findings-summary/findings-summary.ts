@@ -99,17 +99,17 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                      <etools-data-table-column class="col-2">Value of Selected FACE</etools-data-table-column>
                      <etools-data-table-column class="col-2">Audited Expenditure</etools-data-table-column>
                      <etools-data-table-column class="col-2 col">Amount of Financial Findings</etools-data-table-column>
-                     <etools-data-table-column class="col-2 center-align">
+                     <etools-data-table-column class="col-2">
                       % of audited Expenditure
                     </etools-data-table-column>
                      <etools-data-table-column class="col-2"></etools-data-table-column>
                    </etools-data-table-header>
                    <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
                      <div slot="row-data" class="layout-horizontal">
-                       <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label=" ">
+                       <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label="">
                         <label class='tbl-currency centered'>Local currency<label>                        
                       </div>
-                       <div class="col-data col-2 no-colon" data-col-header-label="Value of Selected FACE">
+                       <div class="col-data col-2" data-col-header-label="Value of Selected FACE">
                          <etools-currency
                            class="w100"
                            .value="${this.data?.total_value_local}"
@@ -119,7 +119,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                          >
                          </etools-currency>
                        </div>
-                       <div class="col-data col-2 no-colon" data-col-header-label="Audited Expenditure">
+                       <div class="col-data col-2" data-col-header-label="Audited Expenditure">
                          <etools-currency
                            class="w100 ${this._setRequired('audited_expenditure_local', this.optionsData)}"
                            .value="${this.data?.audited_expenditure_local}"
@@ -140,7 +140,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                          >
                          </etools-currency>
                        </div>
-                       <div class="col-data col-2 no-colon col" data-col-header-label="Amount of Financial Findings">
+                       <div class="col-data col-2 col" data-col-header-label="Amount of Financial Findings">
                          <etools-currency
                            class="w100 ${this._setRequired('financial_findings_local', this.optionsData)}"
                            .value="${this.data?.financial_findings_local}"
@@ -169,7 +169,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                        <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label="">
                         <label class='tbl-currency centered'>USD<label>                          
                        </div>
-                       <div class="col-data col-2 no-colon" data-col-header-label="Value of Selected FACE">
+                       <div class="col-data col-2" data-col-header-label="Value of Selected FACE">
                          <etools-currency
                            class="w100"
                            .value="${this.data?.total_value}"
@@ -180,7 +180,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                          >
                          </etools-currency>
                        </div>
-                       <div class="col-data col-2 no-colon" data-col-header-label="Audited Expenditure">
+                       <div class="col-data col-2" data-col-header-label="Audited Expenditure">
                          <etools-currency
                            class="w100 ${this._setRequired('audited_expenditure', this.optionsData)}"
                            .value="${this.data?.audited_expenditure}"
@@ -198,7 +198,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                          >
                          </etools-currency>
                        </div>
-                       <div class="col-data col-2 col no-colon" data-col-header-label="Amount of Financial Findings">
+                       <div class="col-data col-2 col" data-col-header-label="Amount of Financial Findings">
                          <etools-currency
                            class="w100 ${this._setRequired('financial_findings', this.optionsData)}"
                            .value="${this.data?.financial_findings}"
@@ -215,7 +215,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                          >
                          </etools-currency>
                        </div>
-                       <div class="col-data col-2 no-colon layout-vertical center-align" 
+                       <div class="col-data col-2" 
                           data-col-header-label="% of audited Expenditure">
                          <label class="centered">$ ${this.data?.percent_of_audited_expenditure}</label>
                        <div class="col-data col-2 no-colon col" data-col-header-label="&nbsp;"></div>
