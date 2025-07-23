@@ -536,7 +536,7 @@ export class EngagementInfoDetails extends connect(store)(
   }
 
   showFaceForm(data: GenericObject) {
-    if (data.id && !(data.face_forms || []).length) {
+    if (data && data.id && !(data.face_forms || []).length) {
       // we have a saved engagement but without face_forms
       return false;
     }
