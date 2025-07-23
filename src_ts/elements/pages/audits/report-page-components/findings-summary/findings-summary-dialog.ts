@@ -18,7 +18,7 @@ import toNumber from 'lodash-es/toNumber';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
-import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+// import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 
 /**
