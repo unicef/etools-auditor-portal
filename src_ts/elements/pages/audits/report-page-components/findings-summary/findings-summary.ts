@@ -236,7 +236,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                       option-label="display_name"
                       option-value="value"
                       ?required="${this._setRequired('audit_opinion', this.optionsData)}"
-                      ?disabled="${this.requestInProcess}"
+                      ?readonly="${this.isReadOnly('audit_opinion', this.optionsData)}"
                       ?invalid="${this.errors.audit_opinion}"
                       .errorMessage="${this.errors.audit_opinion}"
                       trigger-value-change-event

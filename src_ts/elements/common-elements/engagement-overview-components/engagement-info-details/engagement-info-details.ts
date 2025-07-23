@@ -297,7 +297,7 @@ export class EngagementInfoDetails extends connect(store)(
 
           </div>
 
-        <div class="col-12 padding-v" ?hidden="${!this.showFaceForm(this.data.engagement_type, this.data.partner?.id)}">
+        <div class="col-12 padding-v" ?hidden="${!this.showFaceForm(this.data)}">
          
             <label class="error-label" id="lblFaceRequired" ?hidden="${!this.showFaceRequired}">
               Please select at least one Face item
@@ -535,7 +535,13 @@ export class EngagementInfoDetails extends connect(store)(
     return !this.data.partner?.id || this.isReadOnly(field, permissions);
   }
 
-  showFaceForm(engagement_type: string, partnerId?: number) {
+  showFaceForm(data: GenericObject) {
+    if (data.id && !(data.face_forms || []).length) {
+      // we have a saved engagement but without face_forms
+      return false;
+    }
+    const engagement_type = data?.engagement_type;
+    const partnerId = data?.partner?.id;
     this.showFace = !!engagement_type && engagement_type !== 'ma';
     this.showJoinAudit = !!engagement_type && ['audit', 'sa'].includes(engagement_type);
     if (this.showFace && partnerId && this.prevPartnerId !== partnerId) {
