@@ -132,7 +132,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                              this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
                              detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
                              this.numberChanged(detail, 'audited_expenditure', this.data);
-                             this.setPercentOfAuditedExpenditure();
+                             //@dci this.setPercentOfAuditedExpenditure();
                            }}"
                            @focus="${() => {
                              this._resetFieldError;
