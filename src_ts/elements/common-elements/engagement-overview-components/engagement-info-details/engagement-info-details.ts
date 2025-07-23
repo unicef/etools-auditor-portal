@@ -106,6 +106,9 @@ export class EngagementInfoDetails extends connect(store)(
       ></etools-media-query>
 
       <etools-content-panel class="content-section clearfix" panel-title="Engagement Details">
+        <etools-loading .active="${this.loadingFaceForms}" 
+          loading-text="Loading Face Forms..." class="loading">
+        </etools-loading>
         <div class="row">
           <div class="col-12 col-md-6 col-lg-6 input-container">
             <etools-info-tooltip
@@ -188,7 +191,7 @@ export class EngagementInfoDetails extends connect(store)(
         </div>
 
           <div class="row" 
-            ?hidden="${!this.showFaceForm(this.data.engagement_type, this.data.partner?.id)}">
+            ?hidden="${!this.showFaceForm(this.data.engagement_type, this.data?.partner?.id)}">
             <div class="col-12 col-lg-3 col-md-6 input-container">
               <!-- Period Start Date -->
                 <datepicker-lite
@@ -297,8 +300,11 @@ export class EngagementInfoDetails extends connect(store)(
 
           </div>
 
-        <div class="col-12 padding-v" ?hidden="${!this.showFaceForm(this.data)}">
-         
+          <div class="col-12 padding-v"
+            ?hidden="${
+              !this.showFaceForm(this.data?.engagement_type, this.data?.partner?.id) ||
+              this.doesNotHaveFaceData(this.data)
+            }">                    
             <label class="error-label" id="lblFaceRequired" ?hidden="${!this.showFaceRequired}">
               Please select at least one Face item
             </label>
@@ -451,6 +457,9 @@ export class EngagementInfoDetails extends connect(store)(
   @property({type: Boolean})
   showFace!: boolean;
 
+  @property({type: Boolean})
+  loadingFaceForms!: boolean;
+
   @property({type: Array})
   users!: GenericObject[];
 
@@ -535,13 +544,7 @@ export class EngagementInfoDetails extends connect(store)(
     return !this.data.partner?.id || this.isReadOnly(field, permissions);
   }
 
-  showFaceForm(data: GenericObject) {
-    if (data && data.id && !(data.face_forms || []).length) {
-      // we have a saved engagement but without face_forms
-      return false;
-    }
-    const engagement_type = data?.engagement_type;
-    const partnerId = data?.partner?.id;
+  showFaceForm(engagement_type: string, partnerId?: number) {
     this.showFace = !!engagement_type && engagement_type !== 'ma';
     this.showJoinAudit = !!engagement_type && ['audit', 'sa'].includes(engagement_type);
     if (this.showFace && partnerId && this.prevPartnerId !== partnerId) {
@@ -552,6 +555,10 @@ export class EngagementInfoDetails extends connect(store)(
     return this.showFace;
   }
 
+  doesNotHaveFaceData(data: GenericObject) {
+    return data && data.id && !(data.face_forms || []).length;
+  }
+
   loadFaceData(partnerId: number) {
     if (this.data?.id) {
       // for existing engagements table is not editable, just show selected face_forms for info,
@@ -559,6 +566,7 @@ export class EngagementInfoDetails extends connect(store)(
       this.setFaceData([...(this.data.face_forms || [])], true);
       return;
     }
+    this.loadingFaceForms = true;
     const url = getEndpoint('linkFace', {id: partnerId}).url;
     sendRequest({
       endpoint: {url}
@@ -568,7 +576,8 @@ export class EngagementInfoDetails extends connect(store)(
         this.setFaceData(resp.rows || []);
         this.requestUpdate();
       })
-      .catch((err) => fireEvent(this, 'toast', {text: `Error fetching Face forms data for ${partnerId}: ${err}`}));
+      .catch((err) => fireEvent(this, 'toast', {text: `Error fetching Face forms data for ${partnerId}: ${err}`}))
+      .finally(() => (this.loadingFaceForms = false));
   }
 
   setFaceData(faceData: any[], defaultSelection = false) {

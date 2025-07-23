@@ -95,21 +95,19 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     </etools-dropdown>
                   </div>
                   <div class="col-12 input-container col-lg-4 col-md-6">
-                    <!-- Financial Findings (USD)-->
                     <etools-currency
-                      .value="${this.engagement.financial_findings_local}"
-                      label="Financial Findings (Local)"
+                      .value="${this.engagement.audited_expenditure_local}"
+                      label="Audited Expenditure (Local)"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                       readonly
                     >
                     </etools-currency>
                   </div>
                   <div class="col-12 input-container col-lg-4 col-md-6">
-                    <!-- Financial Findings (USD)-->
                     <etools-currency
-                      .value="${this.engagement.financial_findings}"
+                      .value="${this.engagement.audited_expenditure}"
                       currency="$"
-                      label="Financial Findings ($)"
+                      label="Audited Expenditure ($)"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                       readonly
                     >
@@ -150,7 +148,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <etools-data-table-column class="col-1"></etools-data-table-column>
               <etools-data-table-column class="col-1" ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
-                Audited Expenditure  <!-- ${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)} -->
+                Financial Findings  <!-- ${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)} -->
               </etools-data-table-column>
               <etools-data-table-column class="col-1" ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
                 Total Amount Tested <!-- ${this.getLabelWithoutCurrency('total_amount_tested', this.optionsData)} -->
@@ -174,12 +172,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
              <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal">
                 <div class="col-data col-1 no-colon layout-vertical center-align"><label class='tbl-currency'>Local currency<label></div>
-                <div class="col-data col-1" data-col-header-label="Audited Expenditure"
+                <div class="col-data col-1" data-col-header-label="Financial Findings"
                   ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
                    <etools-currency
                     class="w100"
-                    .value="${this.engagement.audited_expenditure_local}"
-                    placeholder="${this.getPlaceholderText('audited_expenditure_local', this.optionsData)}"
+                    .value="${this.engagement.financial_findings_local}"
+                    placeholder="${this.getPlaceholderText('financial_findings_local', this.optionsData)}"
                     readonly
                     @focus="${this._resetFieldError}"
                   >
@@ -340,12 +338,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal">
                 <div class="col-data col-1 no-colon layout-vertical center-align"><label class='tbl-currency'>USD<label></div>
-                <div class="col-data col-1" data-col-header-label="Audited Expenditure"
+                <div class="col-data col-1" data-col-header-label="Financial Findings"
                   ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
                    <etools-currency
                     class="w100"
-                    .value="${this.engagement.audited_expenditure}"
-                    placeholder="${this.getPlaceholderText('audited_expenditure', this.optionsData)}"
+                    .value="${this.engagement.financial_findings}"
+                    placeholder="${this.getPlaceholderText('financial_findings', this.optionsData)}"
                     readonly
                     @focus="${this._resetFieldError}"
                   >
