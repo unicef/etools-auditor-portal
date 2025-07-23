@@ -302,9 +302,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
   @property({type: Boolean})
   showLocalCurrency!: boolean;
 
-  @property({type: String})
-  msgUSDConfirm = '';
-
   set dialogData(data: any) {
     const {
       optionsData,
@@ -332,28 +329,8 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
     if (!this.validate() || !this.customValidation(true)) {
       return;
     }
-    //if (this.msgUSDConfirm) {
-    //  this.openConfirmDialog();
-    // } else {
     this.requestInProcess = true;
     this.opener._addItemFromDialog();
-    // }
-  }
-
-  openConfirmDialog() {
-    openDialog({
-      dialog: 'are-you-sure',
-      dialogData: {
-        content: this.msgUSDConfirm,
-        confirmBtnText: 'Confirm',
-        cancelBtnText: 'Cancel'
-      }
-    }).then(({confirmed}) => {
-      if (confirmed) {
-        this.requestInProcess = true;
-        this.opener._addItemFromDialog();
-      }
-    });
   }
 
   _setAuditedExpenditure(financialFindings, auditedExpenditure) {
@@ -369,17 +346,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
     const aeElement = this.shadowRoot!.querySelector('#audited-expenditure') as unknown as EtoolsCurrency;
     const aeNumber = aeElement && toNumber(aeElement.value);
 
-    this.msgUSDConfirm = '';
-    // if (
-    //   isForSaving &&
-    //   ((this.originalData.audited_expenditure !== this.editedItem.audited_expenditure &&
-    //     this.editedItem.audited_expenditure > 0) ||
-    //     (this.originalData.financial_findings !== this.editedItem.financial_findings &&
-    //       this.editedItem.financial_findings > 0))
-    // ) {
-    //   this.msgUSDConfirm = `Please confirm that the values for Audited Expenditure:
-    //     ${aeNumber} and Financial Findings: ${ffNumber} are in USD`;
-    // }
     let isvalid = true;
     if (aeNumber <= ffNumber) {
       ffElement.invalid = true;
@@ -389,7 +355,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
       ffElement.invalid = false;
     }
 
-    //if (this.showLocalCurrency) {
     const ffElementLocal = this.shadowRoot!.querySelector('#financial-findings-local') as unknown as EtoolsCurrency;
     const ffNumberLocal = ffElementLocal && toNumber(ffElementLocal.value);
     const aeElementLocal = this.shadowRoot!.querySelector('#audited-expenditure-local') as unknown as EtoolsCurrency;
@@ -401,7 +366,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
     } else {
       aeElementLocal.invalid = false;
     }
-    //}
     return isvalid;
   }
 
