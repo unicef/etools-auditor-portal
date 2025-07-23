@@ -26,8 +26,6 @@ import isEqual from 'lodash-es/isEqual';
 import keys from 'lodash-es/keys';
 import pick from 'lodash-es/pick';
 import transform from 'lodash-es/transform';
-import values from 'lodash-es/values';
-import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {getOptionsChoices} from '../../../../mixins/permission-controller';

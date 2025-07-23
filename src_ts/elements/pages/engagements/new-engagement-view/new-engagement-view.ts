@@ -33,7 +33,7 @@ import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {AnyObject, RouteDetails} from '@unicef-polymer/etools-types';
-import {setEngagementData, updateCurrentEngagement} from '../../../../redux/actions/engagement';
+import {setEngagementData} from '../../../../redux/actions/engagement';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {isActiveTab} from '../../../utils/utils';
 /**

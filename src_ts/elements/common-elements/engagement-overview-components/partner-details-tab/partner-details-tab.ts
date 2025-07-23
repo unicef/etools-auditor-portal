@@ -13,7 +13,7 @@ import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import PaginationMixin from '@unicef-polymer/etools-unicef/src/mixins/pagination-mixin';
 import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/mixins/currency.js';
-import {readonlyPermission} from '../../../mixins/permission-controller';
+// import {readonlyPermission} from '../../../mixins/permission-controller';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import dayjs from 'dayjs';
 
