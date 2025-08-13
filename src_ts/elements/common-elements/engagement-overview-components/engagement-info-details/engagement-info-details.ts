@@ -113,7 +113,7 @@ export class EngagementInfoDetails extends connect(store)(
         }}"
       ></etools-media-query>
 
-      <etools-content-panel class="content-section clearfix" panel-title="Engagement Details" show-expand-btn>
+      <etools-content-panel class="content-section clearfix" panel-title="Selecting Engagement" show-expand-btn>
         <etools-loading .active="${this.loadingFaceForms}" 
           loading-text="Loading Face Forms..." class="loading">
         </etools-loading>

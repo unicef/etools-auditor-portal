@@ -89,7 +89,7 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
         }}"
       ></etools-media-query>
 
-      <etools-content-panel class="content-section clearfix" panel-title="Partner Details" show-expand-btn>
+      <etools-content-panel class="content-section clearfix" panel-title="Selecting Partner" show-expand-btn>
         <div class="row">
           <div class="col-12 col-lg-6 col-md-6 input-container">
             <!-- Partner -->

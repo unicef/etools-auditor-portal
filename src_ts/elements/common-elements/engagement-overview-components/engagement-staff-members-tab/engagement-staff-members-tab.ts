@@ -224,7 +224,7 @@ export class EngagementStaffMembersTab extends connect(store)(
 
       <etools-content-panel
         class="content-section clearfix"
-        panel-title="Assignee & Contact"
+        panel-title="Selecting Service Provider"
         show-expand-btn
       >
         <div>
