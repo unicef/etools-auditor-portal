@@ -44,6 +44,10 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           margin-bottom: 24px;
           display: block;
         }
+        :host etools-currency {
+          width: 100%;
+          text-align: end;
+        }
         .input-container {
           display: flex;
         }
@@ -65,6 +69,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
         etools-data-table-column::part(edt-list-column-label) {
           line-height: 14px;
         }
+        etools-currency::part(input) {
+          text-align: end;
+        }
+        *[slot="row-data"] .col-data.align-right {
+          text-align: end;
+        }
       </style>
 
       <etools-media-query
@@ -74,13 +84,13 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
         }}"
       ></etools-media-query>
 
-      <etools-content-panel panel-title="Financial Findings">
+      <etools-content-panel panel-title="Financial Findings" show-expand-btn>
 
         <div class="row">
           <!--Audit engagement fields-->
           ${
             this.showFields(this.engagement.engagement_type, 'audit')
-              ? html`<div class="col-12 col-lg-4 col-md-6 input-container">
+              ? html`<div class="col-12 col-lg-3 col-md-6 input-container">
                     <!-- Audit Opinion -->
                     <etools-dropdown
                       id="test"
@@ -94,20 +104,19 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     >
                     </etools-dropdown>
                   </div>
-                  <div class="col-12 input-container col-lg-4 col-md-6">
+                  <div class="col-12 input-container col-lg-3 col-md-6">
                     <etools-currency
                       .value="${this.engagement.audited_expenditure_local}"
-                      label="Audited Expenditure (Local)"
+                      label="${this.getLabel('audited_expenditure_local', this.optionsData)}"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                       readonly
                     >
                     </etools-currency>
                   </div>
-                  <div class="col-12 input-container col-lg-4 col-md-6">
+                  <div class="col-12 input-container col-lg-3 col-md-6">
                     <etools-currency
                       .value="${this.engagement.audited_expenditure}"
-                      currency="$"
-                      label="Audited Expenditure ($)"
+                      label="${this.getLabel('audited_expenditure', this.optionsData)}"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                       readonly
                     >
@@ -123,7 +132,6 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     <!-- Total amount of ineligible expenditure-->
                     <etools-currency
                       .value="${this.engagement.total_amount_of_ineligible_expenditure_local}"
-                      label="Total Amount of Ineligible Expenditure (local)"
                       label="${this.getLabel('total_amount_of_ineligible_expenditure_local', this.optionsData)}"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                       readonly
@@ -134,8 +142,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     <!-- Total amount of ineligible expenditure-->
                     <etools-currency
                       .value="${this.engagement.total_amount_of_ineligible_expenditure}"
-                      currency="$"
-                      label="Total Amount of Ineligible Expenditure ($)"
+                      label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                       readonly
                     >
@@ -147,32 +154,32 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           <div class="col-12 padding-v">
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <etools-data-table-column class="col-1"></etools-data-table-column>
-              <etools-data-table-column class="col-1" ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
-                Financial Findings  <!-- ${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)} -->
+              <etools-data-table-column class="col-1 align-center" ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
+                <!-- Financial Findings --> ${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)}
               </etools-data-table-column>
-              <etools-data-table-column class="col-1" ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
-                Total Amount Tested <!-- ${this.getLabelWithoutCurrency('total_amount_tested', this.optionsData)} -->
+              <etools-data-table-column class="col-1 align-center" ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
+                 <!-- Total Amount Tested --> ${this.getLabelWithoutCurrency('total_amount_tested', this.optionsData)}
               </etools-data-table-column>
-              <etools-data-table-column class="col-2">
-                Amount Refunded <!-- ${this.getLabelWithoutCurrency('amount_refunded', this.optionsData)} -->
+              <etools-data-table-column class="col-2 align-center">
+                <!-- Amount Refunded --> ${this.getLabelWithoutCurrency('amount_refunded', this.optionsData)}
               </etools-data-table-column>
-              <etools-data-table-column class="col-2">
-                Additional Supporting Documentation Provided <!-- ${this.getLabelWithoutCurrency('additional_supporting_documentation_provided', this.optionsData)} -->
+              <etools-data-table-column class="col-2 align-center">
+                <!-- Additional Supporting Documentation Provided --> ${this.getLabelWithoutCurrency('additional_supporting_documentation_provided', this.optionsData)}
               </etools-data-table-column>
-              <etools-data-table-column class="col-2">
-                Justification Provided and Accepted <!-- ${this.getLabelWithoutCurrency('justification_provided_and_accepted', this.optionsData)} -->
+              <etools-data-table-column class="col-2 align-center">
+                <!-- Justification Provided and Accepted --> ${this.getLabelWithoutCurrency('justification_provided_and_accepted', this.optionsData)}
               </etools-data-table-column>
-              <etools-data-table-column class="col-2">
-                Impairment <!-- ${this.getLabelWithoutCurrency('write_off_required', this.optionsData)} -->
+              <etools-data-table-column class="col-2 align-center">
+                <!-- Impairment --> ${this.getLabelWithoutCurrency('write_off_required', this.optionsData)}
               </etools-data-table-column>
-              <etools-data-table-column class="col-2">
-                Pending Unsupported Amount <!-- ${this.getLabelWithoutCurrency('pending_unsupported_amount', this.optionsData)} -->
+              <etools-data-table-column class="col-2 align-center">
+                <!-- Pending Unsupported Amount --> ${this.getLabelWithoutCurrency('pending_unsupported_amount', this.optionsData)}
             </etools-data-table-column>
             </etools-data-table-header>
              <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal">
                 <div class="col-data col-1 no-colon layout-vertical center-align"><label class='tbl-currency'>Local currency<label></div>
-                <div class="col-data col-1" data-col-header-label="Financial Findings"
+                <div class="col-data col-1 align-right" data-col-header-label="${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)}"
                   ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
                    <etools-currency
                     class="w100"
@@ -183,7 +190,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-1" data-col-header-label="Total Amount Tested"
+                <div class="col-data col-1 align-right" data-col-header-label="${this.getLabelWithoutCurrency('total_amount_tested', this.optionsData)}"
                    ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
                   <etools-currency
                     class="w100"
@@ -194,7 +201,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Amount Refunded">
+                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('amount_refunded', this.optionsData)}">
                     <etools-currency
                       class="${this._setRequired('amount_refunded_local', this.optionsData)}
                                             validate-input"
@@ -223,7 +230,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Additional Supporting Documentation Provided">
+                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('additional_supporting_documentation_provided', this.optionsData)}">
                     <!--Additional supporting documentation provided -->
                     <etools-currency
                       class="${this._setRequired('additional_supporting_documentation_provided_local', this.optionsData)}
@@ -263,7 +270,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Justification Provided and Accepted">
+                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('justification_provided_and_accepted', this.optionsData)}">
                     <!-- Justification provided and accepted -->
                     <etools-currency
                       class="${this._setRequired('justification_provided_and_accepted_local', this.optionsData)}
@@ -295,7 +302,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     >
                     </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Impairment">
+                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('write_off_required', this.optionsData)}">
                       <etools-currency
                             class="${this._setRequired('write_off_required_local', this.optionsData)}
                                                     validate-input"
@@ -324,7 +331,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                           >
                       </etools-currency>
                 </div>
-                <div class="col-data col-2 col" data-col-header-label="Pending Unsupported Amount">
+                <div class="col-data col-2 col align-right" data-col-header-label="${this.getLabelWithoutCurrency('pending_unsupported_amount', this.optionsData)}">
                     <etools-input
                       .value="${this.engagement.pending_unsupported_amount_local}"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
@@ -338,7 +345,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal">
                 <div class="col-data col-1 no-colon layout-vertical center-align"><label class='tbl-currency'>USD<label></div>
-                <div class="col-data col-1" data-col-header-label="Financial Findings"
+                <div class="col-data col-1 align-right" data-col-header-label="${this.getLabelWithoutCurrency('financial_findings', this.optionsData)}"
                   ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
                    <etools-currency
                     class="w100"
@@ -349,7 +356,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-1" data-col-header-label="Total Amount tested"
+                <div class="col-data col-1 align-right" data-col-header-label="${this.getLabelWithoutCurrency('total_amount_tested', this.optionsData)}"
                   ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
                   <etools-currency
                     class="w100"
@@ -360,13 +367,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Amount Rrefunded">
+                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('amount_refunded', this.optionsData)}">
                     <!--Amount refunded -->
                     <etools-currency
                       class="${this._setRequired('amount_refunded', this.optionsData)}
                                             validate-input"
                       .value="${this.engagement.amount_refunded}"
-                      currency="$"
                       placeholder="${this.getPlaceholderText('amount_refunded', this.optionsData)}"
                       ?required="${this._setRequired('amount_refunded', this.optionsData)}"
                       ?readonly="${this.isReadOnly('amount_refunded', this.optionsData)}"
@@ -382,13 +388,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     >
                     </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Additional Supporting Documentation Provided">
+                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('additional_supporting_documentation_provided', this.optionsData)}">
                      <!--Additional supporting documentation provided -->
                       <etools-currency
                         class="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}
                                                   validate-input"
                         .value="${this.engagement.additional_supporting_documentation_provided}"
-                        currency="$"
                         placeholder="${this.getPlaceholderText('additional_supporting_documentation_provided', this.optionsData)}"
                         ?required="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}"
                         ?readonly="${this.isReadOnly('additional_supporting_documentation_provided', this.optionsData)}"
@@ -407,13 +412,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                       >
                       </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Justification Provided and Accepted">
+                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('justification_provided_and_accepted', this.optionsData)}">
                     <!-- Justification provided and accepted -->
                   <etools-currency
                     class="${this._setRequired('justification_provided_and_accepted', this.optionsData)}
                                           validate-input"
                     .value="${this.engagement.justification_provided_and_accepted}"
-                    currency="$"
                     placeholder="${this.getPlaceholderText('justification_provided_and_accepted', this.optionsData)}"
                     ?required="${this._setRequired('justification_provided_and_accepted', this.optionsData)}"
                     ?readonly="${this.isReadOnly('justification_provided_and_accepted', this.optionsData)}"
@@ -429,7 +433,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Impairment">
+                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('write_off_required', this.optionsData)}">
                    <!--Write off required -->
                     <etools-currency
                       class="${this._setRequired('write_off_required', this.optionsData)}
@@ -450,7 +454,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     >
                     </etools-currency>
                 </div>
-                <div class="col-data col-2" data-col-header-label="Pending Unsupported Amount">
+                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('pending_unsupported_amount', this.optionsData)}">
                     <etools-input
                       .value="${this.engagement.pending_unsupported_amount}"
                       placeholder="${this.getReadonlyPlaceholder(this.engagement)}"

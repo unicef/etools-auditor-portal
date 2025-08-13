@@ -225,6 +225,7 @@ export class EngagementStaffMembersTab extends connect(store)(
       <etools-content-panel
         class="content-section clearfix"
         panel-title="Assignee & Contact"
+        show-expand-btn
       >
         <div>
           <engagement-purchase-details
@@ -234,107 +235,6 @@ export class EngagementStaffMembersTab extends connect(store)(
               .errorObject="${this.errorObject}"
               .optionsData="${this.optionsData}">
           </engagement-purchase-details>
-          <div class="col-12 section-bottom"></div>
-        </div>
-
-        <div class="panel-content group">
-           <div class="row padding-v">
-            <div class="col-12">
-                <label class="section-title">Partner Contact</label>
-            </div>
-            <div class="col-12 col-md-12 col-lg-6 input-container">
-            <!-- Partner Address -->
-            <etools-input
-              class="${this._setReadonlyFieldClass(this.partner)}"
-              .value="${this._setPartnerAddress(this.partner)}"
-              label="Partner Address"
-              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
-              readonly
-            >
-            </etools-input>
-          </div>
-          <div class="col-12 col-md-6 col-lg-3 input-container">
-            <!-- Partner Phone Number -->
-            <etools-input
-              class="${this._setReadonlyFieldClass(this.partner)}"
-              .value="${this.partner?.phone_number}"
-              label="${this.getLabel('partner.phone_number', this.optionsData)}"
-              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
-              readonly
-            >
-            </etools-input>
-          </div>
-
-          <div class="col-12 col-md-6 col-lg-3 input-container">
-            <!-- Partner E-mail Address -->
-            <etools-input
-              class="${this._setReadonlyFieldClass(this.partner)}"
-              .value="${this.partner?.email}"
-              label="${this.getLabel('partner.email', this.optionsData)}"
-              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
-              readonly
-            >
-            </etools-input>
-          </div>
-      
-             <div class="col-12 col-lg-6 col-md-6 input-container">
-            <!-- Partner  Officers-->
-            <etools-dropdown
-              id="authorizedOfficer"
-              class="${this._setRequired('authorized_officers', this.optionsData)} ${this._setPlaceholderColor(
-                this.partner
-              )}"
-              .selected="${this.authorizedOfficer?.id}"
-              label="${this.getLabel('authorized_officers', this.optionsData)}"
-              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
-              .options="${this.partner?.partnerOfficers}"
-              option-label="fullName"
-              option-value="id"
-              ?required="${this._setRequired('authorized_officers', this.optionsData)}"
-              ?invalid="${this._checkInvalid(this.errors.authorized_officers)}"
-              ?readonly="${this.isOfficersReadonly(this.optionsData, this.requestInProcess, this.partner)}"
-              .errorMessage="${this.errors.authorized_officers}"
-              @focus="${this._resetFieldError}"
-              dynamic-align
-              @etools-selected-item-changed="${(event: CustomEvent) => {
-                if (this.authorizedOfficer) {
-                  this.authorizedOfficer = event.detail.selectedItem;
-                }
-              }}"
-              trigger-value-change-event
-            >
-            </etools-dropdown>
-          </div>
-          ${
-            this._showActivePd(this.partner?.partner_type, this.specialPartnerTypes)
-              ? html`<div class="col-1 col-lg-6 col-md-6 input-container">
-                  <!-- Active PD -->
-                  <etools-dropdown-multi
-                    id="activePd"
-                    class="${this._setPlaceholderColor(this.partner)}"
-                    .selectedValues="${this.activePdIds}"
-                    label="${this.getLabel('active_pd', this.optionsData)}"
-                    placeholder="${this.activePdPlaceholder(this.optionsData, this.partner)}"
-                    .options="${this.partner?.interventions}"
-                    option-label="number"
-                    option-value="id"
-                    ?readonly="${this.isPdReadonly(this.optionsData, this.requestInProcess, this.partner)}"
-                    ?invalid="${this.errors.active_pd}"
-                    .errorMessage="${this.errors.active_pd}"
-                    @focus="${this._resetFieldError}"
-                    dynamic-align
-                    trigger-value-change-event
-                    @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      const newIds = detail.selectedItems.map((i: any) => i.id);
-                      this.activePdIds = newIds;
-                    }}"
-                  >
-                  </etools-dropdown-multi>
-                </div>`
-              : ``
-          }
-
-          </div>
           <div class="col-12 section-bottom"></div>
         </div>
 
@@ -487,6 +387,108 @@ export class EngagementStaffMembersTab extends connect(store)(
       </div>
       </div>
 
+
+      
+        <div class="panel-content group">
+           <div class="row padding-v">
+            <div class="col-12">
+                <label class="section-title">Partner Contact</label>
+            </div>
+            <div class="col-12 col-md-12 col-lg-6 input-container">
+            <!-- Partner Address -->
+            <etools-input
+              class="${this._setReadonlyFieldClass(this.partner)}"
+              .value="${this._setPartnerAddress(this.partner)}"
+              label="Partner Address"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
+              readonly
+            >
+            </etools-input>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3 input-container">
+            <!-- Partner Phone Number -->
+            <etools-input
+              class="${this._setReadonlyFieldClass(this.partner)}"
+              .value="${this.partner?.phone_number}"
+              label="${this.getLabel('partner.phone_number', this.optionsData)}"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
+              readonly
+            >
+            </etools-input>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-3 input-container">
+            <!-- Partner E-mail Address -->
+            <etools-input
+              class="${this._setReadonlyFieldClass(this.partner)}"
+              .value="${this.partner?.email}"
+              label="${this.getLabel('partner.email', this.optionsData)}"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
+              readonly
+            >
+            </etools-input>
+          </div>
+      
+             <div class="col-12 col-lg-6 col-md-6 input-container">
+            <!-- Partner  Officers-->
+            <etools-dropdown
+              id="authorizedOfficer"
+              class="${this._setRequired('authorized_officers', this.optionsData)} ${this._setPlaceholderColor(
+                this.partner
+              )}"
+              .selected="${this.authorizedOfficer?.id}"
+              label="${this.getLabel('authorized_officers', this.optionsData)}"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
+              .options="${this.partner?.partnerOfficers}"
+              option-label="fullName"
+              option-value="id"
+              ?required="${this._setRequired('authorized_officers', this.optionsData)}"
+              ?invalid="${this._checkInvalid(this.errors.authorized_officers)}"
+              ?readonly="${this.isOfficersReadonly(this.optionsData, this.requestInProcess, this.partner)}"
+              .errorMessage="${this.errors.authorized_officers}"
+              @focus="${this._resetFieldError}"
+              dynamic-align
+              @etools-selected-item-changed="${(event: CustomEvent) => {
+                if (this.authorizedOfficer) {
+                  this.authorizedOfficer = event.detail.selectedItem;
+                }
+              }}"
+              trigger-value-change-event
+            >
+            </etools-dropdown>
+          </div>
+          ${
+            this._showActivePd(this.partner?.partner_type, this.specialPartnerTypes)
+              ? html`<div class="col-1 col-lg-6 col-md-6 input-container">
+                  <!-- Active PD -->
+                  <etools-dropdown-multi
+                    id="activePd"
+                    class="${this._setPlaceholderColor(this.partner)}"
+                    .selectedValues="${this.activePdIds}"
+                    label="${this.getLabel('active_pd', this.optionsData)}"
+                    placeholder="${this.activePdPlaceholder(this.optionsData, this.partner)}"
+                    .options="${this.partner?.interventions}"
+                    option-label="number"
+                    option-value="id"
+                    ?readonly="${this.isPdReadonly(this.optionsData, this.requestInProcess, this.partner)}"
+                    ?invalid="${this.errors.active_pd}"
+                    .errorMessage="${this.errors.active_pd}"
+                    @focus="${this._resetFieldError}"
+                    dynamic-align
+                    trigger-value-change-event
+                    @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                      const newIds = detail.selectedItems.map((i: any) => i.id);
+                      this.activePdIds = newIds;
+                    }}"
+                  >
+                  </etools-dropdown-multi>
+                </div>`
+              : ``
+          }
+
+          </div>
+          <div class="col-12 section-bottom"></div>
+        </div>
         
         <div class="panel-content group">
            <div class="row padding">
@@ -660,7 +662,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   @property({type: Object})
   listQueries: GenericObject = {
     page: 1,
-    page_size: 10,
+    page_size: 5,
     search: ''
   };
 
@@ -879,7 +881,7 @@ export class EngagementStaffMembersTab extends connect(store)(
     if (!this.listQueries?.search) {
       this.datalength = data.count;
     }
-    this.paginator = {...this.paginator, count: data.count};
+    this.paginator = {...this.paginator, page_size: 5, count: data.count};
     this.dataItems = data.results;
   }
 
@@ -1086,7 +1088,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   }
 
   _showPagination(dataItemsCount) {
-    return !!(+dataItemsCount && +dataItemsCount > 10);
+    return !!(+dataItemsCount && +dataItemsCount > 5);
   }
 
   _getTitle(path, basePermission, length, length2, search) {
@@ -1138,7 +1140,7 @@ export class EngagementStaffMembersTab extends connect(store)(
 
   resetList() {
     this.dataItems = [];
-    this.listQueries = {page: 1, page_size: 10, search: ''};
+    this.listQueries = {page: 1, page_size: 5, search: ''};
     this.searchString = '';
     this.engagementStaffs = {};
     this.datalength = 0;

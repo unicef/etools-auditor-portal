@@ -93,6 +93,7 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
       ></etools-media-query>
       <etools-content-panel
         list
+        show-expand-btn
         class="content-section clearfix ${this.itemModel?.priority || ''}"
         panel-title="Summary of ${this.priority?.display_name} Priority Findings and Recommendations"
       >

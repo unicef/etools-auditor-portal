@@ -33,6 +33,7 @@ import {CommonDataState} from '../../../../redux/reducers/common-data';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 import cloneDeep from 'lodash-es/cloneDeep';
+import sortBy from 'lodash-es/sortBy';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {getEndpoint} from '../../../config/endpoints-controller';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -63,6 +64,13 @@ export class EngagementInfoDetails extends connect(store)(
           position: relative;
           display: block;
           margin-bottom: 24px;
+        }
+        :host etools-currency {
+          width: 100%;
+          text-align: end;
+        }
+        etools-currency::part(input) {
+          text-align: end;
         }
         .po-loading {
           position: absolute;
@@ -105,7 +113,7 @@ export class EngagementInfoDetails extends connect(store)(
         }}"
       ></etools-media-query>
 
-      <etools-content-panel class="content-section clearfix" panel-title="Engagement Details">
+      <etools-content-panel class="content-section clearfix" panel-title="Engagement Details" show-expand-btn>
         <etools-loading .active="${this.loadingFaceForms}" 
           loading-text="Loading Face Forms..." class="loading">
         </etools-loading>
@@ -156,7 +164,7 @@ export class EngagementInfoDetails extends connect(store)(
                       id="yearOfAudit"
                       class="w100 ${this._setRequired('year_of_audit', this.optionsData)} validate-field"
                       .selected="${this.data.year_of_audit}"
-                      label="Joint Audit"
+                      label="Scheduled year"
                       placeholder="${this.getPlaceholderText('year_of_audit', this.optionsData, 'dropdown')}"
                       .options="${this.yearOfAuditOptions}"
                       option-label="label"
@@ -254,8 +262,7 @@ export class EngagementInfoDetails extends connect(store)(
                                 )}"
                     field="total_value"
                     .value="${this.data.total_value || 0}"
-                    currency="$"
-                    label="Total Value of Selected FACE form(s)"
+                    label="Total Value of Selected FACE form(s) in USD"
                     placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
                     ?required="${this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
                     ?readonly="${
@@ -283,7 +290,6 @@ export class EngagementInfoDetails extends connect(store)(
                                 )}"
                     field="total_value_local"
                     .value="${this.data.total_value_local || 0}"
-                    currency="$"
                     label="Total Value of Selected FACE form(s) in Local Currency"
                     placeholder="${this.getPlaceholderText('total_value_local', this.optionsData)}"
                     ?required="${this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
@@ -309,21 +315,31 @@ export class EngagementInfoDetails extends connect(store)(
               Please select at least one Face item
             </label>
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <etools-data-table-column class="col-2">FACE No.</etools-data-table-column>
-              <etools-data-table-column class="col-1">Amount (USD)</etools-data-table-column>
-              <etools-data-table-column class="col-1">Amount (local)</etools-data-table-column>
-              <etools-data-table-column class="col-2"
-                >Date of <br />
-                Liquidation</etools-data-table-column
+              <etools-data-table-column class="col-2" field="commitment_ref" sortable>
+                FACE No.
+              </etools-data-table-column>
+              <etools-data-table-column class="col-1 center-align" field="dct_amt_usd" sortable>
+                Amount (USD)
+              </etools-data-table-column>
+              <etools-data-table-column class="col-1 center-align" field="dct_amt_local" sortable>
+                Amount (local)
+              </etools-data-table-column>
+              <etools-data-table-column class="col-2 center-align" field="status_date" sortable>
+                Date of <br /> Liquidation
+              </etools-data-table-column
               >
-              <etools-data-table-column class="col-2 col">Start Date</etools-data-table-column>
-              <etools-data-table-column class="col-2 col">End Date</etools-data-table-column>
+              <etools-data-table-column class="col-2 center-align" field="start_date" sortable>
+                Start Date
+              </etools-data-table-column>
+              <etools-data-table-column class="col-2 center-align" field="end_date" sortable>
+                End Date
+              </etools-data-table-column>
               <etools-data-table-column class="col-1"> Modality </etools-data-table-column>
               <etools-data-table-column class="col-1"> FACE Document </etools-data-table-column>
             </etools-data-table-header>
             ${repeat(
               this.paginatedFaceData || [],
-              (item: any) => item.commitment_ref,
+              (item: any) => item.id,
               (item, _index) => html`
                 <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
                   <div slot="row-data" class="layout-horizontal">
@@ -331,22 +347,28 @@ export class EngagementInfoDetails extends connect(store)(
                       <etools-checkbox
                         ?checked="${item.selected}"
                         ?disabled="${this.isFaceFormReadonly}"
-                        id="${item.commitment_ref}"
+                        id="${item.id}"
                         @sl-change="${(e: any) => {
                           this.showFaceRequired = false;
                           this.allFaceData[_index].selected = e.target.checked;
                           this.onFaceChange(this.allFaceData);
                         }}"
                       >
-                        ${item.commitment_ref}
+                        ${item.face_number}
                       </etools-checkbox>
                     </div>
-                    <div class="col-data col-1" data-col-header-label="Amount (USD)">${item.dct_amt_usd}</div>
-                    <div class="col-data col-1" data-col-header-label="Amount (local)">${item.dct_amt_local}</div>
-                    <div class="col-data col-2" data-col-header-label="Date of Liquidation">${item.status_date}</div>
-                    <div class="col-data col-2" data-col-header-label="Start Date">${item.start_date}</div>
-                    <div class="col-data col-2" data-col-header-label="End Date">${item.end_date}</div>
-                    <div class="col-data col-1" data-col-header-label="Modality">${item.status_date}</div>
+                    <div class="col-data col-1 align-right" data-col-header-label="Amount (USD)">
+                      ${item.amount_usd}
+                    </div>
+                    <div class="col-data col-1 align-right" data-col-header-label="Amount (local)">
+                      ${item.amount_local}
+                    </div>
+                    <div class="col-data col-2 align-center" data-col-header-label="Date of Liquidation">
+                      ${item.date_of_liquidation}
+                    </div>
+                    <div class="col-data col-2 align-center" data-col-header-label="Start Date">${item.start_date}</div>
+                    <div class="col-data col-2 align-center" data-col-header-label="End Date">${item.end_date}</div>
+                    <div class="col-data col-1" data-col-header-label="Modality">${item.modality}</div>
                     <a
                       class="col-data ${this.lowResolutionLayout ? '' : 'report'} col-1"
                       data-col-header-label="FACE Document"
@@ -498,6 +520,12 @@ export class EngagementInfoDetails extends connect(store)(
 
   connectedCallback() {
     super.connectedCallback();
+    this.addEventListener('sort-changed', this._sortOrderChanged as EventListenerOrEventListenerObject);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('sort-changed', this._sortOrderChanged as EventListenerOrEventListenerObject);
   }
 
   stateChanged(state: RootState) {
@@ -572,8 +600,8 @@ export class EngagementInfoDetails extends connect(store)(
       endpoint: {url}
     })
       .then((resp) => {
-        this.faceFormsOption = resp.rows || [];
-        this.setFaceData(resp.rows || []);
+        this.faceFormsOption = resp || [];
+        this.setFaceData(resp || []);
         this.requestUpdate();
       })
       .catch((err) => fireEvent(this, 'toast', {text: `Error fetching Face forms data for ${partnerId}: ${err}`}))
@@ -591,6 +619,12 @@ export class EngagementInfoDetails extends connect(store)(
         page_size: 5
       })
     );
+  }
+
+  _sortOrderChanged(e: CustomEvent) {
+    const sorted = sortBy(this.allFaceData, (item) => item[e.detail.field]);
+    this.allFaceData = e.detail.direction === 'asc' ? sorted : sorted.reverse();
+    this.paginatorChanged();
   }
 
   // Override from PaginationMixin
@@ -615,13 +649,13 @@ export class EngagementInfoDetails extends connect(store)(
   onFaceChange(allFaceData: any[]) {
     const selectedFaceForms: any[] = (allFaceData || []).filter((x: any) => x.selected);
     this.data.face_forms = [...selectedFaceForms];
-    let dct_amt_usd = 0;
-    let dct_amt_local = 0;
+    let amount_usd = 0;
+    let amount_local = 0;
     let start_date: any = null;
     let end_date: any = null;
     for (const faceForm of selectedFaceForms) {
-      dct_amt_usd += Number(faceForm.dct_amt_usd);
-      dct_amt_local += Number(faceForm.dct_amt_local);
+      amount_usd += Number(faceForm.amount_usd);
+      amount_local += Number(faceForm.amount_local);
       if (faceForm.start_date && (!start_date || dayjs(faceForm.start_date) < start_date)) {
         start_date = dayjs(faceForm.start_date);
       }
@@ -631,8 +665,8 @@ export class EngagementInfoDetails extends connect(store)(
     }
     this.data = {
       ...this.data,
-      total_value: dct_amt_usd,
-      total_value_local: dct_amt_local,
+      total_value: amount_usd,
+      total_value_local: amount_local,
       start_date: start_date ? dayjs(start_date).format('YYYY-MM-DD') : start_date,
       end_date: end_date ? dayjs(end_date).format('YYYY-MM-DD') : end_date
     };
@@ -779,7 +813,7 @@ export class EngagementInfoDetails extends connect(store)(
         data.joint_audit = !!this.data.joint_audit;
 
         data.year_of_audit = this.data.year_of_audit;
-        const diff = getArraysDiff(this.originalData.face_forms || [], this.data?.face_forms || [], 'commitment_ref');
+        const diff = getArraysDiff(this.originalData.face_forms || [], this.data?.face_forms || [], 'id');
         if (diff.length) {
           data.face_forms = this.getFaceFormsToSave(this.data?.face_forms);
         }
@@ -793,11 +827,11 @@ export class EngagementInfoDetails extends connect(store)(
     const faceToSave: any[] = [];
     (face_forms || []).forEach((item: any) =>
       faceToSave.push({
-        commitment_ref: item.commitment_ref,
+        id: item.id,
         start_date: item.start_date,
         end_date: item.end_date,
-        dct_amt_usd: item.dct_amt_usd,
-        dct_amt_local: item.dct_amt_local
+        amount_usd: item.amount_usd,
+        amount_local: item.amount_local
       })
     );
     return faceToSave;

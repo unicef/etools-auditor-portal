@@ -63,6 +63,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('specific_procedures', this.optionsData)}"
+        show-expand-btn
         list
       >
         <div slot="panel-btns">

@@ -77,6 +77,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('financial_finding_set', this.optionsData)}"
+        show-expand-btn
         list
       >
         <div slot="panel-btns">
@@ -90,28 +91,22 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
 
         <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-2">Finding Number</etools-data-table-column>
-          <etools-data-table-column class="col-4"
-            >${getHeadingLabel(
-              this.optionsData,
-              'financial_finding_set.title',
-              'Title (Category)'
-            )}</etools-data-table-column
+          <etools-data-table-column class="col-4">
+          ${getHeadingLabel(
+            this.optionsData,
+            'financial_finding_set.title',
+            'Title (Category)'
+          )}</etools-data-table-column>
+          <etools-data-table-column class="col-2 align-center">${getHeadingLabel(
+            this.optionsData,
+            'financial_finding_set.local_amount',
+            'Amount (local)'
+          )}</etools-data-table-column>
+          <etools-data-table-column class="col-2 align-center">
+            ${getHeadingLabel(this.optionsData, 'financial_finding_set.amount', 'Amount USD')}</etools-data-table-column
           >
-          <etools-data-table-column class="col-3"
-            >${getHeadingLabel(
-              this.optionsData,
-              'financial_finding_set.local_amount',
-              'Amount (local)'
-            )}</etools-data-table-column
-          >
-          <etools-data-table-column class="col-3"
-            >${getHeadingLabel(
-              this.optionsData,
-              'financial_finding_set.amount',
-              'Amount USD'
-            )}</etools-data-table-column
-          >
-        </etools-data-table-header>
+        <etools-data-table-column class="col-2">
+        </etools-data-table-header></etools-data-table-column>
 
         ${(this.dataItems || []).map(
           (item, index) => html`
@@ -130,7 +125,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                   >${item.title}</span
                 >
                 <span
-                  class="col-data col-3"
+                  class="col-data col-2 align-right"
                   data-col-header-label="${getHeadingLabel(
                     this.optionsData,
                     'financial_finding_set.local_amount',
@@ -139,7 +134,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                   >${item.local_amount}</span
                 >
                 <span
-                  class="col-data col-1"
+                  class="col-data col-2 align-right"
                   data-col-header-label="${getHeadingLabel(
                     this.optionsData,
                     'financial_finding_set.amount',
@@ -147,6 +142,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                   )}"
                   >${item.amount}</span
                 >
+                <span class="col-data col-2 "></span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                   <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>

@@ -261,4 +261,12 @@ export const tabInputsStyles = css`
     position: relative;
     align-items: center;
   }
+  .align-right {
+    justify-content: flex-end !important;
+  }
+  .align-center {
+    justify-content: center !important;
+    text-align: center !important;
+    align-items: center !important;
+  }
 `;

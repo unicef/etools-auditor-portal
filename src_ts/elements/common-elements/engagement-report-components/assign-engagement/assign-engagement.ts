@@ -44,7 +44,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
       ${sharedStyles}
       <style></style>
 
-      <etools-content-panel class="content-section clearfx" panel-title="Engagement Status">
+      <etools-content-panel class="content-section clearfx" panel-title="Engagement Status" show-expand-btn>
         <div class="row">
           <div class="col-12 col-lg-4 col-md-6">
             <!-- Date of Field Visit -->

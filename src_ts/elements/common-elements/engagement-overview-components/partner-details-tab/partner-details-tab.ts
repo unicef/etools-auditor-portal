@@ -9,6 +9,7 @@ import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi.
 import '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import {EtoolsDropdownEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown.js';
 import isEqual from 'lodash-es/isEqual';
+import sortBy from 'lodash-es/sortBy';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import PaginationMixin from '@unicef-polymer/etools-unicef/src/mixins/pagination-mixin';
@@ -193,35 +194,47 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
 
           <div class="col-12 padding-v" ?hidden="${!this.partner?.id}">
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <etools-data-table-column class="col-1">Engagement Type</etools-data-table-column>
-              <etools-data-table-column class="col-2 center-align">Date</etools-data-table-column>
-              <etools-data-table-column class="col-2">Amount Tested <br />(USD)</etools-data-table-column>
-              <etools-data-table-column class="col-2 col">Financial Findings <br />(USD)</etools-data-table-column>
-              <etools-data-table-column class="col-2 col">
+              <etools-data-table-column class="col-1" field="engagement_type" sortable
+                >Engagement Type</etools-data-table-column
+              >
+              <etools-data-table-column class="col-2 center-align" field="status_date" sortable
+                >Date of Report</etools-data-table-column
+              >
+              <etools-data-table-column class="col-2 center-align" field="amount_tested" sortable
+                >Amount Tested <br />(USD)</etools-data-table-column
+              >
+              <etools-data-table-column class="col-2 center-align" field="outstanding_findings" sortable
+                >Financial Findings <br />(USD)</etools-data-table-column
+              >
+              <etools-data-table-column class="col-2 center-align" field="pending_unsupported_amount" sortable>
                 Pending Unsupported Amount <br />(USD)</etools-data-table-column
               >
-              <etools-data-table-column class="col-2">Report</etools-data-table-column>
-              <etools-data-table-column class="col-1"># Open High Priority AP</etools-data-table-column>
+              <etools-data-table-column class="col-2 center-align">Report</etools-data-table-column>
+              <etools-data-table-column class="col-1" field="open_high_priority_count" sortable>
+                # Open High Priority AP
+              </etools-data-table-column>
             </etools-data-table-header>
             ${(this.paginatedEngagements || []).map(
               (item) => html`
                 <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
                   <div slot="row-data" class="layout-horizontal">
-                    <div class="col-data col-1" data-col-header-label="Engagement Type">${item.engagement_type}</div>
-                    <div class="col-data col-2" data-col-header-label="Date">
+                    <div class="col-data col-1" data-col-header-label="Engagement Type">
+                      ${this.getEngagementTypeFulltext(item.engagement_type)}
+                    </div>
+                    <div class="col-data col-2 align-center" data-col-header-label="Date of Report">
                       ${this.getDateDisplayValue(item.status_date)}
                     </div>
-                    <div class="col-data col-2" data-col-header-label="Amount Tested">
+                    <div class="col-data col-2 align-right" data-col-header-label="Amount Tested">
                       ${this.displayCurrencyAmount(item.amount_tested, 0, 0)}
                     </div>
-                    <div class="col-data col-2 col" data-col-header-label="Financial Findings">
+                    <div class="col-data col-2 align-right" data-col-header-label="Financial Findings">
                       ${this.displayCurrencyAmount(item.outstanding_findings, 0, 0)}
                     </div>
-                    <div class="col-data col-2 col" data-col-header-label="Pending Unsupported Amount">
+                    <div class="col-data col-2 align-right" data-col-header-label="Pending Unsupported Amount">
                       ${this.displayCurrencyAmount(item.pending_unsupported_amount, 0, 0)}
                     </div>
                     <a
-                      class="col-data ${this.lowResolutionLayout ? '' : 'report'} col-2"
+                      class="col-data ${this.lowResolutionLayout ? '' : 'report'} col-2 align-center"
                       data-col-header-label="Report"
                       target="_blank"
                       href="${this.linkFixUp(item.object_url)}"
@@ -229,7 +242,7 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
                       <etools-icon-button name="open-in-new"></etools-icon-button>
                       View Report
                     </a>
-                    <div class="col-data col-1" data-col-header-label="# Open High Priority AP">
+                    <div class="col-data col-1 align-center" data-col-header-label="# Open High Priority AP">
                       ${item.open_high_priority_count}
                     </div>
                   </div>
@@ -292,6 +305,14 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
   };
 
   @property({type: Object})
+  TYPES: any = {
+    audit: 'Audit',
+    ma: 'Micro Assessment',
+    sc: 'Spot Check',
+    sa: 'Special Audit'
+  };
+
+  @property({type: Object})
   partner!: GenericObject;
 
   @property({type: Object})
@@ -318,6 +339,12 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
   connectedCallback() {
     super.connectedCallback();
     this._initListeners();
+    this.addEventListener('sort-changed', this._sortOrderChanged as EventListenerOrEventListenerObject);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('sort-changed', this._sortOrderChanged as EventListenerOrEventListenerObject);
   }
 
   stateChanged(state: RootState) {
@@ -443,6 +470,9 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
   }
 
   _initEngagements(engagements: any[]) {
+    engagements = (engagements || []).sort(
+      (a: any, b: any) => dayjs(b.status_date).unix() - dayjs(a.status_date).unix()
+    );
     this.allEngagements = engagements;
     this.totalAmountTested = (this.allEngagements || []).map((x: any) => x.amount_tested).reduce((a, b) => a + b);
     this.paginatedEngagements = [];
@@ -455,6 +485,12 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
     );
   }
 
+  _sortOrderChanged(e: CustomEvent) {
+    const sorted = sortBy(this.allEngagements, (item) => item[e.detail.field]);
+    this.allEngagements = e.detail.direction === 'asc' ? sorted : sorted.reverse();
+    this.paginatorChanged();
+  }
+
   // Override from PaginationMixin
   paginatorChanged() {
     this._paginate(this.paginator.page, this.paginator.page_size);
@@ -465,9 +501,7 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
       return;
     }
     let engagements = cloneDeep(this.allEngagements);
-    engagements = engagements
-      .sort((a: any, b: any) => dayjs(b.status_date).unix() - dayjs(a.status_date).unix())
-      .slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+    engagements = engagements.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
     this.paginatedEngagements = engagements;
   }
 
@@ -504,6 +538,10 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
     }
 
     return data;
+  }
+
+  getEngagementTypeFulltext(type: string) {
+    return this.TYPES[type] || type;
   }
 
   _setPlaceholderColor(partner) {

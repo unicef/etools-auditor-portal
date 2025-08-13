@@ -7,6 +7,7 @@ import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
 import {tabInputsStyles} from '../../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
+import {riskRatingStyles} from '../../../../styles/risk-rating-styles';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
@@ -40,7 +41,7 @@ import {multiplyWithExchangeRate} from '../../../../utils/utils';
 @customElement('findings-summary')
 export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
   static get styles() {
-    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
+    return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles, riskRatingStyles];
   }
 
   render() {
@@ -49,6 +50,13 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
       <style>
         ${dataTableStylesLit} etools-content-panel::part(ecp-content) {
           padding: 0;
+        }
+        :host etools-currency {
+          width: 100%;
+          text-align: end;
+        }
+        etools-currency::part(input) {
+          text-align: end;
         }
         .row-h {
           margin-bottom: 0;
@@ -74,11 +82,17 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
           margin-top: 1px;
           margin-bottom: 1px;
         }
+        .input-container {
+          display: flex;
+        }
         .centered {
           height: 100%;
           justify-content: center;
           display: flex;
           flex-direction: column; 
+        }
+        .mb-4 {
+          margin-block-end: 4px;
         }
         .tbl-currency {
           font-weight: 700;
@@ -90,16 +104,24 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
           this.lowResolutionLayout = e.detail.value;
         }}"
       ></etools-media-query>
-      <etools-content-panel class="content-section clearfx" panel-title="Summary of Engagement Findings">
+      <etools-content-panel class="content-section clearfx" 
+        panel-title="Summary of Engagement Findings"
+        show-expand-btn>
 
         <div class="row">                 
                  <div class="col-12 padding-v">
                    <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
                      <etools-data-table-column class="col-2"></etools-data-table-column>
-                     <etools-data-table-column class="col-2">Value of Selected FACE</etools-data-table-column>
-                     <etools-data-table-column class="col-2">Audited Expenditure</etools-data-table-column>
-                     <etools-data-table-column class="col-2 col">Amount of Financial Findings</etools-data-table-column>
-                     <etools-data-table-column class="col-2">
+                     <etools-data-table-column class="col-2 align-center">
+                        Value of Selected FACE
+                      </etools-data-table-column>
+                     <etools-data-table-column class="col-2 align-center">
+                        Audited Expenditure
+                     </etools-data-table-column>
+                     <etools-data-table-column class="col-2 align-center">
+                        Amount of Financial Findings
+                     </etools-data-table-column>
+                     <etools-data-table-column class="col-2 align-center">
                       % of audited Expenditure
                     </etools-data-table-column>
                      <etools-data-table-column class="col-2"></etools-data-table-column>
@@ -169,22 +191,20 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                        <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label="">
                         <label class='tbl-currency centered'>USD<label>                          
                        </div>
-                       <div class="col-data col-2" data-col-header-label="Value of Selected FACE">
+                       <div class="col-data col-2" data-col-header-label="Value of Selected FACE in USD">
                          <etools-currency
                            class="w100"
                            .value="${this.data?.total_value}"
-                           currency="$"
                            placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
                            readonly
                            @focus="${this._resetFieldError}"
                          >
                          </etools-currency>
                        </div>
-                       <div class="col-data col-2" data-col-header-label="Audited Expenditure">
+                       <div class="col-data col-2" data-col-header-label="Audited Expenditure in USD">
                          <etools-currency
                            class="w100 ${this._setRequired('audited_expenditure', this.optionsData)}"
                            .value="${this.data?.audited_expenditure}"
-                           currency="$"
                            placeholder="${this.getPlaceholderText('audited_expenditure', this.optionsData)}"
                            ?required="${this._setRequired('audited_expenditure', this.optionsData)}"
                            ?readonly="${this.isReadOnly('audited_expenditure', this.optionsData)}"
@@ -198,11 +218,10 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                          >
                          </etools-currency>
                        </div>
-                       <div class="col-data col-2 col" data-col-header-label="Amount of Financial Findings">
+                       <div class="col-data col-2 col" data-col-header-label="Amount of Financial Findings in USD">
                          <etools-currency
                            class="w100 ${this._setRequired('financial_findings', this.optionsData)}"
                            .value="${this.data?.financial_findings}"
-                           currency="$"
                            placeholder="${this.getPlaceholderText('financial_findings', this.optionsData)}"
                            ?readonly="${this.isReadOnly('financial_findings', this.optionsData)}"
                            ?invalid="${this._checkInvalid(this.errors?.financial_findings)}"
@@ -215,9 +234,9 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                          >
                          </etools-currency>
                        </div>
-                       <div class="col-data col-2" 
+                       <div class="col-data col-2 align-right" 
                           data-col-header-label="% of audited Expenditure">
-                         <label class="centered">$ ${this.data?.percent_of_audited_expenditure}</label>
+                         <label class="centered mb-4">${this.data?.percent_of_audited_expenditure}</label>
                        <div class="col-data col-2 no-colon col" data-col-header-label="&nbsp;"></div>
                      </div>
                      </div>
@@ -272,48 +291,34 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                   </div>
                   <div class="col-12 col-lg-4 col-md-6 input-container">
                     <!-- Auditor -->
-                    <etools-input
-                      id="auditorInput"
-                      class="w100"
-                      .value="${this.data.key_internal_weakness?.high_risk_count}"
-                      label="${this.getLabel('key_internal_weakness.high_risk_count', this.optionsData)}"
-                      placeholder="${this.getNumericPlaceholderText(
-                        'key_internal_weakness.high_risk_count',
-                        this.optionsData
-                      )}"
-                      readonly
-                    >
-                    </etools-input>
+                      <div class="etools-container">
+                        <label class="paper-label">
+                          ${this.getLabel('key_internal_weakness.high_risk_count', this.optionsData)}
+                        </label>
+                        <div class="${this.getRiskRatingClass('High')} input-label">
+                          ${this.data.key_internal_weakness?.high_risk_count}
+                        </div>
+                      </div>
                   </div>
                   <div class="col-12 col-lg-4 col-md-6 input-container">
-                    <!-- Auditor -->
-                    <etools-input
-                      id="auditorInput"
-                      class="w100"
-                      .value="${this.data.key_internal_weakness?.medium_risk_count}"
-                      label="${this.getLabel('key_internal_weakness.medium_risk_count', this.optionsData)}"
-                      placeholder="${this.getNumericPlaceholderText(
-                        'key_internal_weakness.medium_risk_count',
-                        this.optionsData
-                      )}"
-                      readonly
-                    >
-                    </etools-input>
+                      <div class="etools-container">
+                        <label class="paper-label">
+                          ${this.getLabel('key_internal_weakness.medium_risk_count', this.optionsData)}
+                        </label>
+                        <div class="${this.getRiskRatingClass('Moderate')} input-label">
+                          ${this.data.key_internal_weakness?.medium_risk_count}
+                        </div>
+                      </div>
                   </div>
                   <div class="col-12 col-lg-4 col-md-6 input-container">
-                    <!-- Auditor -->
-                    <etools-input
-                      id="auditorInput"
-                      class="w100"
-                      .value="${this.data?.key_internal_weakness?.low_risk_count}"
-                      label="${this.getLabel('key_internal_weakness.low_risk_count', this.optionsData)}"
-                      placeholder="${this.getNumericPlaceholderText(
-                        'key_internal_weakness.low_risk_count',
-                        this.optionsData
-                      )}"
-                      readonly
-                    >
-                    </etools-input>
+                      <div class="etools-container">
+                        <label class="paper-label">
+                          ${this.getLabel('key_internal_weakness.low_risk_count', this.optionsData)}
+                        </label>
+                        <div class="${this.getRiskRatingClass('Low')} input-label">
+                          ${this.data.key_internal_weakness?.low_risk_count}
+                        </div>
+                      </div>
                   </div>
                </div>
       </etools-content-panel>

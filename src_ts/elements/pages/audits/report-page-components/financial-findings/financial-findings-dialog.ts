@@ -36,6 +36,15 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
   render() {
     return html`
       ${sharedStyles}
+      <style>
+        :host etools-currency {
+          width: 100%;
+          text-align: end;
+        }
+        etools-currency::part(input) {
+          text-align: end;
+        }
+      </style>
       <etools-dialog
         id="financial-findings"
         no-padding

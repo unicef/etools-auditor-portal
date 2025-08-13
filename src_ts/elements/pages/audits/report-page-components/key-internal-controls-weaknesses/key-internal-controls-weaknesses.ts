@@ -104,6 +104,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('key_internal_weakness', this.optionsData)}"
+        show-expand-btn
         list
       >
         <div class="header-content">

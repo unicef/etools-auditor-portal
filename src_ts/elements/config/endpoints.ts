@@ -87,7 +87,7 @@ const famEndpoints = {
     template: '/api/v2/attachments/links/<%=id%>/'
   },
   linkFace: {
-    template: '/api/audit/face-reports/<%=id%>/'
+    template: '/api/audit/face-forms/<%=id%>/?page_size=all'
   },
   static: {
     url: '/api/v2/dropdowns/static/',

@@ -117,7 +117,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
       >
       </get-partner-data>
 
-      <etools-content-panel panel-title="UNICEF Follow-Up Actions" list>
+      <etools-content-panel panel-title="UNICEF Follow-Up Actions" list show-expand-btn>
         <div slot="panel-btns">
           <div ?hidden="${!this.canBeChanged}">
             <sl-tooltip content="Add">

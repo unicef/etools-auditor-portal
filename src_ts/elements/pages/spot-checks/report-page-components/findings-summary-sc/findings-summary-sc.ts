@@ -35,7 +35,14 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
   render() {
     return html`
       ${sharedStyles}
-      <style>${dataTableStylesLit} 
+      <style>${dataTableStylesLit}
+        :host etools-currency {
+          width: 100%;
+          text-align: end;
+        }
+        etools-currency::part(input) {
+          text-align: end;
+        }
         .red {
           color: red;
           font-size: 12px;
@@ -68,7 +75,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
         }}"
       ></etools-media-query>
 
-      <etools-content-panel class="content-section clearfx" panel-title="Summary of Engagement Findings">
+      <etools-content-panel class="content-section clearfx" panel-title="Summary of Engagement Findings" show-expand-btn>
         <div class="row">
           <div class="col-12 padding-v">
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
