@@ -44,7 +44,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           margin-bottom: 24px;
           display: block;
         }
-        :host etools-currency {
+        etools-currency {
           width: 100%;
           text-align: end;
         }

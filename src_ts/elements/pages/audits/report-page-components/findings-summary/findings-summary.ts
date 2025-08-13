@@ -51,7 +51,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         ${dataTableStylesLit} etools-content-panel::part(ecp-content) {
           padding: 0;
         }
-        :host etools-currency {
+        etools-currency {
           width: 100%;
           text-align: end;
         }
