@@ -38,8 +38,8 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
   render() {
     return html`
       ${sharedStyles}
-      <style>${dataTableStylesLit} 
-        :host {
+      <style>
+        ${dataTableStylesLit} :host {
           position: relative;
           margin-bottom: 24px;
           display: block;
@@ -66,122 +66,41 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           display: flex;
           flex-direction: column;
         }
+        .h-50 {
+          min-height: 50px;
+        }
         etools-data-table-column::part(edt-list-column-label) {
           line-height: 14px;
         }
         etools-currency::part(input) {
           text-align: end;
         }
-        *[slot="row-data"] .col-data.align-right {
+        *[slot='row-data'] .col-data.align-right {
           text-align: end;
         }
       </style>
 
-      <etools-media-query
-        query="(max-width: 1300px)"
-        @query-matches-changed="${(e: CustomEvent) => {
-          this.lowResolutionLayout = e.detail.value;
-        }}"
-      ></etools-media-query>
-
       <etools-content-panel panel-title="Financial Findings" show-expand-btn>
-
         <div class="row">
-          <!--Audit engagement fields-->
-          ${
-            this.showFields(this.engagement.engagement_type, 'audit')
-              ? html`<div class="col-12 col-lg-3 col-md-6 input-container">
-                    <!-- Audit Opinion -->
-                    <etools-dropdown
-                      id="test"
-                      .selected="${this.engagement.audit_opinion}"
-                      label="${this.getLabel('audit_opinion', this.optionsData)}"
-                      placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                      .options="${this.auditOpinionChoices}"
-                      option-label="display_name"
-                      option-value="value"
-                      readonly
-                    >
-                    </etools-dropdown>
-                  </div>
-                  <div class="col-12 input-container col-lg-3 col-md-6">
-                    <etools-currency
-                      .value="${this.engagement.audited_expenditure_local}"
-                      label="${this.getLabel('audited_expenditure_local', this.optionsData)}"
-                      placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                      readonly
-                    >
-                    </etools-currency>
-                  </div>
-                  <div class="col-12 input-container col-lg-3 col-md-6">
-                    <etools-currency
-                      .value="${this.engagement.audited_expenditure}"
-                      label="${this.getLabel('audited_expenditure', this.optionsData)}"
-                      placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                      readonly
-                    >
-                    </etools-currency>
-                  </div>`
-              : ``
-          }
-
-          <!--Spot-Check engagement fields-->
-          ${
-            this.showFields(this.engagement.engagement_type, 'sc')
-              ? html`<div class="col-12 input-container col-lg-4 col-md-6">
-                    <!-- Total amount of ineligible expenditure-->
-                    <etools-currency
-                      .value="${this.engagement.total_amount_of_ineligible_expenditure_local}"
-                      label="${this.getLabel('total_amount_of_ineligible_expenditure_local', this.optionsData)}"
-                      placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                      readonly
-                    >
-                    </etools-currency>
-                  </div>
-                  <div class="col-12 input-container col-lg-4 col-md-6">
-                    <!-- Total amount of ineligible expenditure-->
-                    <etools-currency
-                      .value="${this.engagement.total_amount_of_ineligible_expenditure}"
-                      label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"
-                      placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                      readonly
-                    >
-                    </etools-currency>
-                  </div>`
-              : ``
-          }
-
-          <div class="col-12 padding-v">
-            <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <etools-data-table-column class="col-1"></etools-data-table-column>
-              <etools-data-table-column class="col-1 align-center" ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
-                <!-- Financial Findings --> ${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)}
-              </etools-data-table-column>
-              <etools-data-table-column class="col-1 align-center" ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
-                 <!-- Total Amount Tested --> ${this.getLabelWithoutCurrency('total_amount_tested', this.optionsData)}
-              </etools-data-table-column>
-              <etools-data-table-column class="col-2 align-center">
-                <!-- Amount Refunded --> ${this.getLabelWithoutCurrency('amount_refunded', this.optionsData)}
-              </etools-data-table-column>
-              <etools-data-table-column class="col-2 align-center">
-                <!-- Additional Supporting Documentation Provided --> ${this.getLabelWithoutCurrency('additional_supporting_documentation_provided', this.optionsData)}
-              </etools-data-table-column>
-              <etools-data-table-column class="col-2 align-center">
-                <!-- Justification Provided and Accepted --> ${this.getLabelWithoutCurrency('justification_provided_and_accepted', this.optionsData)}
-              </etools-data-table-column>
-              <etools-data-table-column class="col-2 align-center">
-                <!-- Impairment --> ${this.getLabelWithoutCurrency('write_off_required', this.optionsData)}
-              </etools-data-table-column>
-              <etools-data-table-column class="col-2 align-center">
-                <!-- Pending Unsupported Amount --> ${this.getLabelWithoutCurrency('pending_unsupported_amount', this.optionsData)}
-            </etools-data-table-column>
+          <div class="col-12 col-lg-9 padding-v">
+            <etools-data-table-header no-title no-collapse>
+              <etools-data-table-column class="col-4"></etools-data-table-column>
+              <etools-data-table-column class="col-4 align-center">Local currency</etools-data-table-column>
+              <etools-data-table-column class="col-4 align-center">USD</etools-data-table-column>
             </etools-data-table-header>
-             <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <div slot="row-data" class="layout-horizontal">
-                <div class="col-data col-1 no-colon layout-vertical center-align"><label class='tbl-currency'>Local currency<label></div>
-                <div class="col-data col-1 align-right" data-col-header-label="${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)}"
-                  ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
-                   <etools-currency
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4" ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
+                  ${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)}
+                </div>
+                <div class="col-data col-4" ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
+                  ${this.getLabelWithoutCurrency('total_amount_tested', this.optionsData)}
+                </div>
+                <div
+                  class="col-data col-4 align-right"
+                  ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}"
+                >
+                  <etools-currency
                     class="w100"
                     .value="${this.engagement.financial_findings_local}"
                     placeholder="${this.getPlaceholderText('financial_findings_local', this.optionsData)}"
@@ -190,8 +109,10 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-1 align-right" data-col-header-label="${this.getLabelWithoutCurrency('total_amount_tested', this.optionsData)}"
-                   ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
+                <div
+                  class="col-data col-4 align-right"
+                  ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}"
+                >
                   <etools-currency
                     class="w100"
                     .value="${this.engagement.total_amount_tested_local}"
@@ -201,153 +122,11 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('amount_refunded', this.optionsData)}">
-                    <etools-currency
-                      class="${this._setRequired('amount_refunded_local', this.optionsData)}
-                                            validate-input"
-                      .value="${this.engagement.amount_refunded_local}"
-                      placeholder="${this.getPlaceholderText('amount_refunded_local', this.optionsData)}"
-                      ?required="${this._setRequired('amount_refunded_local', this.optionsData)}"
-                      ?readonly="${this.isReadOnly('amount_refunded_local', this.optionsData)}"
-                      ?invalid="${this.errors?.amount_refunded_local}"
-                      .errorMessage="${this.errors?.amount_refunded_local}"
-                      @value-changed="${({detail}: CustomEvent) => {
-                        if (Number(this.engagement.amount_refunded_local) === Number(detail?.value)) {
-                          return;
-                        }
-                        this.numberChanged(detail, 'amount_refunded_local', this.engagement);
-                        detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
-                        this.numberChanged(detail, 'amount_refunded', this.engagement);
-                        this.setUnsupportedAmount(
-                          this.engagement,
-                          this.engagement.additional_supporting_documentation_provided_local,
-                          this.engagement.amount_refunded_local,
-                          this.engagement.justification_provided_and_accepted_local,
-                          this.engagement.write_off_required_local
-                        );
-                      }}"
-                      @focus="${this._resetFieldError}"
-                    >
-                  </etools-currency>
-                </div>
-                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('additional_supporting_documentation_provided', this.optionsData)}">
-                    <!--Additional supporting documentation provided -->
-                    <etools-currency
-                      class="${this._setRequired('additional_supporting_documentation_provided_local', this.optionsData)}
-                                                validate-input"
-                      .value="${this.engagement.additional_supporting_documentation_provided_local}"
-                      placeholder="${this.getPlaceholderText(
-                        'additional_supporting_documentation_provided_local',
-                        this.optionsData
-                      )}"
-                      ?required="${this._setRequired('additional_supporting_documentation_provided_local', this.optionsData)}"
-                      ?readonly="${this.isReadOnly('additional_supporting_documentation_provided_local', this.optionsData)}"
-                      ?invalid="${this.errors?.additional_supporting_documentation_provided_local}"
-                      .errorMessage="${this.errors?.additional_supporting_documentation_provided_local}"
-                      @value-changed="${({detail}: CustomEvent) => {
-                        if (
-                          Number(this.engagement.additional_supporting_documentation_provided_local) ===
-                          Number(detail?.value)
-                        ) {
-                          return;
-                        }
-                        this.numberChanged(
-                          detail,
-                          'additional_supporting_documentation_provided_local',
-                          this.engagement
-                        );
-                        detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
-                        this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement);
-                        this.setUnsupportedAmount(
-                          this.engagement,
-                          this.engagement.additional_supporting_documentation_provided_local,
-                          this.engagement.amount_refunded_local,
-                          this.engagement.justification_provided_and_accepted_local,
-                          this.engagement.write_off_required_local
-                        );
-                      }}"
-                      @focus="${this._resetFieldError}"
-                    >
-                  </etools-currency>
-                </div>
-                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('justification_provided_and_accepted', this.optionsData)}">
-                    <!-- Justification provided and accepted -->
-                    <etools-currency
-                      class="${this._setRequired('justification_provided_and_accepted_local', this.optionsData)}
-                                            validate-input"
-                      .value="${this.engagement.justification_provided_and_accepted_local}"
-                      placeholder="${this.getPlaceholderText('justification_provided_and_accepted_local', this.optionsData)}"
-                      ?required="${this._setRequired('justification_provided_and_accepted_local', this.optionsData)}"
-                      ?readonly="${this.isReadOnly('justification_provided_and_accepted_local', this.optionsData)}"
-                      ?invalid="${this.errors?.justification_provided_and_accepted_local}"
-                      .errorMessage="${this.errors?.justification_provided_and_accepted_local}"
-                      @value-changed="${({detail}: CustomEvent) => {
-                        if (
-                          Number(this.engagement.justification_provided_and_accepted_local) === Number(detail?.value)
-                        ) {
-                          return;
-                        }
-                        this.numberChanged(detail, 'justification_provided_and_accepted_local', this.engagement);
-                        detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
-                        this.numberChanged(detail, 'justification_provided_and_accepted', this.engagement);
-                        this.setUnsupportedAmount(
-                          this.engagement,
-                          this.engagement.additional_supporting_documentation_provided_local,
-                          this.engagement.amount_refunded_local,
-                          this.engagement.justification_provided_and_accepted_local,
-                          this.engagement.write_off_required_local
-                        );
-                      }}"
-                      @focus="${this._resetFieldError}"
-                    >
-                    </etools-currency>
-                </div>
-                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('write_off_required', this.optionsData)}">
-                      <etools-currency
-                            class="${this._setRequired('write_off_required_local', this.optionsData)}
-                                                    validate-input"
-                            .value="${this.engagement.write_off_required_local}"
-                            placeholder="${this.getPlaceholderText('write_off_required_local', this.optionsData)}"
-                            ?required="${this._setRequired('write_off_required_local', this.optionsData)}"
-                            ?readonly="${this.isReadOnly('write_off_required_local', this.optionsData)}"
-                            ?invalid="${this.errors?.write_off_required_local}"
-                            .errorMessage="${this.errors?.write_off_required_local}"
-                            @value-changed="${({detail}: CustomEvent) => {
-                              if (Number(this.engagement.write_off_required_local) === Number(detail?.value)) {
-                                return;
-                              }
-                              this.numberChanged(detail, 'write_off_required_local', this.engagement);
-                              detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
-                              this.numberChanged(detail, 'write_off_required', this.engagement);
-                              this.setUnsupportedAmount(
-                                this.engagement,
-                                this.engagement.additional_supporting_documentation_provided_local,
-                                this.engagement.amount_refunded_local,
-                                this.engagement.justification_provided_and_accepted_local,
-                                this.engagement.write_off_required_local
-                              );
-                            }}"
-                            @focus="${this._resetFieldError}"
-                          >
-                      </etools-currency>
-                </div>
-                <div class="col-data col-2 col align-right" data-col-header-label="${this.getLabelWithoutCurrency('pending_unsupported_amount', this.optionsData)}">
-                    <etools-input
-                      .value="${this.engagement.pending_unsupported_amount_local}"
-                      placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                      readonly
-                    >
-                      <div prefix>$</div>
-                    </etools-input>
-                </div>
-              </div>
-            </etools-data-table-row>
-            <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <div slot="row-data" class="layout-horizontal">
-                <div class="col-data col-1 no-colon layout-vertical center-align"><label class='tbl-currency'>USD<label></div>
-                <div class="col-data col-1 align-right" data-col-header-label="${this.getLabelWithoutCurrency('financial_findings', this.optionsData)}"
-                  ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
-                   <etools-currency
+                <div
+                  class="col-data col-4 align-right"
+                  ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}"
+                >
+                  <etools-currency
                     class="w100"
                     .value="${this.engagement.financial_findings}"
                     placeholder="${this.getPlaceholderText('financial_findings', this.optionsData)}"
@@ -356,8 +135,10 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-1 align-right" data-col-header-label="${this.getLabelWithoutCurrency('total_amount_tested', this.optionsData)}"
-                  ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
+                <div
+                  class="col-data col-4 align-right"
+                  ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}"
+                >
                   <etools-currency
                     class="w100"
                     .value="${this.engagement.total_amount_tested}"
@@ -367,56 +148,180 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('amount_refunded', this.optionsData)}">
-                    <!--Amount refunded -->
-                    <etools-currency
-                      class="${this._setRequired('amount_refunded', this.optionsData)}
-                                            validate-input"
-                      .value="${this.engagement.amount_refunded}"
-                      placeholder="${this.getPlaceholderText('amount_refunded', this.optionsData)}"
-                      ?required="${this._setRequired('amount_refunded', this.optionsData)}"
-                      ?readonly="${this.isReadOnly('amount_refunded', this.optionsData)}"
-                      ?invalid="${this.errors?.amount_refunded}"
-                      .errorMessage="${this.errors?.amount_refunded}"
-                      @value-changed="${({detail}: CustomEvent) => {
-                        if (Number(this.engagement.amount_refunded) === Number(detail?.value)) {
-                          return;
-                        }
-                        this.numberChanged(detail, 'amount_refunded', this.engagement);
-                      }}"
-                      @focus="${this._resetFieldError}"
-                    >
-                    </etools-currency>
+              </div>
+            </etools-data-table-row>
+
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">${this.getLabelWithoutCurrency('amount_refunded', this.optionsData)}</div>
+                <div class="col-data col-4 align-right">
+                  <etools-currency
+                    class="${this._setRequired('amount_refunded_local', this.optionsData)} validate-input"
+                    .value="${this.engagement.amount_refunded_local}"
+                    placeholder="${this.getPlaceholderText('amount_refunded_local', this.optionsData)}"
+                    ?required="${this._setRequired('amount_refunded_local', this.optionsData)}"
+                    ?readonly="${this.isReadOnly('amount_refunded_local', this.optionsData)}"
+                    ?invalid="${this.errors?.amount_refunded_local}"
+                    .errorMessage="${this.errors?.amount_refunded_local}"
+                    @value-changed="${({detail}: CustomEvent) => {
+                      if (Number(this.engagement.amount_refunded_local) === Number(detail?.value)) {
+                        return;
+                      }
+                      this.numberChanged(detail, 'amount_refunded_local', this.engagement);
+                      detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
+                      this.numberChanged(detail, 'amount_refunded', this.engagement);
+                      this.setUnsupportedAmount(
+                        this.engagement,
+                        this.engagement.additional_supporting_documentation_provided_local,
+                        this.engagement.amount_refunded_local,
+                        this.engagement.justification_provided_and_accepted_local,
+                        this.engagement.write_off_required_local
+                      );
+                    }}"
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
                 </div>
-                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('additional_supporting_documentation_provided', this.optionsData)}">
-                     <!--Additional supporting documentation provided -->
-                      <etools-currency
-                        class="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}
-                                                  validate-input"
-                        .value="${this.engagement.additional_supporting_documentation_provided}"
-                        placeholder="${this.getPlaceholderText('additional_supporting_documentation_provided', this.optionsData)}"
-                        ?required="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}"
-                        ?readonly="${this.isReadOnly('additional_supporting_documentation_provided', this.optionsData)}"
-                        ?invalid="${this.errors?.additional_supporting_documentation_provided}"
-                        .errorMessage="${this.errors?.additional_supporting_documentation_provided}"
-                        @value-changed="${({detail}: CustomEvent) => {
-                          if (
-                            Number(this.engagement.additional_supporting_documentation_provided) ===
-                            Number(detail?.value)
-                          ) {
-                            return;
-                          }
-                          this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement);
-                        }}"
-                        @focus="${this._resetFieldError}"
-                      >
-                      </etools-currency>
+                <div class="col-data col-4 align-right">
+                  <!--Amount refunded -->
+                  <etools-currency
+                    class="${this._setRequired('amount_refunded', this.optionsData)} validate-input"
+                    .value="${this.engagement.amount_refunded}"
+                    placeholder="${this.getPlaceholderText('amount_refunded', this.optionsData)}"
+                    ?required="${this._setRequired('amount_refunded', this.optionsData)}"
+                    ?readonly="${this.isReadOnly('amount_refunded', this.optionsData)}"
+                    ?invalid="${this.errors?.amount_refunded}"
+                    .errorMessage="${this.errors?.amount_refunded}"
+                    @value-changed="${({detail}: CustomEvent) => {
+                      if (Number(this.engagement.amount_refunded) === Number(detail?.value)) {
+                        return;
+                      }
+                      this.numberChanged(detail, 'amount_refunded', this.engagement);
+                    }}"
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
                 </div>
-                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('justification_provided_and_accepted', this.optionsData)}">
-                    <!-- Justification provided and accepted -->
+              </div>
+            </etools-data-table-row>
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">
+                  ${this.getLabelWithoutCurrency('additional_supporting_documentation_provided', this.optionsData)}
+                </div>
+                <div class="col-data col-4 align-right">
+                  <!--Additional supporting documentation provided -->
+                  <etools-currency
+                    class="${this._setRequired('additional_supporting_documentation_provided_local', this.optionsData)}
+                                                    validate-input"
+                    .value="${this.engagement.additional_supporting_documentation_provided_local}"
+                    placeholder="${this.getPlaceholderText(
+                      'additional_supporting_documentation_provided_local',
+                      this.optionsData
+                    )}"
+                    ?required="${this._setRequired(
+                      'additional_supporting_documentation_provided_local',
+                      this.optionsData
+                    )}"
+                    ?readonly="${this.isReadOnly(
+                      'additional_supporting_documentation_provided_local',
+                      this.optionsData
+                    )}"
+                    ?invalid="${this.errors?.additional_supporting_documentation_provided_local}"
+                    .errorMessage="${this.errors?.additional_supporting_documentation_provided_local}"
+                    @value-changed="${({detail}: CustomEvent) => {
+                      if (
+                        Number(this.engagement.additional_supporting_documentation_provided_local) ===
+                        Number(detail?.value)
+                      ) {
+                        return;
+                      }
+                      this.numberChanged(detail, 'additional_supporting_documentation_provided_local', this.engagement);
+                      detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
+                      this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement);
+                      this.setUnsupportedAmount(
+                        this.engagement,
+                        this.engagement.additional_supporting_documentation_provided_local,
+                        this.engagement.amount_refunded_local,
+                        this.engagement.justification_provided_and_accepted_local,
+                        this.engagement.write_off_required_local
+                      );
+                    }}"
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+                <div class="col-data col-4 align-right">
+                  <!--Additional supporting documentation provided -->
+                  <etools-currency
+                    class="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}
+                                                    validate-input"
+                    .value="${this.engagement.additional_supporting_documentation_provided}"
+                    placeholder="${this.getPlaceholderText(
+                      'additional_supporting_documentation_provided',
+                      this.optionsData
+                    )}"
+                    ?required="${this._setRequired('additional_supporting_documentation_provided', this.optionsData)}"
+                    ?readonly="${this.isReadOnly('additional_supporting_documentation_provided', this.optionsData)}"
+                    ?invalid="${this.errors?.additional_supporting_documentation_provided}"
+                    .errorMessage="${this.errors?.additional_supporting_documentation_provided}"
+                    @value-changed="${({detail}: CustomEvent) => {
+                      if (
+                        Number(this.engagement.additional_supporting_documentation_provided) === Number(detail?.value)
+                      ) {
+                        return;
+                      }
+                      this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement);
+                    }}"
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+              </div>
+            </etools-data-table-row>
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">
+                  ${this.getLabelWithoutCurrency('justification_provided_and_accepted', this.optionsData)}
+                </div>
+                <div class="col-data col-4 align-right">
+                  <!-- Justification provided and accepted -->
+                  <etools-currency
+                    class="${this._setRequired('justification_provided_and_accepted_local', this.optionsData)}
+                                                validate-input"
+                    .value="${this.engagement.justification_provided_and_accepted_local}"
+                    placeholder="${this.getPlaceholderText(
+                      'justification_provided_and_accepted_local',
+                      this.optionsData
+                    )}"
+                    ?required="${this._setRequired('justification_provided_and_accepted_local', this.optionsData)}"
+                    ?readonly="${this.isReadOnly('justification_provided_and_accepted_local', this.optionsData)}"
+                    ?invalid="${this.errors?.justification_provided_and_accepted_local}"
+                    .errorMessage="${this.errors?.justification_provided_and_accepted_local}"
+                    @value-changed="${({detail}: CustomEvent) => {
+                      if (Number(this.engagement.justification_provided_and_accepted_local) === Number(detail?.value)) {
+                        return;
+                      }
+                      this.numberChanged(detail, 'justification_provided_and_accepted_local', this.engagement);
+                      detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
+                      this.numberChanged(detail, 'justification_provided_and_accepted', this.engagement);
+                      this.setUnsupportedAmount(
+                        this.engagement,
+                        this.engagement.additional_supporting_documentation_provided_local,
+                        this.engagement.amount_refunded_local,
+                        this.engagement.justification_provided_and_accepted_local,
+                        this.engagement.write_off_required_local
+                      );
+                    }}"
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+                <div class="col-data col-4 align-right">
+                  <!-- Justification provided and accepted -->
                   <etools-currency
                     class="${this._setRequired('justification_provided_and_accepted', this.optionsData)}
-                                          validate-input"
+                                              validate-input"
                     .value="${this.engagement.justification_provided_and_accepted}"
                     placeholder="${this.getPlaceholderText('justification_provided_and_accepted', this.optionsData)}"
                     ?required="${this._setRequired('justification_provided_and_accepted', this.optionsData)}"
@@ -433,39 +338,162 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('write_off_required', this.optionsData)}">
-                   <!--Write off required -->
-                    <etools-currency
-                      class="${this._setRequired('write_off_required', this.optionsData)}
-                                              validate-input"
-                      .value="${this.engagement.write_off_required}"
-                      placeholder="${this.getPlaceholderText('write_off_required', this.optionsData)}"
-                      ?required="${this._setRequired('write_off_required', this.optionsData)}"
-                      ?readonly="${this.isReadOnly('write_off_required', this.optionsData)}"
-                      ?invalid="${this.errors?.write_off_required}"
-                      .errorMessage="${this.errors?.write_off_required}"
-                      @value-changed="${({detail}: CustomEvent) => {
-                        if (Number(this.engagement.write_off_required) === Number(detail?.value)) {
-                          return;
-                        }
-                        this.numberChanged(detail, 'write_off_required', this.engagement);
-                      }}"
-                      @focus="${this._resetFieldError}"
-                    >
-                    </etools-currency>
+              </div>
+            </etools-data-table-row>
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">
+                  > ${this.getLabelWithoutCurrency('write_off_required', this.optionsData)}
                 </div>
-                <div class="col-data col-2 align-right" data-col-header-label="${this.getLabelWithoutCurrency('pending_unsupported_amount', this.optionsData)}">
-                    <etools-input
-                      .value="${this.engagement.pending_unsupported_amount}"
-                      placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                      readonly
-                    >
-                     <div prefix>$</div>
-                    </etools-input>
+                <div class="col-data col-4 align-right">
+                  <etools-currency
+                    class="${this._setRequired('write_off_required_local', this.optionsData)} validate-input"
+                    .value="${this.engagement.write_off_required_local}"
+                    placeholder="${this.getPlaceholderText('write_off_required_local', this.optionsData)}"
+                    ?required="${this._setRequired('write_off_required_local', this.optionsData)}"
+                    ?readonly="${this.isReadOnly('write_off_required_local', this.optionsData)}"
+                    ?invalid="${this.errors?.write_off_required_local}"
+                    .errorMessage="${this.errors?.write_off_required_local}"
+                    @value-changed="${({detail}: CustomEvent) => {
+                      if (Number(this.engagement.write_off_required_local) === Number(detail?.value)) {
+                        return;
+                      }
+                      this.numberChanged(detail, 'write_off_required_local', this.engagement);
+                      detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
+                      this.numberChanged(detail, 'write_off_required', this.engagement);
+                      this.setUnsupportedAmount(
+                        this.engagement,
+                        this.engagement.additional_supporting_documentation_provided_local,
+                        this.engagement.amount_refunded_local,
+                        this.engagement.justification_provided_and_accepted_local,
+                        this.engagement.write_off_required_local
+                      );
+                    }}"
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+                <div class="col-data col-4 align-right">
+                  <!--Write off required -->
+                  <etools-currency
+                    class="${this._setRequired('write_off_required', this.optionsData)} validate-input"
+                    .value="${this.engagement.write_off_required}"
+                    placeholder="${this.getPlaceholderText('write_off_required', this.optionsData)}"
+                    ?required="${this._setRequired('write_off_required', this.optionsData)}"
+                    ?readonly="${this.isReadOnly('write_off_required', this.optionsData)}"
+                    ?invalid="${this.errors?.write_off_required}"
+                    .errorMessage="${this.errors?.write_off_required}"
+                    @value-changed="${({detail}: CustomEvent) => {
+                      if (Number(this.engagement.write_off_required) === Number(detail?.value)) {
+                        return;
+                      }
+                      this.numberChanged(detail, 'write_off_required', this.engagement);
+                    }}"
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
                 </div>
               </div>
             </etools-data-table-row>
-          </div>            
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">
+                  ${this.getLabelWithoutCurrency('pending_unsupported_amount', this.optionsData)}
+                </div>
+                <div
+                  class="col-data col-4 col align-right"
+                  data-col-header-label="${this.getLabelWithoutCurrency(
+                    'pending_unsupported_amount',
+                    this.optionsData
+                  )}"
+                >
+                  <etools-input
+                    .value="${this.engagement.pending_unsupported_amount_local}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    readonly
+                  >
+                  </etools-input>
+                </div>
+                <div
+                  class="col-data col-4 align-right"
+                  data-col-header-label="${this.getLabelWithoutCurrency(
+                    'pending_unsupported_amount',
+                    this.optionsData
+                  )}"
+                >
+                  <etools-input
+                    .value="${this.engagement.pending_unsupported_amount}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    readonly
+                  >
+                  </etools-input>
+                </div>
+              </div>
+            </etools-data-table-row>
+          </div>
+          <div class="col-12 col-lg-3 padding-v row"></div>
+        </div>
+        <div class="row">
+          <!--Audit engagement fields-->
+          ${this.showFields(this.engagement.engagement_type, 'audit')
+            ? html`<div class="col-12 col-lg-3 col-md-6 input-container">
+                  <!-- Audit Opinion -->
+                  <etools-dropdown
+                    id="test"
+                    .selected="${this.engagement.audit_opinion}"
+                    label="${this.getLabel('audit_opinion', this.optionsData)}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    .options="${this.auditOpinionChoices}"
+                    option-label="display_name"
+                    option-value="value"
+                    readonly
+                  >
+                  </etools-dropdown>
+                </div>
+                <div class="col-12 input-container col-lg-3 col-md-6">
+                  <etools-currency
+                    .value="${this.engagement.audited_expenditure_local}"
+                    label="${this.getLabel('audited_expenditure_local', this.optionsData)}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    readonly
+                  >
+                  </etools-currency>
+                </div>
+                <div class="col-12 input-container col-lg-3 col-md-6">
+                  <etools-currency
+                    .value="${this.engagement.audited_expenditure}"
+                    label="${this.getLabel('audited_expenditure', this.optionsData)}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    readonly
+                  >
+                  </etools-currency>
+                </div>`
+            : ``}
+
+          <!--Spot-Check engagement fields-->
+          ${this.showFields(this.engagement.engagement_type, 'sc')
+            ? html`<div class="col-12 input-container col-lg-4 col-md-6">
+                  <!-- Total amount of ineligible expenditure-->
+                  <etools-currency
+                    .value="${this.engagement.total_amount_of_ineligible_expenditure_local}"
+                    label="${this.getLabel('total_amount_of_ineligible_expenditure_local', this.optionsData)}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    readonly
+                  >
+                  </etools-currency>
+                </div>
+                <div class="col-12 input-container col-lg-4 col-md-6">
+                  <!-- Total amount of ineligible expenditure-->
+                  <etools-currency
+                    .value="${this.engagement.total_amount_of_ineligible_expenditure}"
+                    label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"
+                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                    readonly
+                  >
+                  </etools-currency>
+                </div>`
+            : ``}
+
           <div class="col-12 input-container">
             <!-- explanation_for_additional_information -->
             <etools-textarea
