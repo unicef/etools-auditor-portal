@@ -91,47 +91,32 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
           display: flex;
           flex-direction: column; 
         }
-        .mb-4 {
-          margin-block-end: 4px;
+        .h-50 {
+          min-height: 50px;
+        }
+        .pr-20 {
+          padding-inline-end: 20px !important;          
         }
         .tbl-currency {
           font-weight: 700;
         }
       </style>
-      <etools-media-query
-        query="(max-width: 1300px)"
-        @query-matches-changed="${(e: CustomEvent) => {
-          this.lowResolutionLayout = e.detail.value;
-        }}"
-      ></etools-media-query>
+
       <etools-content-panel class="content-section clearfx" 
         panel-title="Summary of Engagement Findings"
         show-expand-btn>
 
-        <div class="row">                 
-                 <div class="col-12 padding-v">
-                   <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-                     <etools-data-table-column class="col-2"></etools-data-table-column>
-                     <etools-data-table-column class="col-2 align-center">
-                        Value of Selected FACE
-                      </etools-data-table-column>
-                     <etools-data-table-column class="col-2 align-center">
-                        Audited Expenditure
-                     </etools-data-table-column>
-                     <etools-data-table-column class="col-2 align-center">
-                        Amount of Financial Findings
-                     </etools-data-table-column>
-                     <etools-data-table-column class="col-2 align-center">
-                      % of audited Expenditure
-                    </etools-data-table-column>
-                     <etools-data-table-column class="col-2"></etools-data-table-column>
-                   </etools-data-table-header>
-                   <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-                     <div slot="row-data" class="layout-horizontal">
-                       <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label="">
-                        <label class='tbl-currency centered'>Local currency<label>                        
-                      </div>
-                       <div class="col-data col-2" data-col-header-label="Value of Selected FACE">
+        <div class="row">
+          <div class="col-12 col-lg-6 padding-v">
+              <etools-data-table-header no-title no-collapse>
+                     <etools-data-table-column class="col-4"></etools-data-table-column>
+                     <etools-data-table-column class="col-4 align-center">Local currency</etools-data-table-column>
+                     <etools-data-table-column class="col-4 align-center">USD</etools-data-table-column>
+              </etools-data-table-header>
+              <etools-data-table-row no-collapse>
+                  <div slot="row-data" class="layout-horizontal h-50">
+                    <div class="col-data col-4">Value of Selected FACE</div>
+                    <div class="col-data col-4">
                          <etools-currency
                            class="w100"
                            .value="${this.data?.total_value_local}"
@@ -140,8 +125,23 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            @focus="${this._resetFieldError}"
                          >
                          </etools-currency>
-                       </div>
-                       <div class="col-data col-2" data-col-header-label="Audited Expenditure">
+                    </div>
+                    <div class="col-data col-4">
+                         <etools-currency
+                           class="w100"
+                           .value="${this.data?.total_value}"
+                           placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
+                           readonly
+                           @focus="${this._resetFieldError}"
+                         >
+                         </etools-currency>
+                    </div>                                      
+                  </div>
+              </etools-data-table-row>
+              <etools-data-table-row no-collapse>
+                  <div slot="row-data" class="layout-horizontal h-50">
+                      <div class="col-data col-4">Audited Expenditure</div>
+                      <div class="col-data col-4">
                          <etools-currency
                            class="w100 ${this._setRequired('audited_expenditure_local', this.optionsData)}"
                            .value="${this.data?.audited_expenditure_local}"
@@ -161,8 +161,30 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            }}"
                          >
                          </etools-currency>
+                        </div>
+                        <div class="col-data col-4">
+                         <etools-currency
+                           class="w100 ${this._setRequired('audited_expenditure', this.optionsData)}"
+                           .value="${this.data?.audited_expenditure}"
+                           placeholder="${this.getPlaceholderText('audited_expenditure', this.optionsData)}"
+                           ?required="${this._setRequired('audited_expenditure', this.optionsData)}"
+                           ?readonly="${this.isReadOnly('audited_expenditure', this.optionsData)}"
+                           ?invalid="${this._checkInvalid(this.errors?.audited_expenditure)}"
+                           .errorMessage="${this.errors?.audited_expenditure}"
+                           @value-changed="${({detail}: CustomEvent) =>
+                             this.numberChanged(detail, 'audited_expenditure', this.editedItem)}"
+                           @focus="${() => {
+                             this._resetFieldError;
+                           }}"
+                         >
+                         </etools-currency>
                        </div>
-                       <div class="col-data col-2 col" data-col-header-label="Amount of Financial Findings">
+                  </div>
+              </etools-data-table-row>
+              <etools-data-table-row no-collapse>
+                  <div slot="row-data" class="layout-horizontal h-50">
+                    <div class="col-data col-4">Amount of Financial Findings</div>
+                    <div class="col-data col-4 col">
                          <etools-currency
                            class="w100 ${this._setRequired('financial_findings_local', this.optionsData)}"
                            .value="${this.data?.financial_findings_local}"
@@ -181,44 +203,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            }}"
                          >
                          </etools-currency>
-                       </div>
-                       <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label=""></div>
-                       <div class="col-data col-2 no-colon col" data-col-header-label=""></div>
-                     </div>
-                   </etools-data-table-row>
-                   <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-                     <div slot="row-data" class="layout-horizontal">
-                       <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label="">
-                        <label class='tbl-currency centered'>USD<label>                          
-                       </div>
-                       <div class="col-data col-2" data-col-header-label="Value of Selected FACE in USD">
-                         <etools-currency
-                           class="w100"
-                           .value="${this.data?.total_value}"
-                           placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
-                           readonly
-                           @focus="${this._resetFieldError}"
-                         >
-                         </etools-currency>
-                       </div>
-                       <div class="col-data col-2" data-col-header-label="Audited Expenditure in USD">
-                         <etools-currency
-                           class="w100 ${this._setRequired('audited_expenditure', this.optionsData)}"
-                           .value="${this.data?.audited_expenditure}"
-                           placeholder="${this.getPlaceholderText('audited_expenditure', this.optionsData)}"
-                           ?required="${this._setRequired('audited_expenditure', this.optionsData)}"
-                           ?readonly="${this.isReadOnly('audited_expenditure', this.optionsData)}"
-                           ?invalid="${this._checkInvalid(this.errors?.audited_expenditure)}"
-                           .errorMessage="${this.errors?.audited_expenditure}"
-                           @value-changed="${({detail}: CustomEvent) =>
-                             this.numberChanged(detail, 'audited_expenditure', this.editedItem)}"
-                           @focus="${() => {
-                             this._resetFieldError;
-                           }}"
-                         >
-                         </etools-currency>
-                       </div>
-                       <div class="col-data col-2 col" data-col-header-label="Amount of Financial Findings in USD">
+                    </div>
+                    <div class="col-data col-4 col">
                          <etools-currency
                            class="w100 ${this._setRequired('financial_findings', this.optionsData)}"
                            .value="${this.data?.financial_findings}"
@@ -233,17 +219,21 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            }}"
                          >
                          </etools-currency>
-                       </div>
-                       <div class="col-data col-2 align-right" 
-                          data-col-header-label="% of audited Expenditure">
-                         <label class="centered mb-4">${this.data?.percent_of_audited_expenditure}</label>
-                       <div class="col-data col-2 no-colon col" data-col-header-label="&nbsp;"></div>
-                     </div>
-                     </div>
-                   </etools-data-table-row>
-                 </div>
-                 <div class="col-12 padding-v"></div>
-                  <div class="col-12 col-lg-4 col-md-6">
+                    </div>
+                  </div>
+              </etools-data-table-row>
+              <etools-data-table-row no-collapse>
+                  <div slot="row-data" class="layout-horizontal h-50">
+                    <div class="col-data col-4">% of audited Expenditure</div>
+                    <div class="col-data col-4">&nbsp;</div>
+                    <div class="col-data col-4 align-right pr-20">
+                      <label>${this.data?.percent_of_audited_expenditure}</label>
+                    </div>
+                  </div>
+              </etools-data-table-row>
+        </div>
+        <div class="col-12 col-lg-6 padding-v row">
+            <div class="col-12 col-lg-6">
                     <!-- Audit opinion -->
                     <etools-dropdown
                       id="auditOpinionDropDown"
@@ -267,7 +257,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                     >
                     </etools-dropdown>
                   </div>
-                  <div class="col-12 col-lg-4 col-md-6 input-container">
+                  <div class="col-12 col-lg-6 input-container">
                    <etools-input
                       class="w100"
                       .value="${this.data.exchange_rate}"
@@ -277,7 +267,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                     >
                     </etools-input>
                   </div>
-                 <div class="col-12 col-lg-4 col-md-6 input-container">
+                 <div class="col-12 col-lg-6 input-container">
                     <!-- Auditor -->
                     <etools-input
                       id="auditorInput"
@@ -289,7 +279,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                     >
                     </etools-input>
                   </div>
-                  <div class="col-12 col-lg-4 col-md-6 input-container">
+                  <div class="col-12 col-lg-6 input-container">
                     <!-- Auditor -->
                       <div class="etools-container">
                         <label class="paper-label">
@@ -300,7 +290,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                         </div>
                       </div>
                   </div>
-                  <div class="col-12 col-lg-4 col-md-6 input-container">
+                  <div class="col-12 col-lg-6 input-container">
                       <div class="etools-container">
                         <label class="paper-label">
                           ${this.getLabel('key_internal_weakness.medium_risk_count', this.optionsData)}
@@ -310,7 +300,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                         </div>
                       </div>
                   </div>
-                  <div class="col-12 col-lg-4 col-md-6 input-container">
+                  <div class="col-12 col-lg-6 input-container">
                       <div class="etools-container">
                         <label class="paper-label">
                           ${this.getLabel('key_internal_weakness.low_risk_count', this.optionsData)}
@@ -321,6 +311,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                       </div>
                   </div>
                </div>
+        </div>
+      </div>
       </etools-content-panel>
     `;
   }

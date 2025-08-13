@@ -315,16 +315,16 @@ export class EngagementInfoDetails extends connect(store)(
               Please select at least one Face item
             </label>
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <etools-data-table-column class="col-2" field="commitment_ref" sortable>
+              <etools-data-table-column class="col-2" field="face_number" sortable>
                 FACE No.
               </etools-data-table-column>
-              <etools-data-table-column class="col-1 center-align" field="dct_amt_usd" sortable>
+              <etools-data-table-column class="col-1 center-align" field="amount_usd" sortable>
                 Amount (USD)
               </etools-data-table-column>
-              <etools-data-table-column class="col-1 center-align" field="dct_amt_local" sortable>
+              <etools-data-table-column class="col-1 center-align" field="amount_local" sortable>
                 Amount (local)
               </etools-data-table-column>
-              <etools-data-table-column class="col-2 center-align" field="status_date" sortable>
+              <etools-data-table-column class="col-2 center-align" field="date_of_liquidation" sortable>
                 Date of <br /> Liquidation
               </etools-data-table-column
               >
@@ -337,51 +337,58 @@ export class EngagementInfoDetails extends connect(store)(
               <etools-data-table-column class="col-1"> Modality </etools-data-table-column>
               <etools-data-table-column class="col-1"> FACE Document </etools-data-table-column>
             </etools-data-table-header>
-            ${repeat(
-              this.paginatedFaceData || [],
-              (item: any) => item.id,
-              (item, _index) => html`
-                <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-                  <div slot="row-data" class="layout-horizontal">
-                    <div class="col-data col-2" data-col-header-label="FACE No.">
-                      <etools-checkbox
-                        ?checked="${item.selected}"
-                        ?disabled="${this.isFaceFormReadonly}"
-                        id="${item.id}"
-                        @sl-change="${(e: any) => {
-                          this.showFaceRequired = false;
-                          this.allFaceData[_index].selected = e.target.checked;
-                          this.onFaceChange(this.allFaceData);
-                        }}"
-                      >
-                        ${item.face_number}
-                      </etools-checkbox>
-                    </div>
-                    <div class="col-data col-1 align-right" data-col-header-label="Amount (USD)">
-                      ${item.amount_usd}
-                    </div>
-                    <div class="col-data col-1 align-right" data-col-header-label="Amount (local)">
-                      ${item.amount_local}
-                    </div>
-                    <div class="col-data col-2 align-center" data-col-header-label="Date of Liquidation">
-                      ${item.date_of_liquidation}
-                    </div>
-                    <div class="col-data col-2 align-center" data-col-header-label="Start Date">${item.start_date}</div>
-                    <div class="col-data col-2 align-center" data-col-header-label="End Date">${item.end_date}</div>
-                    <div class="col-data col-1" data-col-header-label="Modality">${item.modality}</div>
-                    <a
-                      class="col-data ${this.lowResolutionLayout ? '' : 'report'} col-1"
-                      data-col-header-label="FACE Document"
-                      target="_blank"
-                      href=""
-                    >
-                      <etools-icon-button name="open-in-new"></etools-icon-button>
-                      View Report
-                    </a>
-                  </div>
-                </etools-data-table-row>
-              `
-            )}
+
+                           ${repeat(
+                             this.paginatedFaceData || [],
+                             (item: any) => item.id,
+                             (item, _index) => html`
+                               <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
+                                 <div slot="row-data" class="layout-horizontal">
+                                   <div class="col-data col-2" data-col-header-label="FACE No.">
+                                     <etools-checkbox
+                                       ?checked="${item.selected}"
+                                       ?disabled="${this.isFaceFormReadonly}"
+                                       id="${item.id}"
+                                       @sl-change="${(e: any) => {
+                                         this.showFaceRequired = false;
+                                         this.allFaceData[
+                                           Number(this.paginator.visible_range[0]) - 1 + _index
+                                         ].selected = e.target.checked;
+                                         this.onFaceChange(this.allFaceData);
+                                       }}"
+                                     >
+                                       ${item.face_number}
+                                     </etools-checkbox>
+                                   </div>
+                                   <div class="col-data col-1 align-right" data-col-header-label="Amount (USD)">
+                                     ${item.amount_usd}
+                                   </div>
+                                   <div class="col-data col-1 align-right" data-col-header-label="Amount (local)">
+                                     ${item.amount_local}
+                                   </div>
+                                   <div class="col-data col-2 align-center" data-col-header-label="Date of Liquidation">
+                                     ${this.getDateDisplayValue(item.date_of_liquidation)}
+                                   </div>
+                                   <div class="col-data col-2 align-center" data-col-header-label="Start Date">
+                                     ${this.getDateDisplayValue(item.start_date)}
+                                   </div>
+                                   <div class="col-data col-2 align-center" data-col-header-label="End Date">
+                                     ${this.getDateDisplayValue(item.end_date)}
+                                   </div>
+                                   <div class="col-data col-1" data-col-header-label="Modality">${item.modality}</div>
+                                   <a
+                                     class="col-data ${this.lowResolutionLayout ? '' : 'report'} col-1"
+                                     data-col-header-label="FACE Document"
+                                     target="_blank"
+                                     href=""
+                                   >
+                                     <etools-icon-button name="open-in-new"></etools-icon-button>
+                                     View Report
+                                   </a>
+                                 </div>
+                               </etools-data-table-row>
+                             `
+                           )}
             <etools-data-table-footer
               .lowResolutionLayout="${this.lowResolutionLayout}"
               .pageSize="${this.paginator.page_size}"
@@ -509,9 +516,6 @@ export class EngagementInfoDetails extends connect(store)(
   @property({type: Number})
   prevPartnerId!: number;
 
-  @property({type: Array})
-  faceFormsOption = [];
-
   @property({type: Boolean})
   showFaceRequired = false;
 
@@ -600,7 +604,6 @@ export class EngagementInfoDetails extends connect(store)(
       endpoint: {url}
     })
       .then((resp) => {
-        this.faceFormsOption = resp || [];
         this.setFaceData(resp || []);
         this.requestUpdate();
       })
@@ -641,8 +644,8 @@ export class EngagementInfoDetails extends connect(store)(
       .sort((a: any, b: any) => dayjs(b.status_date).unix() - dayjs(a.status_date).unix())
       .slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
-    const selectedFaceForms = (this.data.face_forms || []).map((x: any) => x.commitment_ref);
-    (faceData || []).forEach((item) => (item.selected = selectedFaceForms.includes(item.commitment_ref)));
+    const selectedFaceForms = (this.data.face_forms || []).map((x: any) => x.id);
+    (faceData || []).forEach((item) => (item.selected = selectedFaceForms.includes(item.id)));
     this.paginatedFaceData = faceData;
   }
 
@@ -824,17 +827,7 @@ export class EngagementInfoDetails extends connect(store)(
   }
 
   getFaceFormsToSave(face_forms: any[]) {
-    const faceToSave: any[] = [];
-    (face_forms || []).forEach((item: any) =>
-      faceToSave.push({
-        id: item.id,
-        start_date: item.start_date,
-        end_date: item.end_date,
-        amount_usd: item.amount_usd,
-        amount_local: item.amount_local
-      })
-    );
-    return faceToSave;
+    return (face_forms || []).map((item: any) => item.id);
   }
 
   // collectionChanged(originalCollection: any[], newCollection: any[]) {

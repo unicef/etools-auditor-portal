@@ -35,8 +35,8 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
   render() {
     return html`
       ${sharedStyles}
-      <style>${dataTableStylesLit}
-        :host etools-currency {
+      <style>
+        ${dataTableStylesLit} :host etools-currency {
           width: 100%;
           text-align: end;
         }
@@ -61,10 +61,16 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
           height: 100%;
           justify-content: center;
           display: flex;
-          flex-direction: column; 
+          flex-direction: column;
         }
         .tbl-currency {
           font-weight: 700;
+        }
+        .h-50 {
+          min-height: 50px;
+        }
+        .pr-20 {
+          padding-inline-end: 20px !important;
         }
       </style>
 
@@ -75,21 +81,22 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
         }}"
       ></etools-media-query>
 
-      <etools-content-panel class="content-section clearfx" panel-title="Summary of Engagement Findings" show-expand-btn>
+      <etools-content-panel
+        class="content-section clearfx"
+        panel-title="Summary of Engagement Findings"
+        show-expand-btn
+      >
         <div class="row">
-          <div class="col-12 padding-v">
-            <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <etools-data-table-column class="col-2"></etools-data-table-column>
-              <etools-data-table-column class="col-2">Value of Selected FACE</etools-data-table-column>
-              <etools-data-table-column class="col-2">Total Amount Tested</etools-data-table-column>
-              <etools-data-table-column class="col-2 col">Amount of Financial Findings</etools-data-table-column>
-              <etools-data-table-column class="col-2 center-align">% of audited Expenditure</etools-data-table-column>
-              <etools-data-table-column class="col-2"></etools-data-table-column>
+          <div class="col-12 col-lg-9 padding-v">
+            <etools-data-table-header no-title no-collapse>
+              <etools-data-table-column class="col-4"></etools-data-table-column>
+              <etools-data-table-column class="col-4 align-center">Local currency</etools-data-table-column>
+              <etools-data-table-column class="col-4 align-center">USD</etools-data-table-column>
             </etools-data-table-header>
-            <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <div slot="row-data" class="layout-horizontal">
-                <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label=" "><label class='tbl-currency centered'>Local currency<label></div>
-                <div class="col-data col-2 no-colon" data-col-header-label="Value of Selected FACE">
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">Value of Selected FACE</div>
+                <div class="col-data col-4 no-colon">
                   <etools-currency
                     class="w100"
                     .value="${this.data?.total_value_local}"
@@ -99,7 +106,22 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 no-colon" data-col-header-label="Total Amount Tested">
+                <div class="col-data col-4 no-colon">
+                  <etools-currency
+                    class="w100"
+                    .value="${this.data?.total_value}"
+                    placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
+                    readonly
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+              </div>
+            </etools-data-table-row>
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">Total Amount Tested</div>
+                <div class="col-data col-4 no-colon">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_tested_local', this.optionsData)}"
                     .value="${this.data?.total_amount_tested_local}"
@@ -120,7 +142,29 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 no-colon col" data-col-header-label="Amount of Financial Findings">
+                <div class="col-data col-4 no-colon">
+                  <etools-currency
+                    class="w100 ${this._setRequired('total_amount_tested', this.optionsData)}"
+                    .value="${this.data?.total_amount_tested}"
+                    placeholder="${this.getPlaceholderText('total_amount_tested', this.optionsData)}"
+                    ?required="${this._setRequired('total_amount_tested', this.optionsData)}"
+                    readonly
+                    ?invalid="${this._checkInvalid(this.errors?.total_amount_tested)}"
+                    .errorMessage="${this.errors?.total_amount_tested}"
+                    @value-changed="${({detail}: CustomEvent) =>
+                      this.numberChanged(detail, 'total_amount_tested', this.data)}"
+                    @focus="${() => {
+                      this._resetFieldError;
+                    }}"
+                  >
+                  </etools-currency>
+                </div>
+              </div>
+            </etools-data-table-row>
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">Amount of Financial Findings</div>
+                <div class="col-data col-4 no-colon col">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure_local', this.optionsData)}"
                     .value="${this.data?.total_amount_of_ineligible_expenditure_local}"
@@ -143,47 +187,10 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label=""></div>
-                <div class="col-data col-2 no-colon col" data-col-header-label=""></div>
-              </div>
-            </etools-data-table-row>
-            <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <div slot="row-data" class="layout-horizontal">
-              <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label=""><label class='tbl-currency centered'>USD<label></div>
-                <div class="col-data col-2 no-colon" data-col-header-label="Value of Selected FACE">
-                  <etools-currency
-                    class="w100"
-                    .value="${this.data?.total_value}"
-                    currency="$"
-                    placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
-                    readonly
-                    @focus="${this._resetFieldError}"
-                  >
-                  </etools-currency>
-                </div>
-                <div class="col-data col-2 no-colon" data-col-header-label="Total Amount Tested">
-                  <etools-currency
-                    class="w100 ${this._setRequired('total_amount_tested', this.optionsData)}"
-                    .value="${this.data?.total_amount_tested}"
-                    currency="$"
-                    placeholder="${this.getPlaceholderText('total_amount_tested', this.optionsData)}"
-                    ?required="${this._setRequired('total_amount_tested', this.optionsData)}"
-                    readonly
-                    ?invalid="${this._checkInvalid(this.errors?.total_amount_tested)}"
-                    .errorMessage="${this.errors?.total_amount_tested}"
-                    @value-changed="${({detail}: CustomEvent) =>
-                      this.numberChanged(detail, 'total_amount_tested', this.data)}"
-                    @focus="${() => {
-                      this._resetFieldError;
-                    }}"
-                  >
-                  </etools-currency>
-                </div>
-                <div class="col-data col-2 col no-colon" data-col-header-label="Amount of Financial Findings">
+                <div class="col-data col-4 col no-colon">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
                     .value="${this.data?.total_amount_of_ineligible_expenditure}"
-                    currency="$"
                     placeholder="${this.getPlaceholderText('total_amount_of_ineligible_expenditure', this.optionsData)}"
                     readonly
                     ?invalid="${this._checkInvalid(this.errors?.total_amount_of_ineligible_expenditure)}"
@@ -196,14 +203,20 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-2 no-colon layout-vertical center-align" data-col-header-label="% of audited Expenditure">
-                  <label class="centered">$ ${this.data?.percent_of_audited_expenditure}</label>
-                <div class="col-data col-2 no-colon col" data-col-header-label="&nbsp;"></div>
-               </div>
-             </div>
+              </div>
             </etools-data-table-row>
-            <div class="col-12 padding-v"></div>
-            <div class="col-12 col-lg-4 col-md-6 input-container">
+            <etools-data-table-row no-collapse>
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">% of audited Expenditure</div>
+                <div class="col-data col-4">&nbsp;</div>
+                <div class="col-data col-4 align-right pr-20">
+                  <label>${this.data?.percent_of_audited_expenditure}</label>
+                </div>
+              </div>
+            </etools-data-table-row>
+          </div>
+          <div class="col-12 col-lg-3 padding-v row">
+            <div class="col-12 input-container">
               <etools-input
                 class="w100"
                 .value="${this.data.exchange_rate}"
