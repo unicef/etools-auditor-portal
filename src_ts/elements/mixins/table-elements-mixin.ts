@@ -99,7 +99,7 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
     }
 
     _dataItemsChanged(data) {
-      if (!isJsonStrMatch(this.originalTableData, data || [])) {
+      if (!this.originalTableData && data) {
         this.originalTableData = cloneDeep(data || []);
       }
 

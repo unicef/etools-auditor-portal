@@ -173,7 +173,40 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
           </etools-dropdown>
         </div>
 
-        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
+        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${!this._isAudit(this.data?.engagement_type)}">
+          <!-- SAI -->
+          <etools-dropdown
+            id="ddlSai"
+            class="w100 validate-field ${this._setRequired('conducted_by_sai', this.optionsData)}"
+            .selected="${this.data.conducted_by_sai}"
+            label="${this.getLabel('conducted_by_sai', this.optionsData)}"
+            placeholder="&#8212;"
+            .options="${this.saiOptions}"
+            option-label="label"
+            option-value="value"
+            ?required="${this._isAudit(this.data?.engagement_type)}"
+            ?readonly="${this.itIsReadOnly('conducted_by_sai', this.optionsData)}"
+            ?invalid="${this._checkInvalid(this.errors.conducted_by_sai)}"
+            .errorMessage="${this.errors.conducted_by_sai}"
+            @focus="${(event: any) => this._resetFieldError(event)}"
+            @etools-selected-item-changed="${({detail}: CustomEvent) =>
+              this.selectedItemChanged(detail, 'conducted_by_sai', 'value', this.data)}"
+            hide-search
+            trigger-value-change-event
+          >
+          </etools-dropdown>
+        </div>
+
+        <div class="col-12 col-lg-4 col-md-6 input-container" 
+        ?hidden="${
+          this._hideForSc(this.isStaffSc) ||
+          !this._showPrefix(
+            'contract_start_date',
+            this.optionsData,
+            this.data.agreement?.contract_start_date,
+            'readonly'
+          )
+        }">
           <!-- PO Date -->
           <datepicker-lite
             id="contractStartDateInput"
@@ -183,12 +216,6 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
             placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
             readonly
             selected-date-display-format="D MMM YYYY"
-            ?hidden="${!this._showPrefix(
-              'contract_start_date',
-              this.optionsData,
-              this.data.agreement?.contract_start_date,
-              'readonly'
-            )}"
             name="date-range"
           >
           </datepicker-lite>
@@ -282,6 +309,18 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
     {
       label: 'Special Audit',
       value: 'sa'
+    }
+  ];
+
+  @property({type: Array})
+  saiOptions: GenericObject[] = [
+    {
+      label: 'Yes',
+      value: 'true'
+    },
+    {
+      label: 'No',
+      value: 'false'
     }
   ];
 
@@ -382,16 +421,6 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
     }
   }
 
-  isReadonly_YearOfAudit(engagement_type, id) {
-    if (engagement_type != 'audit') {
-      return true;
-    }
-    if (!id) {
-      return false;
-    }
-    return true;
-  }
-
   itIsReadOnly(field: string, permissions: AnyObject) {
     return !this.data.partner?.id || this.isReadOnly(field, permissions);
   }
@@ -455,6 +484,10 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
     return this.engagementTypes.filter((type: any) => {
       return type.value === value;
     })[0];
+  }
+
+  _isAudit(engagement_type: string) {
+    return engagement_type === 'audit' || engagement_type === 'sa';
   }
 
   poKeydown(event: any) {
@@ -564,6 +597,14 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
     if (this.data.po_item && (!this.originalData?.po_item || this.originalData?.po_item.id !== +this.data.po_item)) {
       data.po_item = this.data.po_item;
     }
+
+    if (
+      this._isAudit(this.data?.engagement_type) &&
+      this.originalData?.conducted_by_sai !== this.data.conducted_by_sai
+    ) {
+      data.conducted_by_sai = this.data.conducted_by_sai;
+    }
+
     return data;
   }
 
