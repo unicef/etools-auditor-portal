@@ -164,7 +164,7 @@ export class EngagementInfoDetails extends connect(store)(
                       id="yearOfAudit"
                       class="w100 ${this._setRequired('year_of_audit', this.optionsData)} validate-field"
                       .selected="${this.data.year_of_audit}"
-                      label="Scheduled year"
+                      label="${this.getLabel('year_of_audit', this.optionsData)}"
                       placeholder="${this.getPlaceholderText('year_of_audit', this.optionsData, 'dropdown')}"
                       .options="${this.yearOfAuditOptions}"
                       option-label="label"
