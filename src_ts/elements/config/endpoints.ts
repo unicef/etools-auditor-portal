@@ -18,7 +18,7 @@ const famEndpoints = {
     url: '/api/audit/engagements/'
   },
   partnerOrganisations: {
-    url: '/api/pmp/v3/partners/?hidden=false',
+    url: '/api/pmp/v3/partners/?with_name=true',
     exp: 24 * 60 * 60 * 1000, // 24h
     cacheTableName: 'partners'
   },

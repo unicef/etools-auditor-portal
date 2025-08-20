@@ -190,7 +190,7 @@ export class EngagementInfoDetails extends connect(store)(
                         this.data.joint_audit = e.target.checked;
                       }}"
                     >
-                      Joint Engagement
+                      ${this.getLabel('joint_audit', this.optionsData)}
                     </etools-checkbox>
                   </div>
                 `
@@ -213,7 +213,7 @@ export class EngagementInfoDetails extends connect(store)(
                   label="${this.getStartEndDateLabel(this.data.engagement_type, 'start_date', this.optionsData)}"
                   placeholder="${this.getPlaceholderText('start_date', this.optionsData, 'datepicker')}"
                   selected-date-display-format="D MMM YYYY"
-                  ?required="${this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"              
+                  ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
                   ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
                   ?invalid="${this._checkInvalid(this.errors.start_date)}"
                   .errorMessage="${this.errors.start_date}"
@@ -237,7 +237,7 @@ export class EngagementInfoDetails extends connect(store)(
                     label="${this.getStartEndDateLabel(this.data.engagement_type, 'end_date', this.optionsData)}"
                     placeholder="${this.getPlaceholderText('end_date', this.optionsData, 'datepicker')}"
                     data-selector="periodEndDate"
-                    ?required="${this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                    ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
                     ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
                     ?invalid="${this._checkInvalid(this.errors.end_date)}"
                     .errorMessage="${this.errors.end_date}"
@@ -264,7 +264,7 @@ export class EngagementInfoDetails extends connect(store)(
                     .value="${this.data.total_value || 0}"
                     label="Total Value of Selected FACE form(s) in USD"
                     placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
-                    ?required="${this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                    ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
                     ?readonly="${
                       this.itIsReadOnly('total_value', this.optionsData) &&
                       !this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)
@@ -292,7 +292,7 @@ export class EngagementInfoDetails extends connect(store)(
                     .value="${this.data.total_value_local || 0}"
                     label="Total Value of Selected FACE form(s) in Local Currency"
                     placeholder="${this.getPlaceholderText('total_value_local', this.optionsData)}"
-                    ?required="${this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                    ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
                     ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
                     ?invalid="${this._checkInvalid(this.errors.total_value_local)}"
                     .errorMessage="${this.errors.total_value_local}"
@@ -570,6 +570,10 @@ export class EngagementInfoDetails extends connect(store)(
 
   isSpecialAuditEditable(id: string, engagement_type: string) {
     return !id && this.isSpecialAudit(engagement_type);
+  }
+
+  isFaceFieldRequired(engagement_type: string) {
+    return engagement_type && !['ma', 'sa'].includes(engagement_type);
   }
 
   itIsReadOnly(field: string, permissions: AnyObject) {
