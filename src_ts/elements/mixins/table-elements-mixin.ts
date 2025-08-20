@@ -8,7 +8,6 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {readonlyPermission} from './permission-controller';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import {getBodyDialog} from '../utils/utils';
-import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 
 /**
  * @polymer
