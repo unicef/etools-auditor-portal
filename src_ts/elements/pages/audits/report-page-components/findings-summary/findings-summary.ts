@@ -31,6 +31,7 @@ import {refactorErrorObject} from '../../../../mixins/error-handler';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {getOptionsChoices} from '../../../../mixins/permission-controller';
 import {multiplyWithExchangeRate} from '../../../../utils/utils';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @customElement
@@ -89,20 +90,20 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
           height: 100%;
           justify-content: center;
           display: flex;
-          flex-direction: column; 
+          flex-direction: column;
         }
         .h-50 {
           min-height: 50px;
         }
         .pr-20 {
-          padding-inline-end: 20px !important;          
+          padding-inline-end: 20px !important;
         }
         .tbl-currency {
           font-weight: 700;
         }
       </style>
 
-      <etools-content-panel class="content-section clearfx" 
+      <etools-content-panel class="content-section clearfx"
         panel-title="Summary of Engagement Findings"
         show-expand-btn>
 
@@ -135,7 +136,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            @focus="${this._resetFieldError}"
                          >
                          </etools-currency>
-                    </div>                                      
+                    </div>
                   </div>
               </etools-data-table-row>
               <etools-data-table-row no-collapse>
@@ -143,6 +144,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                       <div class="col-data col-4">Audited Expenditure</div>
                       <div class="col-data col-4">
                          <etools-currency
+                           id="ecAuditedExpenditureLocal"
                            class="w100 ${this._setRequired('audited_expenditure_local', this.optionsData)}"
                            .value="${this.data?.audited_expenditure_local}"
                            placeholder="${this.getPlaceholderText('audited_expenditure_local', this.optionsData)}"
@@ -151,6 +153,9 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            ?invalid="${this._checkInvalid(this.errors?.audited_expenditure_local)}"
                            .errorMessage="${this.errors?.audited_expenditure_local}"
                            @value-changed="${({detail}: CustomEvent) => {
+                             if (!this._validateAuditedExpenditureValue(detail.value)) {
+                               return;
+                             }
                              this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
                              detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
                              this.numberChanged(detail, 'audited_expenditure', this.data);
@@ -360,6 +365,18 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
       this._setDataItems();
       this._setAuditOpinion(this.data.audit_opinion, this.auditOpinions);
     }
+  }
+
+  _validateAuditedExpenditureValue(auditedValue: string) {
+    if ((parseFloat(auditedValue) || 0) > (parseFloat(this.data?.total_value_local) || 0)) {
+      fireEvent(this, 'toast', {
+        text: 'Audited Expenditure should not be higher than the amount in the Selected FACE forms'
+      });
+      (this.shadowRoot?.querySelector('#ecAuditedExpenditureLocal') as HTMLInputElement).value =
+        this.data?.audited_expenditure_local || 0;
+      return false;
+    }
+    return true;
   }
 
   _checkInvalid(value) {
