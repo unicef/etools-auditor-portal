@@ -811,7 +811,7 @@ export class EngagementInfoDetails extends connect(store)(
         }
 
         if (this.originalData.total_value !== this.data.total_value) {
-          data.total_value = this.data.total_value;
+          data.total_value = this.data.total_value || 0;
         }
         if (this.originalData.total_value_local !== this.data.total_value_local) {
           data.total_value_local = this.data.total_value_local;
