@@ -172,23 +172,23 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
           <div class="col-12 col-xl-6 layout-horizontal layout-wrap no-padding">
             <div class="col-12 col-lg-6 input-container">
               <!-- Total of Amount tested -->
-              <etools-input
+              <etools-currency
                 readonly
                 placeholder="—"
-                label="Total of Amount tested"
+                label="Amount Audited"
                 .value=" ${this.displayCurrencyAmount(this.totalAmountTested, 0, 0)}"
               >
-              </etools-input>
+              </etools-currency>
             </div>
             <div class="col-12 col-lg-6 input-container">
               <!-- Amount of Financial Findings -->
-              <etools-input
+              <etools-currency
                 readonly
                 placeholder="—"
-                label="Amount of Financial Findings (percentage)"
-                .value=" ${this.displayCurrencyAmount(this.amountFinancialFindingsPercentage, 0, 0)}"
+                label="% Financial Findings"
+                .value=" ${this.displayCurrencyAmount(this.amountFinancialFindingsPercentage, null, 2)}"
               >
-              </etools-input>
+              </etools-currency>
             </div>
           </div>
 
@@ -475,6 +475,12 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
     );
     this.allEngagements = engagements;
     this.totalAmountTested = (this.allEngagements || []).map((x: any) => x.amount_tested).reduce((a, b) => a + b);
+    const totalFinancialFindings = (this.allEngagements || [])
+      .map((x: any) => x.outstanding_findings)
+      .reduce((a, b) => a + b);
+    this.amountFinancialFindingsPercentage = this.totalAmountTested
+      ? (totalFinancialFindings * 100) / this.totalAmountTested
+      : 0;
     this.paginatedEngagements = [];
     this.paginator = JSON.parse(
       JSON.stringify({

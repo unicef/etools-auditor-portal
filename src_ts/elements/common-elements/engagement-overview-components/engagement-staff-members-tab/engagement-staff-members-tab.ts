@@ -188,8 +188,11 @@ export class EngagementStaffMembersTab extends connect(store)(
           margin-block-start: 8px;
           margin-block-end: 16px;
         }
-        .m-24-top {
+        .mt-24 {
           margin-block-start: 24px;
+        }
+        .mt-8 {
+          margin-block-start: 8px;
         }
         @media(max-width: 576px) {
           .panel-btns-container {
@@ -382,15 +385,13 @@ export class EngagementStaffMembersTab extends connect(store)(
               </etools-data-table-footer>`
             : ``
         }
-        <div class="col-12 section-bottom m-24-top"></div>
+          <div class="col-12 section-bottom mt-24"></div>
+          </div>
         </div>
       </div>
-      </div>
-
-
       
         <div class="panel-content group">
-           <div class="row padding-v">
+           <div class="row">
             <div class="col-12">
                 <label class="section-title">Partner Contact</label>
             </div>
@@ -491,8 +492,8 @@ export class EngagementStaffMembersTab extends connect(store)(
         </div>
         
         <div class="panel-content group">
-           <div class="row padding">
-            <div class="col-12">
+           <div class="row padding-v">
+            <div class="col-12 mt-8">
                 <label class="section-title">Unicef Contact</label>
             </div>
                ${
