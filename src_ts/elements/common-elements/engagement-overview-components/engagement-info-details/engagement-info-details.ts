@@ -318,20 +318,20 @@ export class EngagementInfoDetails extends connect(store)(
               <etools-data-table-column class="col-2" field="face_number" sortable>
                 FACE No.
               </etools-data-table-column>
-              <etools-data-table-column class="col-1 center-align" field="amount_usd" sortable>
+              <etools-data-table-column class="col-2 center-align" field="amount_usd" sortable>
                 Amount (USD)
               </etools-data-table-column>
-              <etools-data-table-column class="col-1 center-align" field="amount_local" sortable>
+              <etools-data-table-column class="col-2 center-align" field="amount_local" sortable>
                 Amount (local)
               </etools-data-table-column>
               <etools-data-table-column class="col-2 center-align" field="date_of_liquidation" sortable>
                 Date of <br /> Liquidation
               </etools-data-table-column
               >
-              <etools-data-table-column class="col-2 center-align" field="start_date" sortable>
+              <etools-data-table-column class="col-1 center-align" field="start_date" sortable>
                 Start Date
               </etools-data-table-column>
-              <etools-data-table-column class="col-2 center-align" field="end_date" sortable>
+              <etools-data-table-column class="col-1 center-align" field="end_date" sortable>
                 End Date
               </etools-data-table-column>
               <etools-data-table-column class="col-1"> Modality </etools-data-table-column>
@@ -360,19 +360,19 @@ export class EngagementInfoDetails extends connect(store)(
                                        ${item.face_number}
                                      </etools-checkbox>
                                    </div>
-                                   <div class="col-data col-1 align-right" data-col-header-label="Amount (USD)">
+                                   <div class="col-data col-2 align-right" data-col-header-label="Amount (USD)">
                                      ${item.amount_usd}
                                    </div>
-                                   <div class="col-data col-1 align-right" data-col-header-label="Amount (local)">
+                                   <div class="col-data col-2 align-right" data-col-header-label="Amount (local)">
                                      ${item.amount_local}
                                    </div>
                                    <div class="col-data col-2 align-center" data-col-header-label="Date of Liquidation">
                                      ${this.getDateDisplayValue(item.date_of_liquidation)}
                                    </div>
-                                   <div class="col-data col-2 align-center" data-col-header-label="Start Date">
+                                   <div class="col-data col-1 align-center" data-col-header-label="Start Date">
                                      ${this.getDateDisplayValue(item.start_date)}
                                    </div>
-                                   <div class="col-data col-2 align-center" data-col-header-label="End Date">
+                                   <div class="col-data col-1 align-center" data-col-header-label="End Date">
                                      ${this.getDateDisplayValue(item.end_date)}
                                    </div>
                                    <div class="col-data col-1" data-col-header-label="Modality">${item.modality}</div>
