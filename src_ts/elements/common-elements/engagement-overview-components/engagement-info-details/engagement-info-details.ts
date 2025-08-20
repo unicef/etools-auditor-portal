@@ -553,8 +553,8 @@ export class EngagementInfoDetails extends connect(store)(
       this._errorHandler(this.errorObject, this.errorObject);
     }
     if (changedProperties.has('optionsData')) {
-      this._setEngagementTypes(this.optionsData);
       this.isFaceFormReadonly = this.isReadOnly('face_forms', this.optionsData);
+      this._setEngagementTypes(this.optionsData);
     }
   }
 
@@ -596,7 +596,7 @@ export class EngagementInfoDetails extends connect(store)(
   }
 
   loadFaceData(partnerId: number) {
-    if (this.data?.id) {
+    if (this.isFaceFormReadonly) {
       // for existing engagements table is not editable, just show selected face_forms for info,
       //  no need to request all existing forms,
       this.setFaceData([...(this.data.face_forms || [])], true);
@@ -806,13 +806,13 @@ export class EngagementInfoDetails extends connect(store)(
 
     if (!this.isFaceFormReadonly) {
       if (['audit', 'sa', 'sc'].includes(this.data.engagement_type)) {
-        // if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
-        //   this.data.total_value = null;
-        // }
+        if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
+          this.data.total_value = null;
+        }
 
-        // if (this.originalData.total_value !== this.data.total_value) {
-        //   data.total_value = this.data.total_value || 0;
-        // }
+        if (this.originalData.total_value !== this.data.total_value) {
+          data.total_value = this.data.total_value || 0;
+        }
 
         if (this.originalData.total_value_local !== this.data.total_value_local) {
           data.total_value_local = this.data.total_value_local || 0;
