@@ -474,13 +474,18 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
       (a: any, b: any) => dayjs(b.status_date).unix() - dayjs(a.status_date).unix()
     );
     this.allEngagements = engagements;
-    this.totalAmountTested = (this.allEngagements || []).map((x: any) => x.amount_tested).reduce((a, b) => a + b);
-    const totalFinancialFindings = (this.allEngagements || [])
-      .map((x: any) => x.outstanding_findings)
-      .reduce((a, b) => a + b);
-    this.amountFinancialFindingsPercentage = this.totalAmountTested
-      ? (totalFinancialFindings * 100) / this.totalAmountTested
-      : 0;
+    if ((this.allEngagements || []).length) {
+      this.totalAmountTested = this.allEngagements.map((x: any) => x.amount_tested).reduce((a, b) => a + b);
+      const totalFinancialFindings = this.allEngagements
+        .map((x: any) => x.outstanding_findings)
+        .reduce((a, b) => a + b);
+      this.amountFinancialFindingsPercentage = this.totalAmountTested
+        ? (totalFinancialFindings * 100) / this.totalAmountTested
+        : 0;
+    } else {
+      this.totalAmountTested = 0;
+      this.amountFinancialFindingsPercentage = 0;
+    }
     this.paginatedEngagements = [];
     this.paginator = JSON.parse(
       JSON.stringify({
