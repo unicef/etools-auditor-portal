@@ -806,15 +806,16 @@ export class EngagementInfoDetails extends connect(store)(
 
     if (!this.isFaceFormReadonly) {
       if (['audit', 'sa', 'sc'].includes(this.data.engagement_type)) {
-        if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
-          this.data.total_value = null;
-        }
+        // if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
+        //   this.data.total_value = null;
+        // }
 
-        if (this.originalData.total_value !== this.data.total_value) {
-          data.total_value = this.data.total_value || 0;
-        }
+        // if (this.originalData.total_value !== this.data.total_value) {
+        //   data.total_value = this.data.total_value || 0;
+        // }
+
         if (this.originalData.total_value_local !== this.data.total_value_local) {
-          data.total_value_local = this.data.total_value_local;
+          data.total_value_local = this.data.total_value_local || 0;
         }
 
         data.joint_audit = !!this.data.joint_audit;
