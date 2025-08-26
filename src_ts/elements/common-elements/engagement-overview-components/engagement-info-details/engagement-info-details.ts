@@ -285,7 +285,7 @@ export class EngagementInfoDetails extends connect(store)(
                  <div
                   class="col-12 col-lg-3 col-md-6 input-container"
                   ?hidden="${!this.showFace}"
-                >
+                >                
                   <!-- Total Value of Selected FACE Forms -->
                   <etools-currency
                     class="w100 validate-field
@@ -306,7 +306,7 @@ export class EngagementInfoDetails extends connect(store)(
                     @value-changed="${({detail}: CustomEvent) =>
                       this.numberChanged(detail, 'total_value_local', this.data)}"
                   >
-                  </etools-currency>
+                  </etools-currency>                 
                 </div>
 
 
@@ -315,7 +315,7 @@ export class EngagementInfoDetails extends connect(store)(
           <div class="col-12 padding-v"
             ?hidden="${
               !this.showFaceForm(this.data?.engagement_type, this.data?.partner?.id) ||
-              this.doesNotHaveFaceData(this.data)
+              this.doesNotHaveFaceData(this.data, this.isFaceFormReadonly)
             }">                    
             <label class="error-label" id="lblFaceRequired" ?hidden="${!this.showFaceRequired}">
               Please select at least one Face item
@@ -593,8 +593,8 @@ export class EngagementInfoDetails extends connect(store)(
     return this.showFace;
   }
 
-  doesNotHaveFaceData(data: GenericObject) {
-    return data && data.id && !(data.face_forms || []).length;
+  doesNotHaveFaceData(data: GenericObject, isFaceFormReadonly: boolean) {
+    return !isFaceFormReadonly && data && data.id && !(data.face_forms || []).length;
   }
 
   loadFaceData(partnerId: number) {
