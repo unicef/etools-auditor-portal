@@ -176,7 +176,7 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
                 readonly
                 placeholder="—"
                 label="Amount Audited"
-                .value=" ${this.displayCurrencyAmount(this.totalAmountTested, 0, 0)}"
+                .value="${this.displayCurrencyAmount(this.totalAmountTested, 0, 0)}"
               >
               </etools-currency>
             </div>
@@ -186,7 +186,7 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
                 readonly
                 placeholder="—"
                 label="% Financial Findings"
-                .value=" ${this.displayCurrencyAmount(this.amountFinancialFindingsPercentage, null, 2)}"
+                .value="${this.displayCurrencyAmount(this.amountFinancialFindingsPercentage, null, 2)}"
               >
               </etools-currency>
             </div>

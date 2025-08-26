@@ -23,6 +23,7 @@ import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import PaginationMixin from '@unicef-polymer/etools-unicef/src/mixins/pagination-mixin';
+import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/mixins/currency.js';
 import {collectionExists, getOptionsChoices} from '../../../mixins/permission-controller';
 import {getArraysDiff} from '@unicef-polymer/etools-utils/dist/array.util';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
@@ -46,7 +47,7 @@ import {repeat} from 'lit/directives/repeat.js';
  */
 @customElement('engagement-info-details')
 export class EngagementInfoDetails extends connect(store)(
-  PaginationMixin(CommonMethodsMixin(ModelChangedMixin(LitElement)))
+  PaginationMixin(CommonMethodsMixin(ModelChangedMixin(EtoolsCurrency(LitElement))))
 ) {
   static get styles() {
     return [tabInputsStyles, moduleStyles, tabLayoutStyles, layoutStyles];
@@ -362,10 +363,10 @@ export class EngagementInfoDetails extends connect(store)(
                                      </etools-checkbox>
                                    </div>
                                    <div class="col-data col-2 align-right" data-col-header-label="Amount (USD)">
-                                     ${item.amount_usd}
+                                     ${this.displayCurrencyAmount(item.amount_usd, 0, 2)}
                                    </div>
                                    <div class="col-data col-2 align-right" data-col-header-label="Amount (local)">
-                                     ${item.amount_local}
+                                     ${this.displayCurrencyAmount(item.amount_local, 0, 2)}
                                    </div>
                                    <div class="col-data col-2 align-center" data-col-header-label="Date of Liquidation">
                                      ${this.getDateDisplayValue(item.date_of_liquidation)}

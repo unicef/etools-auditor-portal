@@ -52,6 +52,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
         }
         etools-content-panel::part(ecp-content) {
           padding: 0;
+          padding-block-end: 24px !important;
         }
       </style>
       <etools-media-query
