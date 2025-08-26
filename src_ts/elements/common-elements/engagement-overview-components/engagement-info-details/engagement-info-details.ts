@@ -67,7 +67,6 @@ export class EngagementInfoDetails extends connect(store)(
         }
         etools-currency {
           width: 100%;
-          text-align: end;
         }
         etools-currency::part(input) {
           text-align: end;
