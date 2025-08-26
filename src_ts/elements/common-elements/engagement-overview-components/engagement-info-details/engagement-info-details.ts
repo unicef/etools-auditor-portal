@@ -369,7 +369,7 @@ export class EngagementInfoDetails extends connect(store)(
                                      </etools-checkbox>
                                    </div>
                                    <div class="col-data col-1" data-col-header-label="Face Accounted">
-                                     ${this.face_accounted}
+                                     ${item.face_accounted}
                                    </div>
                                    <div class="col-data col-2 align-right" data-col-header-label="Amount (USD)">
                                      ${this.displayCurrencyAmount(item.amount_usd, 0, 2)}
