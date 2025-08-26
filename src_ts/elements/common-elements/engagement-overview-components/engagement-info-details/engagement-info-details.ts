@@ -324,7 +324,7 @@ export class EngagementInfoDetails extends connect(store)(
               <etools-data-table-column class="col-2" field="face_number" sortable>
                 FACE No.
               </etools-data-table-column>
-              <etools-data-table-column class="col-1 center-align" field="face_accounted" sortable>
+              <etools-data-table-column class="col-1" field="face_accounted" sortable>
                 Face Accounted
               </etools-data-table-column>
               <etools-data-table-column class="col-2 center-align" field="amount_usd" sortable>
