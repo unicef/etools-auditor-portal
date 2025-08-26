@@ -69,9 +69,12 @@ export class EngagementInfoDetails extends connect(store)(
         etools-currency {
           width: 100%;
         }
-        etools-currency::part(input) {
-          text-align: end;
+        etools-currency::part(form-control-label) {
+          text-align: start;
         }
+        etools-currency {
+          text-align: end;
+        }        
         .po-loading {
           position: absolute;
           top: 25px;
@@ -321,13 +324,16 @@ export class EngagementInfoDetails extends connect(store)(
               <etools-data-table-column class="col-2" field="face_number" sortable>
                 FACE No.
               </etools-data-table-column>
+              <etools-data-table-column class="col-1 center-align" field="face_accounted" sortable>
+                Face Accounted
+              </etools-data-table-column>
               <etools-data-table-column class="col-2 center-align" field="amount_usd" sortable>
                 Amount (USD)
               </etools-data-table-column>
               <etools-data-table-column class="col-2 center-align" field="amount_local" sortable>
                 Amount (local)
               </etools-data-table-column>
-              <etools-data-table-column class="col-2 center-align" field="date_of_liquidation" sortable>
+              <etools-data-table-column class="col-1 center-align" field="date_of_liquidation" sortable>
                 Date of <br /> Liquidation
               </etools-data-table-column
               >
@@ -362,13 +368,16 @@ export class EngagementInfoDetails extends connect(store)(
                                        ${item.face_number}
                                      </etools-checkbox>
                                    </div>
+                                   <div class="col-data col-1" data-col-header-label="Face Accounted">
+                                     ${this.face_accounted}
+                                   </div>
                                    <div class="col-data col-2 align-right" data-col-header-label="Amount (USD)">
                                      ${this.displayCurrencyAmount(item.amount_usd, 0, 2)}
                                    </div>
                                    <div class="col-data col-2 align-right" data-col-header-label="Amount (local)">
-                                     ${this.displayCurrencyAmount(item.amount_local, 0, 2)}
+                                     ${this.displayCurrencyAmount(item.amount_local, 0, 2)} (${item.currency})
                                    </div>
-                                   <div class="col-data col-2 align-center" data-col-header-label="Date of Liquidation">
+                                   <div class="col-data col-1 align-center" data-col-header-label="Date of Liquidation">
                                      ${this.getDateDisplayValue(item.date_of_liquidation)}
                                    </div>
                                    <div class="col-data col-1 align-center" data-col-header-label="Start Date">

@@ -407,12 +407,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     this.optionsData
                   )}"
                 >
-                  <etools-input
+                  <etools-currency
                     .value="${this.engagement.pending_unsupported_amount_local}"
                     placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                     readonly
                   >
-                  </etools-input>
+                  </etools-currency>
                 </div>
                 <div
                   class="col-data col-4 align-right"
@@ -421,12 +421,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                     this.optionsData
                   )}"
                 >
-                  <etools-input
+                  <etools-currency
                     .value="${this.engagement.pending_unsupported_amount}"
                     placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
                     readonly
                   >
-                  </etools-input>
+                  </etools-currency>
                 </div>
               </div>
             </etools-data-table-row>
@@ -595,7 +595,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
       value = 0;
     }
 
-    this.engagement.pending_unsupported_amount_local = value.toFixed(2); //.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    this.engagement.pending_unsupported_amount_local = value; //.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
     this.engagement.pending_unsupported_amount = multiplyWithExchangeRate(
       this.engagement.pending_unsupported_amount_local,
       this.engagement.exchange_rate
