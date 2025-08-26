@@ -153,6 +153,9 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            ?invalid="${this._checkInvalid(this.errors?.audited_expenditure_local)}"
                            .errorMessage="${this.errors?.audited_expenditure_local}"
                            @value-changed="${({detail}: CustomEvent) => {
+                             if (parseFloat(this.data?.audited_expenditure_local) === detail.value) {
+                               return;
+                             }
                              if (!this._validateAuditedExpenditureValue(detail.value)) {
                                return;
                              }

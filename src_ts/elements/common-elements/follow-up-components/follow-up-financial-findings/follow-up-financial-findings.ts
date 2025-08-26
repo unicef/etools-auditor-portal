@@ -91,7 +91,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
                 <div class="col-data col-4" ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
-                  ${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)}
+                  ${this.getLabelWithoutCurrency('financial_findings', this.optionsData)}
                 </div>
                 <div class="col-data col-4" ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
                   ${this.getLabelWithoutCurrency('total_amount_tested', this.optionsData)}
@@ -343,7 +343,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
                 <div class="col-data col-4">
-                  > ${this.getLabelWithoutCurrency('write_off_required', this.optionsData)}
+                  ${this.getLabelWithoutCurrency('write_off_required', this.optionsData)}
                 </div>
                 <div class="col-data col-4 align-right">
                   <etools-currency
@@ -472,7 +472,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
 
           <!--Spot-Check engagement fields-->
           ${this.showFields(this.engagement.engagement_type, 'sc')
-            ? html`<div class="col-12 input-container col-lg-4 col-md-6">
+            ? html`<div class="col-12 input-container col-lg-3 col-md-6">
                   <!-- Total amount of ineligible expenditure-->
                   <etools-currency
                     .value="${this.engagement.total_amount_of_ineligible_expenditure_local}"
@@ -482,7 +482,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                   >
                   </etools-currency>
                 </div>
-                <div class="col-12 input-container col-lg-4 col-md-6">
+                <div class="col-12 input-container col-lg-3 col-md-6">
                   <!-- Total amount of ineligible expenditure-->
                   <etools-currency
                     .value="${this.engagement.total_amount_of_ineligible_expenditure}"
@@ -581,11 +581,16 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
   setUnsupportedAmount(engagement, ...properties) {
     engagement = engagement || {};
     let value = engagement.financial_findings_local || engagement.total_amount_of_ineligible_expenditure_local || 0;
-
+    let changedValues = 0;
     each(properties, (property) => {
-      value -= property;
+      changedValues += property;
     });
+    if (changedValues === 0) {
+      // no value changed, just return;
+      return;
+    }
 
+    value -= changedValues;
     if (isNaN(value)) {
       value = 0;
     }

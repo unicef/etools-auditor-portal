@@ -104,6 +104,9 @@ export class EngagementInfoDetails extends connect(store)(
         etools-data-table-header {
           --list-bg-color: var(--medium-theme-background-color, #eeeeee);
         }
+        *[slot='row-data']  {
+          padding-block: 6px;
+        }
       </style>
 
       <etools-media-query
@@ -334,8 +337,7 @@ export class EngagementInfoDetails extends connect(store)(
               <etools-data-table-column class="col-1 center-align" field="end_date" sortable>
                 End Date
               </etools-data-table-column>
-              <etools-data-table-column class="col-1"> Modality </etools-data-table-column>
-              <etools-data-table-column class="col-1"> FACE Document </etools-data-table-column>
+              <etools-data-table-column class="col-2"> Modality </etools-data-table-column>
             </etools-data-table-header>
 
                            ${repeat(
@@ -375,16 +377,7 @@ export class EngagementInfoDetails extends connect(store)(
                                    <div class="col-data col-1 align-center" data-col-header-label="End Date">
                                      ${this.getDateDisplayValue(item.end_date)}
                                    </div>
-                                   <div class="col-data col-1" data-col-header-label="Modality">${item.modality}</div>
-                                   <a
-                                     class="col-data ${this.lowResolutionLayout ? '' : 'report'} col-1"
-                                     data-col-header-label="FACE Document"
-                                     target="_blank"
-                                     href=""
-                                   >
-                                     <etools-icon-button name="open-in-new"></etools-icon-button>
-                                     View Report
-                                   </a>
+                                   <div class="col-data col-2" data-col-header-label="Modality">${item.modality}</div>
                                  </div>
                                </etools-data-table-row>
                              `

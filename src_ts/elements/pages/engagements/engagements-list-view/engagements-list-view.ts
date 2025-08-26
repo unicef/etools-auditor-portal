@@ -26,7 +26,7 @@ export class EngagementsListView extends connect(store)(ListViewBase) {
     });
     this.isStaffSc = false;
     if (!this.prevQueryStringObj) {
-      this.prevQueryStringObj = {ordering: 'reference_number', page_size: 10, page: 1};
+      this.prevQueryStringObj = {ordering: 'id', page_size: 10, page: 1};
     }
     super.connectedCallback();
   }
