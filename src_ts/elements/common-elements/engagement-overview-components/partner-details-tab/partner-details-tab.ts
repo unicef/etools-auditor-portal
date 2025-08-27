@@ -12,6 +12,7 @@ import isEqual from 'lodash-es/isEqual';
 import sortBy from 'lodash-es/sortBy';
 import {GenericObject} from '../../../../types/global';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
+import EngagementMixin from '../../../mixins/engagement-mixin';
 import PaginationMixin from '@unicef-polymer/etools-unicef/src/mixins/pagination-mixin';
 import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/mixins/currency.js';
 // import {readonlyPermission} from '../../../mixins/permission-controller';
@@ -41,7 +42,9 @@ import {parseRequestErrorsAndShowAsToastMsgs} from '@unicef-polymer/etools-utils
  * @customElement
  */
 @customElement('partner-details-tab')
-export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMethodsMixin(EtoolsCurrency(LitElement)))) {
+export class PartnerDetailsTab extends connect(store)(
+  PaginationMixin(EngagementMixin(CommonMethodsMixin(EtoolsCurrency(LitElement))))
+) {
   static get styles() {
     return [moduleStyles, tabLayoutStyles, tabInputsStyles, layoutStyles, riskRatingStyles];
   }
@@ -61,6 +64,12 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
         }
         .input-container {
           display: flex;
+        }
+        etools-currency::part(form-control-label) {
+          text-align: start;
+        }
+        etools-currency {
+          text-align: end;
         }
         etools-data-table-header {
           --list-bg-color: var(--medium-theme-background-color, #eeeeee);
@@ -170,7 +179,7 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
             </div>
           </div>
           <div class="col-12 col-xl-6 layout-horizontal layout-wrap no-padding">
-            <div class="col-12 col-lg-6 input-container">
+            <div class="col-xl-4 col-6 input-container">
               <!-- Total of Amount tested -->
               <etools-currency
                 readonly
@@ -180,7 +189,17 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
               >
               </etools-currency>
             </div>
-            <div class="col-12 col-lg-6 input-container">
+            <div class="col-xl-4 col-6 input-container">
+              <!-- Total of Amount tested -->
+              <etools-currency
+                readonly
+                placeholder="—"
+                label="Financial Findings"
+                .value="${this.displayCurrencyAmount(this.totalFinancialFindings, 0, 0)}"
+              >
+              </etools-currency>
+            </div>
+            <div class="col-xl-4 col-6 input-container">
               <!-- Amount of Financial Findings -->
               <etools-currency
                 readonly
@@ -237,7 +256,7 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
                       class="col-data ${this.lowResolutionLayout ? '' : 'report'} col-2 align-center"
                       data-col-header-label="Report"
                       target="_blank"
-                      href="${this.linkFixUp(item.object_url)}"
+                      href="${this.getReportLink(item)}"
                     >
                       <etools-icon-button name="open-in-new"></etools-icon-button>
                       View Report
@@ -291,6 +310,9 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
 
   @property({type: Number})
   totalAmountTested = 0;
+
+  @property({type: Number})
+  totalFinancialFindings = 0;
 
   @property({type: Number})
   amountFinancialFindingsPercentage = 0;
@@ -476,11 +498,9 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
     this.allEngagements = engagements;
     if ((this.allEngagements || []).length) {
       this.totalAmountTested = this.allEngagements.map((x: any) => x.amount_tested).reduce((a, b) => a + b);
-      const totalFinancialFindings = this.allEngagements
-        .map((x: any) => x.outstanding_findings)
-        .reduce((a, b) => a + b);
+      this.totalFinancialFindings = this.allEngagements.map((x: any) => x.outstanding_findings).reduce((a, b) => a + b);
       this.amountFinancialFindingsPercentage = this.totalAmountTested
-        ? (totalFinancialFindings * 100) / this.totalAmountTested
+        ? (this.totalFinancialFindings * 100) / this.totalAmountTested
         : 0;
     } else {
       this.totalAmountTested = 0;
@@ -516,11 +536,9 @@ export class PartnerDetailsTab extends connect(store)(PaginationMixin(CommonMeth
     this.paginatedEngagements = engagements;
   }
 
-  linkFixUp(url: string) {
-    if (url && !url.includes('https://') && !url.includes('localhost')) {
-      return 'https://' + url;
-    }
-    return url;
+  getReportLink(item: AnyObject) {
+    const exportLinks = this._setExportLinks(item) || [];
+    return exportLinks.length > 0 ? exportLinks[0].url : '';
   }
 
   _engagementChanged(engagement) {

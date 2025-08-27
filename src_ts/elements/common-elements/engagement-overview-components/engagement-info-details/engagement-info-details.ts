@@ -72,6 +72,9 @@ export class EngagementInfoDetails extends connect(store)(
         etools-currency::part(form-control-label) {
           text-align: start;
         }
+        etools-currency.centered::part(form-control-label) {
+          text-align: center;
+        }
         etools-currency {
           text-align: end;
         }        
@@ -103,6 +106,17 @@ export class EngagementInfoDetails extends connect(store)(
         }
         .error-label {
           color: var(--error-color, #ea4022);        
+        }
+        .mbs-12 {
+          margin-block-start: -12px;
+        }
+        .form-control-label-centered {
+          line-height: 18px;
+          font-size: var(--etools-font-size-12, 12px);
+          color: var(--sl-input-label-color);
+          text-align: center;
+          width: 100%;
+          display: inline-block;
         }
         etools-data-table-header {
           --list-bg-color: var(--medium-theme-background-color, #eeeeee);
@@ -283,20 +297,33 @@ export class EngagementInfoDetails extends connect(store)(
                   </etools-currency>
                 </div>
                  <div
-                  class="col-12 col-lg-3 col-md-6 input-container"
+                  class="col-12 col-lg-3 col-md-6 mbs-12"
                   ?hidden="${!this.showFace}"
-                >                
-                  <!-- Total Value of Selected FACE Forms -->
+                >
+                <label class="form-control-label-centered">
+                  Subtotal Value of Selected FACE form(s)
+                </label>
+                <div class="input-container mbs-12">
+                  <!-- Total Value of Selected FACE Forms Local in USD -->
                   <etools-currency
-                    class="w100 validate-field
+                    class="w100 centered"
+                    .value="${this.total_value_local_usd || 0}"
+                    label="in USD"                    
+                    readonly
+                    ?hidden="${this.isSpecialAudit(this.data?.engagement_type)}"
+                  >
+                  </etools-currency>
+                  <!-- Total Value of Selected FACE Forms Local in local currency -->
+                  <etools-currency
+                    class="w100 centered validate-field
                                 ${this._isAdditionalFieldRequired(
                                   'total_value_local',
                                   this.optionsData,
                                   this.data.engagement_type
                                 )}"
                     field="total_value_local"
-                    .value="${this.data.total_value_local || 0}"
-                    label="Total Value of Selected FACE form(s) in Local Currency"
+                    .value="${this.getTotalLocalCurrency(this.data, this.total_value_local_usd)}"
+                    label="in Local Currency"
                     placeholder="${this.getPlaceholderText('total_value_local', this.optionsData)}"
                     ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
                     ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
@@ -306,10 +333,9 @@ export class EngagementInfoDetails extends connect(store)(
                     @value-changed="${({detail}: CustomEvent) =>
                       this.numberChanged(detail, 'total_value_local', this.data)}"
                   >
-                  </etools-currency>                 
+                  </etools-currency>
                 </div>
-
-
+              </div>
           </div>
 
           <div class="col-12 padding-v"
@@ -450,6 +476,7 @@ export class EngagementInfoDetails extends connect(store)(
     const idChanged = this._data?.id !== data?.id;
     // when engagement changed, use a clone of it
     this._data = idChanged ? cloneDeep(data) : data;
+    this.calculateTotalLocalUSD(data.face_forms, true);
     if (idChanged) {
       // needed when we load an engagement to set visible fields
       this.onEngagementTypeChanged(false);
@@ -517,6 +544,9 @@ export class EngagementInfoDetails extends connect(store)(
 
   @property({type: Number})
   prevPartnerId!: number;
+
+  @property({type: Number})
+  total_value_local_usd = 0;
 
   @property({type: Boolean})
   showFaceRequired = false;
@@ -618,8 +648,14 @@ export class EngagementInfoDetails extends connect(store)(
   }
 
   setFaceData(faceData: any[], defaultSelection = false) {
-    this.allFaceData = faceData;
+    this.allFaceData = faceData || [];
     this.allFaceData.forEach((x: any) => (x.selected = defaultSelection));
+    if (!defaultSelection) {
+      // if opening an existing record check previous saved faceForms
+      const selectedFaceForms = (this.data.face_forms || []).map((x: any) => x.id);
+      this.allFaceData.forEach((item) => (item.selected = selectedFaceForms.includes(item.id)));
+    }
+    this.calculateTotalLocalUSD(this.allFaceData);
     this.paginatedFaceData = [];
     this.paginator = JSON.parse(
       JSON.stringify({
@@ -628,6 +664,17 @@ export class EngagementInfoDetails extends connect(store)(
         page_size: 5
       })
     );
+  }
+
+  calculateTotalLocalUSD(allFaceData: any[], selected = false) {
+    const selectedUSDFace = (allFaceData || []).filter((x) => (selected || x.selected) && x.currency === 'USD');
+    if (selectedUSDFace?.length) {
+      this.total_value_local_usd = selectedUSDFace
+        .map((x: any) => x.amount_local)
+        .reduce((a, b) => Number(a) + Number(b));
+    } else {
+      this.total_value_local_usd = 0;
+    }
   }
 
   _sortOrderChanged(e: CustomEvent) {
@@ -650,9 +697,11 @@ export class EngagementInfoDetails extends connect(store)(
       .sort((a: any, b: any) => dayjs(b.status_date).unix() - dayjs(a.status_date).unix())
       .slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
 
-    const selectedFaceForms = (this.data.face_forms || []).map((x: any) => x.id);
-    (faceData || []).forEach((item) => (item.selected = selectedFaceForms.includes(item.id)));
     this.paginatedFaceData = faceData;
+  }
+
+  getTotalLocalCurrency(data: GenericObject, total_value_local_usd: number) {
+    return Number(data?.total_value_local || 0) - Number(total_value_local_usd || 0);
   }
 
   onFaceChange(allFaceData: any[]) {
@@ -660,10 +709,14 @@ export class EngagementInfoDetails extends connect(store)(
     this.data.face_forms = [...selectedFaceForms];
     let amount_usd = 0;
     let amount_local = 0;
+    let amount_local_usd = 0;
     let start_date: any = null;
     let end_date: any = null;
     for (const faceForm of selectedFaceForms) {
       amount_usd += Number(faceForm.amount_usd);
+      if (faceForm.currency === 'USD') {
+        amount_local_usd += Number(faceForm.amount_local);
+      }
       amount_local += Number(faceForm.amount_local);
       if (faceForm.start_date && (!start_date || dayjs(faceForm.start_date) < start_date)) {
         start_date = dayjs(faceForm.start_date);
@@ -672,6 +725,7 @@ export class EngagementInfoDetails extends connect(store)(
         end_date = dayjs(faceForm.end_date);
       }
     }
+    this.total_value_local_usd = amount_local_usd;
     this.data = {
       ...this.data,
       total_value: amount_usd,
@@ -859,6 +913,8 @@ export class EngagementInfoDetails extends connect(store)(
       // reset values
       this.data.total_value = 0;
       this.data.total_value_local = 0;
+      this.total_value_local_usd = 0;
+      this.data.total_value_local_other = 0;
       this.data.start_date = undefined;
       this.data.end_date = undefined;
     }
