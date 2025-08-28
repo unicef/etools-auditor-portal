@@ -107,17 +107,6 @@ export class EngagementInfoDetails extends connect(store)(
         .error-label {
           color: var(--error-color, #ea4022);        
         }
-        .mbs-12 {
-          margin-block-start: -12px;
-        }
-        .form-control-label-centered {
-          line-height: 18px;
-          font-size: var(--etools-font-size-12, 12px);
-          color: var(--sl-input-label-color);
-          text-align: center;
-          width: 100%;
-          display: inline-block;
-        }
         etools-data-table-header {
           --list-bg-color: var(--medium-theme-background-color, #eeeeee);
         }
@@ -297,33 +286,20 @@ export class EngagementInfoDetails extends connect(store)(
                   </etools-currency>
                 </div>
                  <div
-                  class="col-12 col-lg-3 col-md-6 mbs-12"
+                  class="col-12 col-lg-3 col-md-6 input-container"
                   ?hidden="${!this.showFace}"
                 >
-                <label class="form-control-label-centered">
-                  Subtotal Value of Selected FACE form(s)
-                </label>
-                <div class="input-container mbs-12">
-                  <!-- Total Value of Selected FACE Forms Local in USD -->
-                  <etools-currency
-                    class="w100 centered"
-                    .value="${this.total_value_local_usd || 0}"
-                    label="in USD"                    
-                    readonly
-                    ?hidden="${this.isSpecialAudit(this.data?.engagement_type)}"
-                  >
-                  </etools-currency>
                   <!-- Total Value of Selected FACE Forms Local in local currency -->
                   <etools-currency
-                    class="w100 centered validate-field
+                    class="w100 validate-field
                                 ${this._isAdditionalFieldRequired(
                                   'total_value_local',
                                   this.optionsData,
                                   this.data.engagement_type
                                 )}"
                     field="total_value_local"
-                    .value="${this.getTotalLocalCurrency(this.data, this.total_value_local_usd)}"
-                    label="in Local Currency"
+                    .value="${this.data?.total_value_local || 0}"
+                    label="Total Value of Selected FACE form(s) in Local Currency"
                     placeholder="${this.getPlaceholderText('total_value_local', this.optionsData)}"
                     ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
                     ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
@@ -347,29 +323,34 @@ export class EngagementInfoDetails extends connect(store)(
               Please select at least one Face item
             </label>
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <etools-data-table-column class="col-2" field="face_number" sortable>
+              <etools-data-table-column class="col-1" field="face_number" sortable>
                 FACE No.
               </etools-data-table-column>
               <etools-data-table-column class="col-1" field="face_accounted" sortable>
                 Face Accounted
               </etools-data-table-column>
+              <etools-data-table-column class="col-1" field="currency" sortable>
+                Currency
+              </etools-data-table-column>
+              <etools-data-table-column class="col-2 center-align" field="amount_local" sortable>
+                Amount
+              </etools-data-table-column>
               <etools-data-table-column class="col-2 center-align" field="amount_usd" sortable>
                 Amount (USD)
               </etools-data-table-column>
-              <etools-data-table-column class="col-2 center-align" field="amount_local" sortable>
-                Amount (local)
-              </etools-data-table-column>
+              <etools-data-table-column class="col-1 center-align" field="exchange_rate" sortable>
+                Exchange rate
+              </etools-data-table-column>              
               <etools-data-table-column class="col-1 center-align" field="date_of_liquidation" sortable>
                 Date of <br /> Liquidation
-              </etools-data-table-column
-              >
+              </etools-data-table-column>
               <etools-data-table-column class="col-1 center-align" field="start_date" sortable>
                 Start Date
               </etools-data-table-column>
               <etools-data-table-column class="col-1 center-align" field="end_date" sortable>
                 End Date
               </etools-data-table-column>
-              <etools-data-table-column class="col-2"> Modality </etools-data-table-column>
+              <etools-data-table-column class="col-1"> Modality </etools-data-table-column>
             </etools-data-table-header>
 
                            ${repeat(
@@ -378,8 +359,9 @@ export class EngagementInfoDetails extends connect(store)(
                              (item, _index) => html`
                                <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
                                  <div slot="row-data" class="layout-horizontal">
-                                   <div class="col-data col-2" data-col-header-label="FACE No.">
+                                   <div class="col-data col-1" data-col-header-label="FACE No.">
                                      <etools-checkbox
+                                       size="small"
                                        ?checked="${item.selected}"
                                        ?disabled="${this.isFaceFormReadonly}"
                                        id="${item.id}"
@@ -397,11 +379,15 @@ export class EngagementInfoDetails extends connect(store)(
                                    <div class="col-data col-1" data-col-header-label="Face Accounted">
                                      ${item.face_accounted}
                                    </div>
+                                   <div class="col-data col-1" data-col-header-label="Currency">${item.currency}</div>
+                                   <div class="col-data col-2 align-right" data-col-header-label="Amount">
+                                     ${this.displayCurrencyAmount(item.amount_local, 0, 2)}
+                                   </div>
                                    <div class="col-data col-2 align-right" data-col-header-label="Amount (USD)">
                                      ${this.displayCurrencyAmount(item.amount_usd, 0, 2)}
                                    </div>
-                                   <div class="col-data col-2 align-right" data-col-header-label="Amount (local)">
-                                     ${this.displayCurrencyAmount(item.amount_local, 0, 2)} (${item.currency})
+                                   <div class="col-data col-1 align-right" data-col-header-label="Exchange rate">
+                                     ${item.exchange_rate}
                                    </div>
                                    <div class="col-data col-1 align-center" data-col-header-label="Date of Liquidation">
                                      ${this.getDateDisplayValue(item.date_of_liquidation)}
@@ -412,7 +398,7 @@ export class EngagementInfoDetails extends connect(store)(
                                    <div class="col-data col-1 align-center" data-col-header-label="End Date">
                                      ${this.getDateDisplayValue(item.end_date)}
                                    </div>
-                                   <div class="col-data col-2" data-col-header-label="Modality">${item.modality}</div>
+                                   <div class="col-data col-1" data-col-header-label="Modality">${item.modality}</div>
                                  </div>
                                </etools-data-table-row>
                              `
@@ -476,7 +462,6 @@ export class EngagementInfoDetails extends connect(store)(
     const idChanged = this._data?.id !== data?.id;
     // when engagement changed, use a clone of it
     this._data = idChanged ? cloneDeep(data) : data;
-    this.calculateTotalLocalUSD(data.face_forms, true);
     if (idChanged) {
       // needed when we load an engagement to set visible fields
       this.onEngagementTypeChanged(false);
@@ -544,9 +529,6 @@ export class EngagementInfoDetails extends connect(store)(
 
   @property({type: Number})
   prevPartnerId!: number;
-
-  @property({type: Number})
-  total_value_local_usd = 0;
 
   @property({type: Boolean})
   showFaceRequired = false;
@@ -655,7 +637,6 @@ export class EngagementInfoDetails extends connect(store)(
       const selectedFaceForms = (this.data.face_forms || []).map((x: any) => x.id);
       this.allFaceData.forEach((item) => (item.selected = selectedFaceForms.includes(item.id)));
     }
-    this.calculateTotalLocalUSD(this.allFaceData);
     this.paginatedFaceData = [];
     this.paginator = JSON.parse(
       JSON.stringify({
@@ -664,17 +645,6 @@ export class EngagementInfoDetails extends connect(store)(
         page_size: 5
       })
     );
-  }
-
-  calculateTotalLocalUSD(allFaceData: any[], selected = false) {
-    const selectedUSDFace = (allFaceData || []).filter((x) => (selected || x.selected) && x.currency === 'USD');
-    if (selectedUSDFace?.length) {
-      this.total_value_local_usd = selectedUSDFace
-        .map((x: any) => x.amount_local)
-        .reduce((a, b) => Number(a) + Number(b));
-    } else {
-      this.total_value_local_usd = 0;
-    }
   }
 
   _sortOrderChanged(e: CustomEvent) {
@@ -700,32 +670,41 @@ export class EngagementInfoDetails extends connect(store)(
     this.paginatedFaceData = faceData;
   }
 
-  getTotalLocalCurrency(data: GenericObject, total_value_local_usd: number) {
-    return Number(data?.total_value_local || 0) - Number(total_value_local_usd || 0);
-  }
-
   onFaceChange(allFaceData: any[]) {
     const selectedFaceForms: any[] = (allFaceData || []).filter((x: any) => x.selected);
     this.data.face_forms = [...selectedFaceForms];
     let amount_usd = 0;
     let amount_local = 0;
-    let amount_local_usd = 0;
     let start_date: any = null;
     let end_date: any = null;
+    let end_date_local: any = null;
+    let exchange_rate = 1;
+
     for (const faceForm of selectedFaceForms) {
       amount_usd += Number(faceForm.amount_usd);
-      if (faceForm.currency === 'USD') {
-        amount_local_usd += Number(faceForm.amount_local);
-      }
-      amount_local += Number(faceForm.amount_local);
       if (faceForm.start_date && (!start_date || dayjs(faceForm.start_date) < start_date)) {
         start_date = dayjs(faceForm.start_date);
       }
       if (faceForm.end_date && (!end_date || dayjs(faceForm.end_date) > end_date)) {
         end_date = dayjs(faceForm.end_date);
       }
+      if (faceForm.currency !== 'USD') {
+        // get the exchange rate from the latest face item with  different currency than $
+        if (faceForm.end_date && (!end_date_local || dayjs(faceForm.end_date) > end_date_local)) {
+          end_date_local = dayjs(faceForm.end_date);
+          exchange_rate = Number(faceForm.exchange_rate);
+        }
+      }
     }
-    this.total_value_local_usd = amount_local_usd;
+    console.log(`exchange rate: ${exchange_rate}`);
+    for (const faceForm of selectedFaceForms) {
+      if (faceForm.currency === 'USD') {
+        amount_local += exchange_rate * Number(faceForm.amount_local);
+      } else {
+        amount_local += Number(faceForm.amount_local);
+      }
+    }
+
     this.data = {
       ...this.data,
       total_value: amount_usd,
@@ -913,8 +892,6 @@ export class EngagementInfoDetails extends connect(store)(
       // reset values
       this.data.total_value = 0;
       this.data.total_value_local = 0;
-      this.total_value_local_usd = 0;
-      this.data.total_value_local_other = 0;
       this.data.start_date = undefined;
       this.data.end_date = undefined;
     }
