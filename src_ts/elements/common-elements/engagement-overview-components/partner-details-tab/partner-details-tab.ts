@@ -87,6 +87,12 @@ export class PartnerDetailsTab extends connect(store)(
         *[slot='row-data'] .col-data.center-align {
           justify-content: center;
         }
+        .pl-0 {
+          padding-left: 0px !important;
+        }
+        etools-checkbox {
+          padding-block-start: 32px;
+        }
       </style>
 
       <get-partner-data .partnerId="${this.partnerId}" @partner-loaded="${this._partnerLoaded}"></get-partner-data>
@@ -100,7 +106,7 @@ export class PartnerDetailsTab extends connect(store)(
 
       <etools-content-panel class="content-section clearfix" panel-title="Selecting Partner" show-expand-btn>
         <div class="row">
-          <div class="col-12 col-lg-6 col-md-6 input-container">
+          <div class="col-12 col-lg-8 col-md-9 input-container">
             <!-- Partner -->
             ${this.isReadOnly('partner', this.optionsData)
               ? html`<etools-input
@@ -108,32 +114,46 @@ export class PartnerDetailsTab extends connect(store)(
                   .value="${this.partner?.name}"
                   readonly
                 ></etools-input>`
-              : html`<etools-dropdown
-                  id="partner"
-                  class="${this._setRequired('partner', this.optionsData)} ${this._setReadonlyClass(
-                    this.requestInProcess,
-                    this.optionsData
-                  )}"
-                  .selected="${this.engagement.partner?.id}"
-                  label="${this.getLabel('partner', this.optionsData)}"
-                  placeholder="${this.getPlaceholderText('partner', this.optionsData, 'dropdown')}"
-                  .options="${this.partners}"
-                  option-label="name"
-                  option-value="id"
-                  ?required="${this._setRequired('partner', this.optionsData)}"
-                  ?invalid="${this.errors.partner}"
-                  .errorMessage="${this.errors.partner}"
-                  @focus="${this._resetFieldError}"
-                  trigger-value-change-event
-                  @etools-selected-item-changed="${this._requestPartner}"
-                  dynamic-align
-                >
-                </etools-dropdown>`}
+              : html`<div class="col-8 pl-0 input-container">
+                  <etools-dropdown
+                    id="partner"
+                    class="${this._setRequired('partner', this.optionsData)} ${this._setReadonlyClass(
+                      this.requestInProcess,
+                      this.optionsData
+                    )}"
+                    .selected="${this.engagement.partner?.id}"
+                    label="${this.getLabel('partner', this.optionsData)}"
+                    placeholder="${this.getPlaceholderText('partner', this.optionsData, 'dropdown')}"
+                    .options="${this.getPartnersOption(this.showBlockedPartners)}"
+                    option-label="name"
+                    option-value="id"
+                    ?required="${this._setRequired('partner', this.optionsData)}"
+                    ?invalid="${this.errors.partner}"
+                    .errorMessage="${this.errors.partner}"
+                    @focus="${this._resetFieldError}"
+                    trigger-value-change-event
+                    @etools-selected-item-changed="${this._requestPartner}"
+                    dynamic-align
+                  >
+                  </etools-dropdown>
+                  </div>
+                    <div class="col-4 input-container">
+                      <etools-checkbox
+                        ?checked="${this.showBlockedPartners}"
+                        @sl-change="${(e: any) => {
+                          this.showBlockedPartners = e.target.checked;
+                        }}"
+                      >
+                        Show Blocked Partners
+                      </etools-checkbox>
+                    </div>
+                  </div>
+                </div>`}
 
             <etools-loading .active="${this.requestInProcess}" no-overlay loading-text="" class="partner-loading">
             </etools-loading>
           </div>
-          <div class="col-12 col-lg-4 col-md-6 input-container">
+          <div class="col-12 col-lg-4 col-md-3 input-container">
             <!-- Partner Vendor Number -->
             <etools-input
               class="${this._setReadonlyFieldClass(this.partner)}"
@@ -288,6 +308,9 @@ export class PartnerDetailsTab extends connect(store)(
   partners!: [];
 
   @property({type: Array})
+  allPartners!: [];
+
+  @property({type: Array})
   specialPartnerTypes = ['Bilateral / Multilateral', 'Government'];
 
   @property({type: Boolean})
@@ -295,6 +318,9 @@ export class PartnerDetailsTab extends connect(store)(
 
   @property({type: Boolean})
   lowResolutionLayout = false;
+
+  @property({type: Boolean})
+  showBlockedPartners = false;
 
   @property({type: Object})
   errors: GenericObject = {};
@@ -370,8 +396,13 @@ export class PartnerDetailsTab extends connect(store)(
   }
 
   stateChanged(state: RootState) {
-    if (state.commonData.loadedTimestamp && !isJsonStrMatch(this.partners, state.commonData.partners)) {
-      this.partners = [...state.commonData.partners];
+    if (state.commonData.loadedTimestamp) {
+      if (!isJsonStrMatch(this.partners, state.commonData.partners)) {
+        this.partners = [...state.commonData.partners];
+      }
+      if (!isJsonStrMatch(this.allPartners, state.commonData.partners)) {
+        this.allPartners = [...state.commonData.allPartners];
+      }
     }
   }
 
@@ -381,6 +412,10 @@ export class PartnerDetailsTab extends connect(store)(
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject, this.errorObject);
     }
+  }
+
+  getPartnersOption(showBlocked: boolean) {
+    return showBlocked ? this.allPartners : this.partners;
   }
 
   _initListeners() {

@@ -142,7 +142,7 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
             id="auditorInput"
             class="w100 ${this._setReadonlyFieldClass(this.data.agreement)}"
             .value="${this.data.agreement?.auditor_firm?.name}"
-            label="${this.getLabel('agreement.auditor_firm.name', this.optionsData)}"
+            label="Auditing Company Name"
             placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
             readonly
           >
