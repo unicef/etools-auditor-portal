@@ -82,7 +82,7 @@ export class EngagementStaffMembersTab extends connect(store)(
         .search-input-container {
           float: right;
           height: 48px;
-          color: #fff;
+          color: var(--dark-primary-text-color);
           overflow: hidden;
           width: 140px;          
         }
@@ -95,18 +95,18 @@ export class EngagementStaffMembersTab extends connect(store)(
         }
         .search-input-container .search-input,
         .search-input-container .search-input:focus {
-          --sl-input-color: var(--light-secondary-text-color);
-          --primary-color: var(--light-primary-text-color);
+          --sl-input-color: var(--dark-primary-text-color);
+          --primary-color: var(--dark-primary-text-color);
         }
         .search-input-container .search-input::part(form-control-input)::after {
-          --secondary-text-color: var(--light-primary-text-color);
+          --secondary-text-color: var(--dark-primary-text-color);
         }
         .search-input-container .search-input::part(input):focus {
-          --primary-color: var(--light-primary-text-color);
-           color: var(--light-primary-text-color);
+          --primary-color: var(--dark-primary-text-color);
+           color: var(--dark-primary-text-color);
         }
         .search-input-container .search-input::part(input)::placeholder {
-          color: var(--light-primary-text-color);
+          color: var(--dark-primary-text-color);
         }
         .search-input-container .search-input[focused] {
           width: 100%;
@@ -116,7 +116,7 @@ export class EngagementStaffMembersTab extends connect(store)(
         }
         .search-input-container .search-input etools-icon {
           top: -1px;
-          color: #fff;
+          color: var(--dark-primary-text-color);
         }
         .panel-content {
           position: relative;
@@ -131,14 +131,18 @@ export class EngagementStaffMembersTab extends connect(store)(
           margin-bottom: 0;
           padding: 4px 0;
         }
+        .blue-header {
+          background-color: var(--primary-color);
+          padding-block: 8px;      
+        }
         .editable-row etools-icon-button {
           --iron-icon-fill-color: var(--gray-mid);
         }
         etools-loading {
           --etools-loading-overlay-transparency: 0.4;
         }
-        .white {
-          color: #ffffff;
+        .dark {
+          color: var(--dark-primary-text-color);
         }
         #toggleActive::part(control){
           background-color: var(--sl-color-neutral-400) !important;
@@ -152,14 +156,14 @@ export class EngagementStaffMembersTab extends connect(store)(
           flex-wrap: wrap;
           justify-content: space-between;
           width: 100%;
-          background-color: var(--primary-color);
-          color: var(--header-color, #ffffff);
+          background-color: var(--medium-theme-background-color, #eeeeee);
+          color: var(--dark-primary-text-color);
           align-items: center;
         }
         .table-staff-title {
           font-weight: 500;
           font-size: var(--etools-font-size-18, 18px);
-          color: var(--header-color, #ffffff);
+          color: var(--dark-primary-text-color);
           padding-inline-start: 15px;
         }
         .table-staff-filter {
@@ -172,13 +176,13 @@ export class EngagementStaffMembersTab extends connect(store)(
           padding-inline-end: 15px;
         }
         sl-switch {
-          --sl-input-label-color: #ffffff;
+          --sl-input-label-color: #00000;
         }
         .center-align {
           justify-content: center !important;
         }
         .section-title {
-          color: var(--primary-color);
+          color: var(--light-primary-text-color);
           font-weight: 500;
           font-size: var(--etools-font-size-18, 18px);
           padding-inline-start: 12px !important;
@@ -274,7 +278,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                       </etools-input>
                     </div>
                     <sl-switch
-                      class="white"
+                      class="dark"
                       id="toggleActive"
                       ?checked="${this.showInactive}"
                       @sl-change="${this.onShowInactiveChanged}"
@@ -283,7 +287,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                     </sl-switch>
                     <div class="add-button-container">
                       <a
-                        class="white"
+                        class="dark"
                         ?hidden="${!this.engagement.agreement?.auditor_firm?.organization_id}"
                         href="${this._getAMPLink(this.user, this.engagement.agreement?.auditor_firm?.organization_id)}"
                         target="_blank"
@@ -393,7 +397,9 @@ export class EngagementStaffMembersTab extends connect(store)(
         <div class="panel-content group">
            <div class="row">
             <div class="col-12">
-                <label class="section-title">Partner Contact</label>
+                <div class="w100 blue-header">
+                  <label class="section-title">Partner Contact</label>
+                </div>
             </div>
             <div class="col-12 col-md-12 col-lg-6 input-container">
             <!-- Partner Address -->
@@ -494,7 +500,9 @@ export class EngagementStaffMembersTab extends connect(store)(
         <div class="panel-content group">
            <div class="row padding-v">
             <div class="col-12 mt-8">
-                <label class="section-title">Unicef Contact</label>
+                <div class="w100 blue-header">
+                  <label class="section-title">Unicef Contact</label>
+                </div>
             </div>
                ${
                  this.showSharedAuditField(this.engagement.engagement_type)
