@@ -217,14 +217,21 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
           </div>
           <div class="col-12 col-lg-3 padding-v row">
             <div class="col-12 input-container">
-              <etools-input
-                class="w100"
-                .value="${this.data.exchange_rate}"
-                label="Exchange rate"
-                placeholder="${this.getNumericPlaceholderText('exchange_rate', this.optionsData)}"
-                readonly
-              >
-              </etools-input>
+              <etools-info-tooltip>
+                <etools-input
+                  slot="field"
+                  class="w100"
+                  .value="${this.data.exchange_rate}"
+                  label="Exchange rate"
+                  placeholder="${this.getNumericPlaceholderText('exchange_rate', this.optionsData)}"
+                  readonly
+                >
+                </etools-input>
+                <span slot="message">
+                  If there is multi-currency: the rate of the recently reported expense excluding the USD.<br />
+                  If it is only USD: then the rate will be 1.
+                </span>
+              </etools-info-tooltip>
             </div>
           </div>
         </div>
