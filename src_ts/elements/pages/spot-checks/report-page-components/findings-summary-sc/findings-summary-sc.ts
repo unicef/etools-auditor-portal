@@ -66,6 +66,9 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
         .tbl-currency {
           font-weight: 700;
         }
+        .align-start {
+          align-items: start;
+        }
         .h-50 {
           min-height: 50px;
         }
@@ -216,7 +219,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
             </etools-data-table-row>
           </div>
           <div class="col-12 col-lg-3 padding-v row">
-            <div class="col-12 input-container">
+            <div class="col-12 input-container align-start">
               <etools-info-tooltip>
                 <etools-input
                   slot="field"
