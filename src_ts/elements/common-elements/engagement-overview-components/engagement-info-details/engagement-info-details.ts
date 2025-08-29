@@ -105,7 +105,12 @@ export class EngagementInfoDetails extends connect(store)(
           display: flex;
         }
         .error-label {
-          color: var(--error-color, #ea4022);        
+          color: var(--error-color, #ea4022);
+          display: block;
+        }
+        .info-label {
+          color: var(--sl-input-label-color);
+          display: block;
         }
         etools-data-table-header {
           --list-bg-color: var(--medium-theme-background-color, #eeeeee);
@@ -165,98 +170,104 @@ export class EngagementInfoDetails extends connect(store)(
             </etools-info-tooltip>
           </div>
           ${
-            this.showJoinAudit
-              ? html`
-                  <div class="col-12 col-md-6 col-lg-3 ${this.getYearOfAuditStyle(this.data.engagement_type)}">
-                    <!-- Year of Audit -->
-                    <etools-dropdown
-                      id="yearOfAudit"
-                      class="w100 ${this._setRequired('year_of_audit', this.optionsData)} validate-field"
-                      .selected="${this.data.year_of_audit}"
-                      label="${this.getLabel('year_of_audit', this.optionsData)}"
-                      placeholder="${this.getPlaceholderText('year_of_audit', this.optionsData, 'dropdown')}"
-                      .options="${this.yearOfAuditOptions}"
-                      option-label="label"
-                      option-value="value"
-                      ?required="${this.isAuditOrSpecialAudit(this.data.engagement_type)}"
-                      ?readonly="${this.itIsReadOnly('year_of_audit', this.optionsData)}"
-                      ?invalid="${this._checkInvalid(this.errors.year_of_audit)}"
-                      .errorMessage="${this.errors.year_of_audit}"
-                      @focus="${this._resetFieldError}"
-                      trigger-value-change-event
-                      @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                        this.selectedItemChanged(detail, 'year_of_audit', 'value', this.data)}"
-                      hide-search
+            this.showFaceForm(this.data.engagement_type, this.data?.partner?.id)
+              ? html`<div class="col-12 col-lg-3 col-md-6 input-container">
+                    <!-- Period Start Date -->
+                    <datepicker-lite
+                      id="periodStartDateInput"
+                      class="w100 ${this._isAdditionalFieldRequired(
+                        'start_date',
+                        this.optionsData,
+                        this.data.engagement_type
+                      )} validate-field"
+                      .value="${this.data.start_date}"
+                      label="${this.getStartEndDateLabel(this.data.engagement_type, 'start_date', this.optionsData)}"
+                      placeholder="${this.getPlaceholderText('start_date', this.optionsData, 'datepicker')}"
+                      selected-date-display-format="D MMM YYYY"
+                      ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
+                      ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                      ?invalid="${this._checkInvalid(this.errors.start_date)}"
+                      .errorMessage="${this.errors.start_date}"
+                      @focus="${(event: any) => this._resetFieldError(event)}"
+                      fire-date-has-changed
+                      @date-has-changed="${({detail}: CustomEvent) =>
+                        this.dateHasChanged(detail, 'start_date', this.data)}"
                     >
-                    </etools-dropdown>
+                    </datepicker-lite>
                   </div>
-                  <!-- Joint Audit -->
-                  <div class="col-12 col-md-6 col-lg-3 join-audit">
-                    <etools-checkbox
-                      ?checked="${this.data.joint_audit}"
-                      ?disabled="${this.itIsReadOnly('joint_audit', this.optionsData)}"
-                      @sl-change="${(e: any) => {
-                        this.data.joint_audit = e.target.checked;
-                      }}"
+
+                  <div class="col-12 col-lg-3 col-md-6 input-container">
+                    <!-- Period End Date -->
+                    <datepicker-lite
+                      id="periodEndDateInput"
+                      class="w100 ${this._isAdditionalFieldRequired(
+                        'end_date',
+                        this.optionsData,
+                        this.data.engagement_type
+                      )} validate-field"
+                      .value="${this.data.end_date}"
+                      label="${this.getStartEndDateLabel(this.data.engagement_type, 'end_date', this.optionsData)}"
+                      placeholder="${this.getPlaceholderText('end_date', this.optionsData, 'datepicker')}"
+                      data-selector="periodEndDate"
+                      ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
+                      ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                      ?invalid="${this._checkInvalid(this.errors.end_date)}"
+                      .errorMessage="${this.errors.end_date}"
+                      @focus="${(event: any) => this._resetFieldError(event)}"
+                      selected-date-display-format="D MMM YYYY"
+                      fire-date-has-changed
+                      @date-has-changed="${({detail}: CustomEvent) =>
+                        this.dateHasChanged(detail, 'end_date', this.data)}"
                     >
-                      ${this.getLabel('joint_audit', this.optionsData)}
-                    </etools-checkbox>
-                  </div>
-                `
+                    </datepicker-lite>
+                  </div>`
               : ``
           }
         </div>
 
-          <div class="row" 
+          <div class="row"
             ?hidden="${!this.showFaceForm(this.data.engagement_type, this.data?.partner?.id)}">
-            <div class="col-12 col-lg-3 col-md-6 input-container">
-              <!-- Period Start Date -->
-                <datepicker-lite
-                  id="periodStartDateInput"
-                  class="w100 ${this._isAdditionalFieldRequired(
-                    'start_date',
-                    this.optionsData,
-                    this.data.engagement_type
-                  )} validate-field"
-                  .value="${this.data.start_date}"
-                  label="${this.getStartEndDateLabel(this.data.engagement_type, 'start_date', this.optionsData)}"
-                  placeholder="${this.getPlaceholderText('start_date', this.optionsData, 'datepicker')}"
-                  selected-date-display-format="D MMM YYYY"
-                  ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
-                  ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
-                  ?invalid="${this._checkInvalid(this.errors.start_date)}"
-                  .errorMessage="${this.errors.start_date}"
-                  @focus="${(event: any) => this._resetFieldError(event)}"
-                  fire-date-has-changed
-                  @date-has-changed="${({detail}: CustomEvent) => this.dateHasChanged(detail, 'start_date', this.data)}"
-                >
-                </datepicker-lite>
-              </div>
-            
-                <div class="col-12 col-lg-3 col-md-6 input-container">
-                  <!-- Period End Date -->
-                  <datepicker-lite
-                    id="periodEndDateInput"
-                    class="w100 ${this._isAdditionalFieldRequired(
-                      'end_date',
-                      this.optionsData,
-                      this.data.engagement_type
-                    )} validate-field"
-                    .value="${this.data.end_date}"
-                    label="${this.getStartEndDateLabel(this.data.engagement_type, 'end_date', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('end_date', this.optionsData, 'datepicker')}"
-                    data-selector="periodEndDate"
-                    ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
-                    ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
-                    ?invalid="${this._checkInvalid(this.errors.end_date)}"
-                    .errorMessage="${this.errors.end_date}"
-                    @focus="${(event: any) => this._resetFieldError(event)}"
-                    selected-date-display-format="D MMM YYYY"
-                    fire-date-has-changed
-                    @date-has-changed="${({detail}: CustomEvent) => this.dateHasChanged(detail, 'end_date', this.data)}"
-                  >
-                  </datepicker-lite>
-                </div>
+               ${
+                 this.showJoinAudit
+                   ? html`
+                       <div class="col-12 col-md-6 col-lg-3 ${this.getYearOfAuditStyle(this.data.engagement_type)}">
+                         <!-- Year of Audit -->
+                         <etools-dropdown
+                           id="yearOfAudit"
+                           class="w100 ${this._setRequired('year_of_audit', this.optionsData)} validate-field"
+                           .selected="${this.data.year_of_audit}"
+                           label="${this.getLabel('year_of_audit', this.optionsData)}"
+                           placeholder="${this.getPlaceholderText('year_of_audit', this.optionsData, 'dropdown')}"
+                           .options="${this.yearOfAuditOptions}"
+                           option-label="label"
+                           option-value="value"
+                           ?required="${this.isAuditOrSpecialAudit(this.data.engagement_type)}"
+                           ?readonly="${this.itIsReadOnly('year_of_audit', this.optionsData)}"
+                           ?invalid="${this._checkInvalid(this.errors.year_of_audit)}"
+                           .errorMessage="${this.errors.year_of_audit}"
+                           @focus="${this._resetFieldError}"
+                           trigger-value-change-event
+                           @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                             this.selectedItemChanged(detail, 'year_of_audit', 'value', this.data)}"
+                           hide-search
+                         >
+                         </etools-dropdown>
+                       </div>
+                       <!-- Joint Audit -->
+                       <div class="col-12 col-md-6 col-lg-3 join-audit">
+                         <etools-checkbox
+                           ?checked="${this.data.joint_audit}"
+                           ?disabled="${this.itIsReadOnly('joint_audit', this.optionsData)}"
+                           @sl-change="${(e: any) => {
+                             this.data.joint_audit = e.target.checked;
+                           }}"
+                         >
+                           ${this.getLabel('joint_audit', this.optionsData)}
+                         </etools-checkbox>
+                       </div>
+                     `
+                   : html`<div class="col-12 col-lg-6"></div>`
+               }            
                 <div
                   class="col-12 col-lg-3 col-md-6 input-container"
                   ?hidden="${!this.showFace}"
@@ -322,12 +333,15 @@ export class EngagementInfoDetails extends connect(store)(
             <label class="error-label" id="lblFaceRequired" ?hidden="${!this.showFaceRequired}">
               Please select at least one Face item
             </label>
+            <label class="info-label" id="lblFaceRequired">
+              No. of selected Face(s): ${this.noOfSelectedFaces}
+            </label>
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <etools-data-table-column class="col-1" field="face_number" sortable>
-                FACE No.
+                FACE No. (Liquidation)
               </etools-data-table-column>
               <etools-data-table-column class="col-1" field="face_accounted" sortable>
-                Face Accounted
+                FACE No. (Request)
               </etools-data-table-column>
               <etools-data-table-column class="col-1" field="currency" sortable>
                 Currency
@@ -359,7 +373,7 @@ export class EngagementInfoDetails extends connect(store)(
                              (item, _index) => html`
                                <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
                                  <div slot="row-data" class="layout-horizontal">
-                                   <div class="col-data col-1" data-col-header-label="FACE No.">
+                                   <div class="col-data col-1" data-col-header-label="FACE No. (Liquidation)">
                                      <etools-checkbox
                                        size="small"
                                        ?checked="${item.selected}"
@@ -376,7 +390,7 @@ export class EngagementInfoDetails extends connect(store)(
                                        ${item.face_number}
                                      </etools-checkbox>
                                    </div>
-                                   <div class="col-data col-1" data-col-header-label="Face Accounted">
+                                   <div class="col-data col-1" data-col-header-label="FACE No. (Request)">
                                      ${item.face_accounted}
                                    </div>
                                    <div class="col-data col-1" data-col-header-label="Currency">${item.currency}</div>
@@ -509,6 +523,9 @@ export class EngagementInfoDetails extends connect(store)(
   @property({type: Object})
   reduxCommonData!: CommonDataState;
 
+  @property({type: Number})
+  noOfSelectedFaces = 0;
+
   @property({type: Object})
   errorObject!: GenericObject;
 
@@ -637,6 +654,7 @@ export class EngagementInfoDetails extends connect(store)(
       const selectedFaceForms = (this.data.face_forms || []).map((x: any) => x.id);
       this.allFaceData.forEach((item) => (item.selected = selectedFaceForms.includes(item.id)));
     }
+    this.noOfSelectedFaces = this.allFaceData.filter((x) => x.selected).length;
     this.paginatedFaceData = [];
     this.paginator = JSON.parse(
       JSON.stringify({
@@ -672,6 +690,7 @@ export class EngagementInfoDetails extends connect(store)(
 
   onFaceChange(allFaceData: any[]) {
     const selectedFaceForms: any[] = (allFaceData || []).filter((x: any) => x.selected);
+    this.noOfSelectedFaces = selectedFaceForms.length;
     this.data.face_forms = [...selectedFaceForms];
     let amount_usd = 0;
     let amount_local = 0;
