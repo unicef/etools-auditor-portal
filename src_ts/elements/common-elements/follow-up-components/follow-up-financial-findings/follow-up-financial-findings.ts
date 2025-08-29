@@ -151,6 +151,58 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               </div>
             </etools-data-table-row>
 
+            <etools-data-table-row no-collapse ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">
+                  ${this.getLabelWithoutCurrency('total_amount_of_ineligible_expenditure', this.optionsData)}
+                </div>
+                <div class="col-data col-4 align-right">
+                  <etools-currency
+                    class="w100"
+                    .value="${this.engagement.total_amount_of_ineligible_expenditure_local}"
+                    readonly
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+                <div class="col-data col-4 align-right">
+                  <etools-currency
+                    class="w100"
+                    .value="${this.engagement.total_amount_of_ineligible_expenditure}"
+                    readonly
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+              </div>
+            </etools-data-table-row>
+
+            <etools-data-table-row no-collapse ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">
+                  ${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)}
+                </div>
+                <div class="col-data col-4 align-right">
+                  <etools-currency
+                    class="w100"
+                    .value="${this.engagement.audited_expenditure_local}"
+                    readonly
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+                <div class="col-data col-4 align-right">
+                  <etools-currency
+                    class="w100"
+                    .value="${this.engagement.audited_expenditure}"
+                    readonly
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+              </div>
+            </etools-data-table-row>
+
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
                 <div class="col-data col-4">${this.getLabelWithoutCurrency('amount_refunded', this.optionsData)}</div>
@@ -433,68 +485,8 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           </div>
           <div class="col-12 col-lg-3 padding-v row"></div>
         </div>
-        <div class="row">
-          <!--Audit engagement fields-->
-          ${this.showFields(this.engagement.engagement_type, 'audit')
-            ? html`<div class="col-12 col-lg-3 col-md-6 input-container">
-                  <!-- Audit Opinion -->
-                  <etools-dropdown
-                    id="test"
-                    .selected="${this.engagement.audit_opinion}"
-                    label="${this.getLabel('audit_opinion', this.optionsData)}"
-                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                    .options="${this.auditOpinionChoices}"
-                    option-label="display_name"
-                    option-value="value"
-                    readonly
-                  >
-                  </etools-dropdown>
-                </div>
-                <div class="col-12 input-container col-lg-3 col-md-6">
-                  <etools-currency
-                    .value="${this.engagement.audited_expenditure_local}"
-                    label="${this.getLabel('audited_expenditure_local', this.optionsData)}"
-                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                    readonly
-                  >
-                  </etools-currency>
-                </div>
-                <div class="col-12 input-container col-lg-3 col-md-6">
-                  <etools-currency
-                    .value="${this.engagement.audited_expenditure}"
-                    label="${this.getLabel('audited_expenditure', this.optionsData)}"
-                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                    readonly
-                  >
-                  </etools-currency>
-                </div>`
-            : ``}
-
-          <!--Spot-Check engagement fields-->
-          ${this.showFields(this.engagement.engagement_type, 'sc')
-            ? html`<div class="col-12 input-container col-lg-3 col-md-6">
-                  <!-- Total amount of ineligible expenditure-->
-                  <etools-currency
-                    .value="${this.engagement.total_amount_of_ineligible_expenditure_local}"
-                    label="${this.getLabel('total_amount_of_ineligible_expenditure_local', this.optionsData)}"
-                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                    readonly
-                  >
-                  </etools-currency>
-                </div>
-                <div class="col-12 input-container col-lg-3 col-md-6">
-                  <!-- Total amount of ineligible expenditure-->
-                  <etools-currency
-                    .value="${this.engagement.total_amount_of_ineligible_expenditure}"
-                    label="${this.getLabel('total_amount_of_ineligible_expenditure', this.optionsData)}"
-                    placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
-                    readonly
-                  >
-                  </etools-currency>
-                </div>`
-            : ``}
-
-          <div class="col-12 input-container">
+        <div class="row align-items-center">
+          <div class="col-9">
             <!-- explanation_for_additional_information -->
             <etools-textarea
               class="w100 validate-input ${this._setRequired(
@@ -516,6 +508,22 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             >
             </etools-textarea>
           </div>
+          ${this.showFields(this.engagement.engagement_type, 'audit')
+            ? html`<div class="col-12 col-lg-3 col-md-6">
+                <!-- Audit Opinion -->
+                <etools-dropdown
+                  id="test"
+                  .selected="${this.engagement.audit_opinion}"
+                  label="${this.getLabel('audit_opinion', this.optionsData)}"
+                  placeholder="${this.getReadonlyPlaceholder(this.engagement)}"
+                  .options="${this.auditOpinionChoices}"
+                  option-label="display_name"
+                  option-value="value"
+                  readonly
+                >
+                </etools-dropdown>
+              </div> `
+            : ``}
         </div>
       </etools-content-panel>
     `;

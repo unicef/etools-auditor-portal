@@ -266,7 +266,9 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                     </etools-dropdown>
                   </div>
                   <div class="col-12 col-lg-6 input-container">
-                   <etools-input
+                  <etools-info-tooltip>
+                    <etools-input
+                      slot="field"
                       class="w100"
                       .value="${this.data.exchange_rate}"
                       label="Exchange rate"
@@ -274,6 +276,11 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                       readonly
                     >
                     </etools-input>
+                    <span slot="message">
+                        If there is multi-currency: the rate of the recently reported expense excluding the USD.<br />
+                        If it is only USD: then the rate will be 1.
+                    </span>
+                  </etools-info-tooltip>
                   </div>
                  <div class="col-12 col-lg-6 input-container">
                     <!-- Auditor -->
