@@ -157,7 +157,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                     .value="${this.data?.total_amount_tested}"
                     placeholder="${this.getPlaceholderText('total_amount_tested', this.optionsData)}"
                     ?required="${this._setRequired('total_amount_tested', this.optionsData)}"
-                    readonly
+                    ?readonly="${this.isReadOnly('total_amount_tested', this.optionsData)}"
                     ?invalid="${this._checkInvalid(this.errors?.total_amount_tested)}"
                     .errorMessage="${this.errors?.total_amount_tested}"
                     @value-changed="${({detail}: CustomEvent) =>
@@ -201,7 +201,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                     class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
                     .value="${this.data?.total_amount_of_ineligible_expenditure}"
                     placeholder="${this.getPlaceholderText('total_amount_of_ineligible_expenditure', this.optionsData)}"
-                    readonly
+                    ?readonly="${this.isReadOnly('total_amount_of_ineligible_expenditure', this.optionsData)}"
                     ?invalid="${this._checkInvalid(this.errors?.total_amount_of_ineligible_expenditure)}"
                     .errorMessage="${this.errors?.total_amount_of_ineligible_expenditure}"
                     @value-changed="${({detail}: CustomEvent) =>
