@@ -30,7 +30,7 @@ import transform from 'lodash-es/transform';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {getOptionsChoices} from '../../../../mixins/permission-controller';
-import {multiplyWithExchangeRate} from '../../../../utils/utils';
+import {multiplyWithExchangeRate, toggleCssClass} from '../../../../utils/utils';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
@@ -111,13 +111,18 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
           <div class="col-12 col-lg-6 padding-v">
               <etools-data-table-header no-title no-collapse>
                      <etools-data-table-column class="col-4"></etools-data-table-column>
-                     <etools-data-table-column class="col-4 align-center">Local currency</etools-data-table-column>
-                     <etools-data-table-column class="col-4 align-center">USD</etools-data-table-column>
+                     <etools-data-table-column class="col-4 align-center" ?hidden="${this.data?.prior_face_forms}">
+                        Local currency
+                      </etools-data-table-column>
+                      <etools-data-table-column class="align-center
+                        ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}">
+                        USD
+                      </etools-data-table-column>
               </etools-data-table-header>
               <etools-data-table-row no-collapse>
                   <div slot="row-data" class="layout-horizontal h-50">
                     <div class="col-data col-4">Value of Selected FACE</div>
-                    <div class="col-data col-4">
+                    <div class="col-data col-4" ?hidden="${this.data.prior_face_forms}">
                          <etools-currency
                            class="w100"
                            .value="${this.data?.total_value_local}"
@@ -127,7 +132,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                          >
                          </etools-currency>
                     </div>
-                    <div class="col-data col-4">
+                    <div class="col-data col-data ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}">
                          <etools-currency
                            class="w100"
                            .value="${this.data?.total_value}"
@@ -142,7 +147,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               <etools-data-table-row no-collapse>
                   <div slot="row-data" class="layout-horizontal h-50">
                       <div class="col-data col-4">Audited Expenditure</div>
-                      <div class="col-data col-4">
+                      <div class="col-data col-4" ?hidden="${this.data?.prior_face_forms}">
                          <etools-currency
                            id="ecAuditedExpenditureLocal"
                            class="w100 ${this._setRequired('audited_expenditure_local', this.optionsData)}"
@@ -170,7 +175,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                          >
                          </etools-currency>
                         </div>
-                        <div class="col-data col-4">
+                        <div class="col-data ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}">
                          <etools-currency
                            class="w100 ${this._setRequired('audited_expenditure', this.optionsData)}"
                            .value="${this.data?.audited_expenditure}"
@@ -192,7 +197,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               <etools-data-table-row no-collapse>
                   <div slot="row-data" class="layout-horizontal h-50">
                     <div class="col-data col-4">Amount of Financial Findings</div>
-                    <div class="col-data col-4 col">
+                    <div class="col-data col-4 col" ?hidden="${this.data.prior_face_forms}">
                          <etools-currency
                            class="w100 ${this._setRequired('financial_findings_local', this.optionsData)}"
                            .value="${this.data?.financial_findings_local}"
@@ -212,7 +217,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                          >
                          </etools-currency>
                     </div>
-                    <div class="col-data col-4 col">
+                    <div class="col-data ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}">
                          <etools-currency
                            class="w100 ${this._setRequired('financial_findings', this.optionsData)}"
                            .value="${this.data?.financial_findings}"
@@ -233,8 +238,9 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
               <etools-data-table-row no-collapse>
                   <div slot="row-data" class="layout-horizontal h-50">
                     <div class="col-data col-4">% of audited Expenditure</div>
-                    <div class="col-data col-4">&nbsp;</div>
-                    <div class="col-data col-4 align-right pr-20">
+                    <div class="col-data col-4" ?hidden="${this.data.prior_face_forms}">&nbsp;</div>
+                    <div class="col-data align-right pr-20
+                       ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}">
                       <label>${this.data?.percent_of_audited_expenditure}</label>
                     </div>
                   </div>
@@ -339,6 +345,8 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
   itemModel: GenericObject = {
     audited_expenditure_local: undefined,
     audit_opinion: undefined,
+    financial_findings_local: undefined,
+    financial_findings: undefined,
     opinion: {}
   };
 

@@ -63,6 +63,7 @@ export class AuditReportPageMain extends LitElement {
         .errorObject="${this.errorObject}"
         .dataItems="${this.engagement?.financial_finding_set}"
         .exchangeRate="${this.engagement?.exchange_rate}"
+        .priorFaceForms="${this.engagement?.prior_face_forms}"
         .optionsData="${this.optionsData}"
       >
       </financial-findings>

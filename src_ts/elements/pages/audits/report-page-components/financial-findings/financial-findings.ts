@@ -97,11 +97,9 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
             'financial_finding_set.title',
             'Title (Category)'
           )}</etools-data-table-column>
-          <etools-data-table-column class="col-2 align-center">${getHeadingLabel(
-            this.optionsData,
-            'financial_finding_set.local_amount',
-            'Amount (local)'
-          )}</etools-data-table-column>
+          <etools-data-table-column class="col-2 align-center">
+            ${getHeadingLabel(this.optionsData, 'financial_finding_set.local_amount', 'Amount (local)')}
+          </etools-data-table-column>
           <etools-data-table-column class="col-2 align-center">
             ${getHeadingLabel(this.optionsData, 'financial_finding_set.amount', 'Amount USD')}</etools-data-table-column
           >
@@ -134,7 +132,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                   >${item.local_amount}</span
                 >
                 <span
-                  class="col-data col-2 align-right"
+                  class="col-data align-right 'col-2'"
                   data-col-header-label="${getHeadingLabel(
                     this.optionsData,
                     'financial_finding_set.amount',
@@ -189,6 +187,9 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
 
   @property({type: Number})
   exchangeRate = 1;
+
+  @property({type: Boolean})
+  priorFaceForms = false;
 
   @property({type: String})
   mainProperty = 'financial_finding_set';
@@ -257,6 +258,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
       dialogData: {
         optionsData: this.optionsData,
         editedItem: this.editedItem,
+        priorFaceForms: this.priorFaceForms,
         opener: this,
         dialogTitle: this.dialogTitle,
         titleOptions: this.titleOptions

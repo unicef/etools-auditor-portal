@@ -18,7 +18,7 @@ import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styl
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../../types/global';
 import pickBy from 'lodash-es/pickBy';
-import {multiplyWithExchangeRate} from '../../../../utils/utils';
+import {multiplyWithExchangeRate, toggleCssClass} from '../../../../utils/utils';
 
 /**
  * @polymer
@@ -93,13 +93,19 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
           <div class="col-12 col-lg-9 padding-v">
             <etools-data-table-header no-title no-collapse>
               <etools-data-table-column class="col-4"></etools-data-table-column>
-              <etools-data-table-column class="col-4 align-center">Local currency</etools-data-table-column>
-              <etools-data-table-column class="col-4 align-center">USD</etools-data-table-column>
+              <etools-data-table-column class="col-4 align-center" ?hidden="${this.data?.prior_face_forms}">
+                Local currency
+              </etools-data-table-column>
+              <etools-data-table-column
+                class="align-center ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}"
+              >
+                USD
+              </etools-data-table-column>
             </etools-data-table-header>
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
                 <div class="col-data col-4">Value of Selected FACE</div>
-                <div class="col-data col-4 no-colon">
+                <div class="col-data col-4 no-colon" ?hidden="${this.data?.prior_face_forms}">
                   <etools-currency
                     class="w100"
                     .value="${this.data?.total_value_local}"
@@ -109,7 +115,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-4 no-colon">
+                <div class="col-data no-colon ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}">
                   <etools-currency
                     class="w100"
                     .value="${this.data?.total_value}"
@@ -124,7 +130,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
                 <div class="col-data col-4">Total Amount Tested</div>
-                <div class="col-data col-4 no-colon">
+                <div class="col-data col-4 no-colon" ?hidden="${this.data?.prior_face_forms}">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_tested_local', this.optionsData)}"
                     .value="${this.data?.total_amount_tested_local}"
@@ -145,7 +151,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-4 no-colon">
+                <div class="col-data no-colon ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_tested', this.optionsData)}"
                     .value="${this.data?.total_amount_tested}"
@@ -166,8 +172,8 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
             </etools-data-table-row>
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
-                <div class="col-data col-4">Amount of Financial Findings</div>
-                <div class="col-data col-4 no-colon col">
+                <div class="col-data col-4">Total Amount of Ineligible Expenditure</div>
+                <div class="col-data col-4 no-colon col" ?hidden="${this.data?.prior_face_forms}">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure_local', this.optionsData)}"
                     .value="${this.data?.total_amount_of_ineligible_expenditure_local}"
@@ -190,7 +196,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                   >
                   </etools-currency>
                 </div>
-                <div class="col-data col-4 col no-colon">
+                <div class="col-data col no-colon ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure', this.optionsData)}"
                     .value="${this.data?.total_amount_of_ineligible_expenditure}"
@@ -211,8 +217,10 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
                 <div class="col-data col-4">% of audited Expenditure</div>
-                <div class="col-data col-4">&nbsp;</div>
-                <div class="col-data col-4 align-right pr-20">
+                <div class="col-data col-4" ?hidden="${this.data?.prior_face_forms}">&nbsp;</div>
+                <div
+                  class="col-data align-right pr-20 ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}"
+                >
                   <label>${this.data?.percent_of_audited_expenditure}</label>
                 </div>
               </div>
@@ -220,7 +228,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
           </div>
           <div class="col-12 col-lg-3 padding-v row">
             <div class="col-12 input-container align-start">
-              <etools-info-tooltip>
+              <etools-info-tooltip ?hidden="${this.data?.prior_face_forms}">
                 <etools-input
                   slot="field"
                   class="w100"

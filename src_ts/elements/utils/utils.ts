@@ -92,6 +92,10 @@ export const setDataOnSessionStorage = (key: string, data: any): void => {
   sessionStorage.setItem(key, JSON.stringify(data));
 };
 
+export const toggleCssClass = (condition: boolean, firstClass: string, secondClass: string): string => {
+  return condition ? firstClass : secondClass;
+};
+
 export const multiplyWithExchangeRate = (value: number, exchange_rate: number): number => {
   if (!value) {
     value = 0;

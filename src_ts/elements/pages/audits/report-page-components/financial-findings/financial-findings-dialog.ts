@@ -84,6 +84,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
             <div class="col-12 input-container col-lg-6 col-md-6">
               <!-- Amount (local) -->
               <etools-currency
+                ?hidden=""
                 class="w100 ${this._setRequired('financial_finding_set.local_amount', this.optionsData)} validate-input"
                 .value="${this.editedItem.local_amount}"
                 currency=""
@@ -96,7 +97,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => {
                   this.numberChanged(detail, 'local_amount', this.editedItem);
-                  detail.value *= this.editedItem.exchange_rate;
+                  detail.value *= this.editedItem.exchange_rate || 1;
                   this.numberChanged(detail, 'amount', this.editedItem);
                 }}"
               >
@@ -108,10 +109,9 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
               <etools-currency
                 class="w100 ${this._setRequired('financial_finding_set.amount', this.optionsData)} validate-input"
                 .value="${this.editedItem.amount}"
-                currency="$"
                 label="${this.getLabel('financial_finding_set.amount', this.optionsData)}"
                 placeholder="${this.getPlaceholderText('financial_finding_set.amount', this.optionsData)}"
-                readonly
+                ?readonly="${!this.priorFaceForms || this.requestInProcess}"
                 ?invalid="${this.errors.amount}"
                 .errorMessage="${this.errors.amount}"
                 @focus="${this._resetFieldError}"
@@ -190,12 +190,16 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
   @property({type: Object})
   opener!: GenericObject;
 
+  @property({type: Boolean})
+  priorFaceForms!: boolean;
+
   set dialogData(data: any) {
-    const {optionsData, editedItem, opener, dialogTitle, titleOptions}: any = data;
+    const {optionsData, editedItem, opener, dialogTitle, titleOptions, priorFaceForms}: any = data;
 
     this.optionsData = optionsData;
     this.editedItem = editedItem;
     this.dialogTitle = dialogTitle;
+    this.priorFaceForms = priorFaceForms;
     this.opener = opener;
     this.titleOptions = titleOptions;
   }
