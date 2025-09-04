@@ -296,10 +296,11 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
     const overviewData = (reportPage && reportPage.getFindingsSummarySCData()) || {};
     assign(data, overviewData);
 
-    const financialFindingData = reportPage && reportPage.getFinancialFindingsData();
-    if (!isNull(financialFindingData)) {
-      data.financial_finding_set = financialFindingData;
-    }
+    // @dci not necessary for SpotChecks ?
+    // const financialFindingData = reportPage && reportPage.getFinancialFindingsData();
+    // if (!isNull(financialFindingData)) {
+    //   data.financial_finding_set = financialFindingData;
+    // }
 
     // FollowUp data
     const followUpPage = this.getElement('#follow-up');

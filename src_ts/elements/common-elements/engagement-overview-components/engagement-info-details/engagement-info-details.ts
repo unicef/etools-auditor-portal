@@ -337,10 +337,10 @@ export class EngagementInfoDetails extends connect(store)(
               No. of selected Face(s): ${this.noOfSelectedFaces}
             </label>
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <etools-data-table-column class="col-1" field="face_number" sortable>
+              <etools-data-table-column class="col-1 wrap-text" field="face_number" sortable>
                 FACE No. (Liquidation)
               </etools-data-table-column>
-              <etools-data-table-column class="col-1" field="face_accounted" sortable>
+              <etools-data-table-column class="col-1 wrap-text" field="face_accounted" sortable>
                 FACE No. (Request)
               </etools-data-table-column>
               <etools-data-table-column class="col-1" field="currency" sortable>
@@ -355,13 +355,13 @@ export class EngagementInfoDetails extends connect(store)(
               <etools-data-table-column class="col-1 center-align" field="exchange_rate" sortable>
                 Exchange rate
               </etools-data-table-column>              
-              <etools-data-table-column class="col-1 center-align" field="date_of_liquidation" sortable>
+              <etools-data-table-column class="col-1" field="date_of_liquidation" sortable>
                 Date of <br /> Liquidation
               </etools-data-table-column>
-              <etools-data-table-column class="col-1 center-align" field="start_date" sortable>
+              <etools-data-table-column class="col-1" field="start_date" sortable>
                 Start Date
               </etools-data-table-column>
-              <etools-data-table-column class="col-1 center-align" field="end_date" sortable>
+              <etools-data-table-column class="col-1" field="end_date" sortable>
                 End Date
               </etools-data-table-column>
               <etools-data-table-column class="col-1"> Modality </etools-data-table-column>
@@ -373,7 +373,7 @@ export class EngagementInfoDetails extends connect(store)(
                              (item, _index) => html`
                                <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
                                  <div slot="row-data" class="layout-horizontal">
-                                   <div class="col-data col-1" data-col-header-label="FACE No. (Liquidation)">
+                                   <div class="col-data col-1 wrap-text" data-col-header-label="FACE No. (Liquidation)">
                                      <etools-checkbox
                                        size="small"
                                        ?checked="${item.selected}"
@@ -390,10 +390,12 @@ export class EngagementInfoDetails extends connect(store)(
                                        ${item.face_number}
                                      </etools-checkbox>
                                    </div>
-                                   <div class="col-data col-1" data-col-header-label="FACE No. (Request)">
+                                   <div class="col-data col-1 wrap-text" data-col-header-label="FACE No. (Request)">
                                      ${item.face_accounted}
                                    </div>
-                                   <div class="col-data col-1" data-col-header-label="Currency">${item.currency}</div>
+                                   <div class="col-data col-1 wrap-text" data-col-header-label="Currency">
+                                     ${item.currency}
+                                   </div>
                                    <div class="col-data col-2 align-right" data-col-header-label="Amount">
                                      ${this.displayCurrencyAmount(item.amount_local, 0, 2)}
                                    </div>
@@ -403,16 +405,18 @@ export class EngagementInfoDetails extends connect(store)(
                                    <div class="col-data col-1 align-right" data-col-header-label="Exchange rate">
                                      ${item.exchange_rate}
                                    </div>
-                                   <div class="col-data col-1 align-center" data-col-header-label="Date of Liquidation">
+                                   <div class="col-data col-1 wrap-text" data-col-header-label="Date of Liquidation">
                                      ${this.getDateDisplayValue(item.date_of_liquidation)}
                                    </div>
-                                   <div class="col-data col-1 align-center" data-col-header-label="Start Date">
+                                   <div class="col-data col-1 wrap-text" data-col-header-label="Start Date">
                                      ${this.getDateDisplayValue(item.start_date)}
                                    </div>
-                                   <div class="col-data col-1 align-center" data-col-header-label="End Date">
+                                   <div class="col-data col-1 wrap-text" data-col-header-label="End Date">
                                      ${this.getDateDisplayValue(item.end_date)}
                                    </div>
-                                   <div class="col-data col-1" data-col-header-label="Modality">${item.modality}</div>
+                                   <div class="col-data col-1 wrap-text" data-col-header-label="Modality">
+                                     ${item.modality}
+                                   </div>
                                  </div>
                                </etools-data-table-row>
                              `

@@ -135,9 +135,10 @@ export class ScReportPageMain extends LitElement {
     return findings.length ? findings : null;
   }
 
-  getFinancialFindingsData() {
-    return (this.shadowRoot!.querySelector('#financialFindings') as FinancialFindings).getTabData();
-  }
+  // @dci not necessary for SpotChecks ?
+  // getFinancialFindingsData() {
+  //   return (this.shadowRoot!.querySelector('#financialFindings') as FinancialFindings).getTabData();
+  // }
 
   getInternalControlsData() {
     const internalControlsData = (
