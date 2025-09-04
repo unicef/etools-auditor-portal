@@ -14,7 +14,7 @@ import {AssignEngagement} from '../../../../common-elements/engagement-report-co
 import {SummaryFindingsElement} from '../summary-findings-element/summary-findings-element';
 import {InternalControls} from '../internal-controls/internal-controls';
 import {FindingsSummarySC} from '../findings-summary-sc/findings-summary-sc';
-import {FinancialFindings} from '../../../audits/report-page-components/financial-findings/financial-findings';
+// import {FinancialFindings} from '../../../audits/report-page-components/financial-findings/financial-findings';
 
 /**
  * @LitElement
