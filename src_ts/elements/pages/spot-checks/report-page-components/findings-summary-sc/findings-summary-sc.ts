@@ -140,6 +140,12 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                     ?invalid="${this._checkInvalid(this.errors?.total_amount_tested_local)}"
                     .errorMessage="${this.errors?.total_amount_tested_local}"
                     @value-changed="${({detail}: CustomEvent) => {
+                      if (
+                        this.data?.prior_face_forms ||
+                        parseFloat(this.data?.total_amount_tested_local) === detail.value
+                      ) {
+                        return;
+                      }
                       this.numberChanged(detail, 'total_amount_tested_local', this.data);
                       detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
                       this.numberChanged(detail, 'total_amount_tested', this.data);
@@ -186,6 +192,9 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                     ?invalid="${this._checkInvalid(this.errors?.total_amount_of_ineligible_expenditure_local)}"
                     .errorMessage="${this.errors?.total_amount_of_ineligible_expenditure_local}"
                     @value-changed="${({detail}: CustomEvent) => {
+                      if (this.data?.prior_face_forms) {
+                        return;
+                      }
                       this.numberChanged(detail, 'total_amount_of_ineligible_expenditure_local', this.data);
                       detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
                       this.numberChanged(detail, 'total_amount_of_ineligible_expenditure', this.data);

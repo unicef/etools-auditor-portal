@@ -158,7 +158,10 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            ?invalid="${this._checkInvalid(this.errors?.audited_expenditure_local)}"
                            .errorMessage="${this.errors?.audited_expenditure_local}"
                            @value-changed="${({detail}: CustomEvent) => {
-                             if (parseFloat(this.data?.audited_expenditure_local) === detail.value) {
+                             if (
+                               this.data?.prior_face_forms ||
+                               parseFloat(this.data?.audited_expenditure_local) === detail.value
+                             ) {
                                return;
                              }
                              if (!this._validateAuditedExpenditureValue(detail.value)) {
@@ -207,6 +210,9 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            ?invalid="${this._checkInvalid(this.errors?.financial_findings_local)}"
                            .errorMessage="${this.errors?.financial_findings_local}"
                            @value-changed="${({detail}: CustomEvent) => {
+                             if (this.data?.prior_face_forms) {
+                               return;
+                             }
                              this.numberChanged(detail, 'financial_findings_local', this.editedItem);
                              detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
                              this.numberChanged(detail, 'financial_findings', this.editedItem);
