@@ -160,7 +160,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            @value-changed="${({detail}: CustomEvent) => {
                              if (
                                this.data?.prior_face_forms ||
-                               parseFloat(this.data?.audited_expenditure_local) === detail.value
+                               Number(this.data?.audited_expenditure_local) === Number(detail.value)
                              ) {
                                return;
                              }
