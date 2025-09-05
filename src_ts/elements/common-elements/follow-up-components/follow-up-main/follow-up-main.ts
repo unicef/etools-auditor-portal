@@ -58,7 +58,7 @@ export class FollowUpMain extends LitElement {
             .errorObject="${this.errorObject}"
             .originalData="${this.getFindingsDataFiltered(this.originalData.findings, this.priorities.high.value)}"
             .priority="${this.priorities.high}"
-            .optionsData="${this.apOptionsData}"
+            .optionsData="${this.optionsData}"
           >
           </summary-findings-element>`
         : ``}
