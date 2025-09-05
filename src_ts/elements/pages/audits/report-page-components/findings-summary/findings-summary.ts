@@ -167,7 +167,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                              this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
                              detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
                              this.numberChanged(detail, 'audited_expenditure', this.data);
-                             //@dci this.setPercentOfAuditedExpenditure();
+                             this.setPercentOfAuditedExpenditure();
                            }}"
                            @focus="${() => {
                              this._resetFieldError;
@@ -464,6 +464,10 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
   }
 
   setPercentOfAuditedExpenditure() {
+    if (!this.data.audited_expenditure) {
+      this.data.percent_of_audited_expenditure = Number(0).toFixed(2);
+      return;
+    }
     this.data.percent_of_audited_expenditure = (
       (100 * this.data.financial_findings) /
       this.data.audited_expenditure

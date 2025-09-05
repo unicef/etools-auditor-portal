@@ -291,8 +291,12 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
   getFindingsSummarySCData() {
     return pickBy(this.data, (value, key) => {
       return (
-        ~['total_amount_tested_local', 'total_amount_of_ineligible_expenditure_local'].indexOf(key) &&
-        value !== (this.originalData ? this.originalData[key] : undefined)
+        ~[
+          'total_amount_tested_local',
+          'total_amount_tested',
+          'total_amount_of_ineligible_expenditure_local',
+          'total_amount_of_ineligible_expenditure'
+        ].indexOf(key) && value !== (this.originalData ? this.originalData[key] : undefined)
       );
     });
   }
@@ -302,6 +306,10 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
   }
 
   setPercentExpenditure() {
+    if (!this.data.total_amount_tested_local) {
+      this.data.percent_of_audited_expenditure = Number(0).toFixed(2);
+      return;
+    }
     this.data.percent_of_audited_expenditure = (
       (100 * this.data.total_amount_of_ineligible_expenditure_local) / this.data.total_amount_tested_local || 0
     ).toFixed(2);

@@ -337,7 +337,7 @@ export class EngagementInfoDetails extends connect(store)(
               No. of selected Face(s): ${this.noOfSelectedFaces}
             </label>
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
-              <etools-data-table-column class="col-1 wrap-text" field="face_number" sortable>
+              <etools-data-table-column class="col-2 wrap-text" field="face_number" sortable>
                 FACE No. (Liquidation)
               </etools-data-table-column>
               <etools-data-table-column class="col-1 wrap-text" field="face_accounted" sortable>
@@ -349,7 +349,7 @@ export class EngagementInfoDetails extends connect(store)(
               <etools-data-table-column class="col-2 center-align" field="amount_local" sortable>
                 Amount
               </etools-data-table-column>
-              <etools-data-table-column class="col-2 center-align" field="amount_usd" sortable>
+              <etools-data-table-column class="col-1 center-align" field="amount_usd" sortable>
                 Amount (USD)
               </etools-data-table-column>
               <etools-data-table-column class="col-1 center-align" field="exchange_rate" sortable>
@@ -373,7 +373,7 @@ export class EngagementInfoDetails extends connect(store)(
                              (item, _index) => html`
                                <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
                                  <div slot="row-data" class="layout-horizontal">
-                                   <div class="col-data col-1 wrap-text" data-col-header-label="FACE No. (Liquidation)">
+                                   <div class="col-data col-2 wrap-text" data-col-header-label="FACE No. (Liquidation)">
                                      <etools-checkbox
                                        size="small"
                                        ?checked="${item.selected}"
@@ -399,7 +399,7 @@ export class EngagementInfoDetails extends connect(store)(
                                    <div class="col-data col-2 align-right" data-col-header-label="Amount">
                                      ${this.displayCurrencyAmount(item.amount_local, 0, 2)}
                                    </div>
-                                   <div class="col-data col-2 align-right" data-col-header-label="Amount (USD)">
+                                   <div class="col-data col-1 align-right" data-col-header-label="Amount (USD)">
                                      ${this.displayCurrencyAmount(item.amount_usd, 0, 2)}
                                    </div>
                                    <div class="col-data col-1 align-right" data-col-header-label="Exchange rate">

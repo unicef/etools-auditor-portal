@@ -32,15 +32,18 @@ import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import './financial-findings-dialog.js';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/mixins/currency.js';
 
 /**
  * @customElement
- * @LitElement
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
+ * @appliesMixin EtoolsCurrency
  */
 @customElement('financial-findings')
-export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
+export class FinancialFindings extends TableElementsMixin(
+  CommonMethodsMixin(ModelChangedMixin(EtoolsCurrency(LitElement)))
+) {
   static get styles() {
     return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
@@ -129,16 +132,16 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                     'financial_finding_set.local_amount',
                     'Amount (local)'
                   )}"
-                  >${item.local_amount}</span
+                  >${this.displayCurrencyAmount(item.local_amount, 0, 2)}</span
                 >
                 <span
-                  class="col-data align-right 'col-2'"
+                  class="col-data col-2 align-right"
                   data-col-header-label="${getHeadingLabel(
                     this.optionsData,
                     'financial_finding_set.amount',
                     'Amount USD'
                   )}"
-                  >${item.amount}</span
+                  >${this.displayCurrencyAmount(item.amount, 0, 2)}</span
                 >
                 <span class="col-data col-2 "></span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
