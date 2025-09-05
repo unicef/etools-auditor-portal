@@ -160,7 +160,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            @value-changed="${({detail}: CustomEvent) => {
                              if (
                                this.data?.prior_face_forms ||
-                               Number(this.data?.audited_expenditure_local) === Number(detail.value)
+                               Number(this.data?.audited_expenditure_local) === Number(detail?.value)
                              ) {
                                return;
                              }
@@ -210,7 +210,10 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                            ?invalid="${this._checkInvalid(this.errors?.financial_findings_local)}"
                            .errorMessage="${this.errors?.financial_findings_local}"
                            @value-changed="${({detail}: CustomEvent) => {
-                             if (this.data?.prior_face_forms) {
+                             if (
+                               this.data?.prior_face_forms ||
+                               Number(this.data?.financial_findings_local) === Number(detail?.value)
+                             ) {
                                return;
                              }
                              this.numberChanged(detail, 'financial_findings_local', this.editedItem);
