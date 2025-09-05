@@ -14,7 +14,7 @@ import {AssignEngagement} from '../../../../common-elements/engagement-report-co
 import {SummaryFindingsElement} from '../summary-findings-element/summary-findings-element';
 import {InternalControls} from '../internal-controls/internal-controls';
 import {FindingsSummarySC} from '../findings-summary-sc/findings-summary-sc';
-// import {FinancialFindings} from '../../../audits/report-page-components/financial-findings/financial-findings';
+import {FinancialFindings} from '../../../audits/report-page-components/financial-findings/financial-findings';
 
 /**
  * @LitElement
@@ -49,7 +49,7 @@ export class ScReportPageMain extends LitElement {
       >
       </findings-summary-sc>
 
-      <!-- <financial-findings
+      <financial-findings
         id="financialFindings"
         class="mb-24"
         .errorObject="${this.errorObject}"
@@ -58,7 +58,7 @@ export class ScReportPageMain extends LitElement {
         .priorFaceForms="${this.engagement?.prior_face_forms}"
         .optionsData="${this.optionsData}"
       >
-      </financial-findings> -->
+      </financial-findings>
 
       <summary-findings-element
         id="findingsHighPriority"
@@ -135,10 +135,9 @@ export class ScReportPageMain extends LitElement {
     return findings.length ? findings : null;
   }
 
-  // @dci not necessary for SpotChecks ?
-  // getFinancialFindingsData() {
-  //   return (this.shadowRoot!.querySelector('#financialFindings') as FinancialFindings).getTabData();
-  // }
+  getFinancialFindingsData() {
+    return (this.shadowRoot!.querySelector('#financialFindings') as FinancialFindings).getTabData();
+  }
 
   getInternalControlsData() {
     const internalControlsData = (
