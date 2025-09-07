@@ -579,7 +579,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                           <etools-dropdown-multi
                             class="w100 validate-input ${this._setRequired('offices', this.optionsData)}"
                             label="${this.getLabel('offices', this.optionsData)}"
-                            placeholder="&#8212;"
+                            placeholder="${this.getPlaceholderText('offices', this.optionsData)}"
                             .options="${this.officeOptions}"
                             option-label="name"
                             option-value="id"

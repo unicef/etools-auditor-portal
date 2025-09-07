@@ -93,7 +93,7 @@ export class FinancialFindings extends TableElementsMixin(
         </div>
 
         <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
-          <etools-data-table-column class="col-2">Finding Number</etools-data-table-column>
+          <etools-data-table-column class="col-3">Finding Number</etools-data-table-column>
           <etools-data-table-column class="col-4">
           ${getHeadingLabel(
             this.optionsData,
@@ -106,14 +106,14 @@ export class FinancialFindings extends TableElementsMixin(
           <etools-data-table-column class="col-2 align-center">
             ${getHeadingLabel(this.optionsData, 'financial_finding_set.amount', 'Amount USD')}</etools-data-table-column
           >
-        <etools-data-table-column class="col-2">
+        <etools-data-table-column class="col-1">
         </etools-data-table-header></etools-data-table-column>
 
         ${(this.dataItems || []).map(
           (item, index) => html`
             <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-2" data-col-header-label="Finding Number"
+                <span class="col-data col-3" data-col-header-label="Finding Number"
                   >${getTableRowIndexText(index)}</span
                 >
                 <span
@@ -143,7 +143,7 @@ export class FinancialFindings extends TableElementsMixin(
                   )}"
                   >${this.displayCurrencyAmount(item.amount, 0, 2)}</span
                 >
-                <span class="col-data col-2 "></span>
+                <span class="col-data col-1"></span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                   <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
