@@ -515,7 +515,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                            id="sharedWith"
                            class="w100 validate-input ${this._setRequired('shared_ip_with', this.optionsData)}"
                            label="${this.getLabel('shared_ip_with', this.optionsData)}"
-                           placeholder="${this.getPlaceholderText('shared_ip_with', this.optionsData) || '&#8212;'}"
+                           placeholder="${this.getPlaceholderText('shared_ip_with', this.optionsData)}"
                            .options="${this.sharedIpWithOptions}"
                            option-label="display_name"
                            option-value="value"
@@ -549,7 +549,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                           <etools-dropdown-multi
                             class="w100 validate-input ${this._setRequired('sections', this.optionsData)}"
                             label="${this.getLabel('sections', this.optionsData)}"
-                            placeholder="${this.getPlaceholderText('sections', this.optionsData) || '&#8212;'}"
+                            placeholder="${this.getPlaceholderText('sections', this.optionsData)}"
                             .options="${this.sectionOptions}"
                             option-label="name"
                             option-value="id"
@@ -579,7 +579,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                           <etools-dropdown-multi
                             class="w100 validate-input ${this._setRequired('offices', this.optionsData)}"
                             label="${this.getLabel('offices', this.optionsData)}"
-                            placeholder="${this.getPlaceholderText('offices', this.optionsData) || '&#8212;'}"
+                            placeholder="&#8212;"
                             .options="${this.officeOptions}"
                             option-label="name"
                             option-value="id"
@@ -611,7 +611,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                         <etools-dropdown-multi
                           class="w100 validate-input ${this._setRequired('users_notified', this.optionsData)}"
                           label="${this.getLabel('users_notified', this.optionsData)}"
-                          placeholder="${this.getPlaceholderText('users_notified', this.optionsData) || '&#8212;'}"
+                          placeholder="${this.getPlaceholderText('users_notified', this.optionsData)}"
                           .options="${this.usersNotifiedOptions}"
                           .loadDataMethod="${this.loadUsersDropdownOptions}"
                           preserve-search-on-close
