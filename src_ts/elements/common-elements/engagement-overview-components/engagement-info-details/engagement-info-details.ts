@@ -627,7 +627,7 @@ export class EngagementInfoDetails extends connect(store)(
   }
 
   doesNotHaveFaceData(data: GenericObject, isFaceFormReadonly: boolean) {
-    return !isFaceFormReadonly && data && data.id && !(data.face_forms || []).length;
+    return isFaceFormReadonly && data?.id && !(data?.face_forms || []).length;
   }
 
   loadFaceData(partnerId: number) {
