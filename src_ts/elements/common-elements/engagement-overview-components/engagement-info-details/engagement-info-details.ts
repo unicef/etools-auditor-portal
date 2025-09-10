@@ -313,7 +313,10 @@ export class EngagementInfoDetails extends connect(store)(
                     label="Total Value of Selected FACE form(s) in Local Currency"
                     placeholder="${this.getPlaceholderText('total_value_local', this.optionsData)}"
                     ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
-                    ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                    ?readonly="${
+                      this.itIsReadOnly('total_value_local', this.optionsData) &&
+                      !this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)
+                    }"
                     ?invalid="${this._checkInvalid(this.errors.total_value_local)}"
                     .errorMessage="${this.errors.total_value_local}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
