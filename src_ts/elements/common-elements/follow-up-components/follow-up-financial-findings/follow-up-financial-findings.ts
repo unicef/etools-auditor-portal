@@ -582,8 +582,8 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
             </etools-data-table-row>
           </div>
           <div class="col-12 col-lg-3 padding-v row">
-            <div class="col-12 col-lg-6 input-container">
-              <etools-info-tooltip class="align-top">
+            <div class="col-12 col-lg-6 input-container align-top">
+              <etools-info-tooltip>
                 <etools-input
                   slot="field"
                   class="w100 "
