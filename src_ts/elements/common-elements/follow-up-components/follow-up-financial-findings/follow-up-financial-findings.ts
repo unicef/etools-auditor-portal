@@ -423,7 +423,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                             )
                           ) {
                             (e.target as any).value = this.engagement.justification_provided_and_accepted_local;
-                            this.requestUpdate();
+                            // this.requestUpdate();
                             return;
                           }
                           this.numberChanged(detail, 'justification_provided_and_accepted_local', this.engagement);
@@ -693,7 +693,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
     write_off_required_local: number
   ) {
     const inputValid =
-      Number(engagement.financial_findings) >=
+      Number(engagement.financial_findings_local) >=
       Number(amount_refunded_local || 0) +
         Number(additional_supporting_documentation_provided_local || 0) +
         Number(justification_provided_and_accepted_local || 0) +
