@@ -55,6 +55,9 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
           display: flex;
           flex-direction: column;
         }
+        .align-top {
+          align-items: start;
+        }
         etools-data-table-row *[slot='row-data'] {
           margin-top: 1px;
           margin-bottom: 1px;
@@ -578,7 +581,25 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               </div>
             </etools-data-table-row>
           </div>
-          <div class="col-12 col-lg-3 padding-v row"></div>
+          <div class="col-12 col-lg-3 padding-v row">
+            <div class="col-12 col-lg-6 input-container">
+              <etools-info-tooltip class="align-top">
+                <etools-input
+                  slot="field"
+                  class="w100 "
+                  .value="${this.engagement.exchange_rate}"
+                  label="Exchange rate"
+                  placeholder="${this.getNumericPlaceholderText('exchange_rate', this.optionsData)}"
+                  readonly
+                >
+                </etools-input>
+                <span slot="message">
+                  If there is multi-currency: the rate of the recently reported expense excluding the USD.<br />
+                  If it is only USD: then the rate will be 1.
+                </span>
+              </etools-info-tooltip>
+            </div>
+          </div>
         </div>
         <div class="row align-items-center">
           <div class="col-9">
