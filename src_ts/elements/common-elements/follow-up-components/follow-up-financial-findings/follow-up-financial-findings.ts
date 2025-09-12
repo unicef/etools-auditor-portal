@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {LitElement, PropertyValues, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-icons/etools-icon';
@@ -23,6 +22,7 @@ import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/sh
 import {GenericObject} from '../../../../types/global';
 import {AnyObject} from '@unicef-polymer/etools-types';
 import {multiplyWithExchangeRate, toggleCssClass} from '../../../utils/utils';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @LitEelement
@@ -93,6 +93,35 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                 >USD</etools-data-table-column
               >
             </etools-data-table-header>
+
+            <etools-data-table-row no-collapse ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
+              <div slot="row-data" class="layout-horizontal h-50">
+                <div class="col-data col-4">
+                  ${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)}
+                </div>
+                <div class="col-data col-4 align-right" ?hidden="${this.engagement?.prior_face_forms}">
+                  <etools-currency
+                    class="w100"
+                    .value="${this.engagement.audited_expenditure_local}"
+                    readonly
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+                <div
+                  class="col-data align-right ${toggleCssClass(this.engagement?.prior_face_forms, 'col-8', 'col-4')}"
+                >
+                  <etools-currency
+                    class="w100"
+                    .value="${this.engagement.audited_expenditure}"
+                    readonly
+                    @focus="${this._resetFieldError}"
+                  >
+                  </etools-currency>
+                </div>
+              </div>
+            </etools-data-table-row>
+
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
                 <div class="col-data col-4" ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
@@ -186,34 +215,6 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
               </div>
             </etools-data-table-row>
 
-            <etools-data-table-row no-collapse ?hidden="${!this.showFields(this.engagement.engagement_type, 'audit')}">
-              <div slot="row-data" class="layout-horizontal h-50">
-                <div class="col-data col-4">
-                  ${this.getLabelWithoutCurrency('audited_expenditure', this.optionsData)}
-                </div>
-                <div class="col-data col-4 align-right" ?hidden="${this.engagement?.prior_face_forms}">
-                  <etools-currency
-                    class="w100"
-                    .value="${this.engagement.audited_expenditure_local}"
-                    readonly
-                    @focus="${this._resetFieldError}"
-                  >
-                  </etools-currency>
-                </div>
-                <div
-                  class="col-data align-right ${toggleCssClass(this.engagement?.prior_face_forms, 'col-8', 'col-4')}"
-                >
-                  <etools-currency
-                    class="w100"
-                    .value="${this.engagement.audited_expenditure}"
-                    readonly
-                    @focus="${this._resetFieldError}"
-                  >
-                  </etools-currency>
-                </div>
-              </div>
-            </etools-data-table-row>
-
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
                 <div class="col-data col-4">${this.getLabelWithoutCurrency('amount_refunded', this.optionsData)}</div>
@@ -227,8 +228,22 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                         ?readonly="${this.isReadOnly('amount_refunded_local', this.optionsData)}"
                         ?invalid="${this.errors?.amount_refunded_local}"
                         .errorMessage="${this.errors?.amount_refunded_local}"
-                        @value-changed="${({detail}: CustomEvent) => {
+                        @value-changed="${(e: CustomEvent) => {
+                          const detail = e.detail;
                           if (Number(this.engagement.amount_refunded_local) === Number(detail?.value)) {
+                            return;
+                          }
+                          if (
+                            !this.validateAuditInputValues(
+                              this.engagement,
+                              Number(detail?.value),
+                              this.engagement.additional_supporting_documentation_provided_local,
+                              this.engagement.justification_provided_and_accepted_local,
+                              this.engagement.write_off_required_local
+                            )
+                          ) {
+                            (e.target as any).value = this.engagement.amount_refunded_local;
+                            this.requestUpdate();
                             return;
                           }
                           this.numberChanged(detail, 'amount_refunded_local', this.engagement);
@@ -299,11 +314,26 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                         )}"
                         ?invalid="${this.errors?.additional_supporting_documentation_provided_local}"
                         .errorMessage="${this.errors?.additional_supporting_documentation_provided_local}"
-                        @value-changed="${({detail}: CustomEvent) => {
+                        @value-changed="${(e: CustomEvent) => {
+                          const detail = e.detail;
                           if (
                             Number(this.engagement.additional_supporting_documentation_provided_local) ===
                             Number(detail?.value)
                           ) {
+                            return;
+                          }
+                          if (
+                            !this.validateAuditInputValues(
+                              this.engagement,
+                              this.engagement.amount_refunded_local,
+                              Number(detail?.value),
+                              this.engagement.justification_provided_and_accepted_local,
+                              this.engagement.write_off_required_local
+                            )
+                          ) {
+                            (e.target as any).value =
+                              this.engagement.additional_supporting_documentation_provided_local;
+                            this.requestUpdate();
                             return;
                           }
                           this.numberChanged(
@@ -376,10 +406,24 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                         ?readonly="${this.isReadOnly('justification_provided_and_accepted_local', this.optionsData)}"
                         ?invalid="${this.errors?.justification_provided_and_accepted_local}"
                         .errorMessage="${this.errors?.justification_provided_and_accepted_local}"
-                        @value-changed="${({detail}: CustomEvent) => {
+                        @value-changed="${(e: CustomEvent) => {
+                          const detail = e.detail;
                           if (
                             Number(this.engagement.justification_provided_and_accepted_local) === Number(detail?.value)
                           ) {
+                            return;
+                          }
+                          if (
+                            !this.validateAuditInputValues(
+                              this.engagement,
+                              this.engagement.amount_refunded_local,
+                              this.engagement.additional_supporting_documentation_provided_local,
+                              Number(detail?.value),
+                              this.engagement.write_off_required_local
+                            )
+                          ) {
+                            (e.target as any).value = this.engagement.justification_provided_and_accepted_local;
+                            this.requestUpdate();
                             return;
                           }
                           this.numberChanged(detail, 'justification_provided_and_accepted_local', this.engagement);
@@ -438,8 +482,22 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                         ?readonly="${this.isReadOnly('write_off_required_local', this.optionsData)}"
                         ?invalid="${this.errors?.write_off_required_local}"
                         .errorMessage="${this.errors?.write_off_required_local}"
-                        @value-changed="${({detail}: CustomEvent) => {
+                        @value-changed="${(e: CustomEvent) => {
+                          const detail = e.detail;
                           if (Number(this.engagement.write_off_required_local) === Number(detail?.value)) {
+                            return;
+                          }
+                          if (
+                            !this.validateAuditInputValues(
+                              this.engagement,
+                              this.engagement.amount_refunded_local,
+                              this.engagement.additional_supporting_documentation_provided_local,
+                              this.engagement.justification_provided_and_accepted_local,
+                              Number(detail?.value)
+                            )
+                          ) {
+                            (e.target as any).value = this.engagement.write_off_required_local;
+                            this.requestUpdate();
                             return;
                           }
                           this.numberChanged(detail, 'write_off_required_local', this.engagement);
@@ -625,6 +683,26 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
       label = label.replace('$', '');
     }
     return label;
+  }
+
+  validateAuditInputValues(
+    engagement: GenericObject,
+    amount_refunded_local: number,
+    additional_supporting_documentation_provided_local: number,
+    justification_provided_and_accepted_local: number,
+    write_off_required_local: number
+  ) {
+    const inputValid =
+      Number(engagement.financial_findings) >=
+      Number(amount_refunded_local || 0) +
+        Number(additional_supporting_documentation_provided_local || 0) +
+        Number(justification_provided_and_accepted_local || 0) +
+        Number(write_off_required_local || 0);
+
+    if (!inputValid) {
+      fireEvent(this, 'toast', {text: `The sum of input values cannot be higher than Financial Findings value`});
+    }
+    return inputValid;
   }
 
   setUnsupportedAmount(engagement, ...properties) {
