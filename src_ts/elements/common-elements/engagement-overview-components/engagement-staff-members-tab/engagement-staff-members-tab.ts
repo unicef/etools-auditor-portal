@@ -125,7 +125,7 @@ export class EngagementStaffMembersTab extends connect(store)(
         }
         .etools-checkbox {
           margin-left: 15px;
-        }        
+        }
         .editable-row {
           margin-top: 0;
           margin-bottom: 0;
@@ -504,41 +504,42 @@ export class EngagementStaffMembersTab extends connect(store)(
                   <label class="section-title">Unicef Contact</label>
                 </div>
             </div>
-               ${
-                 this.showSharedAuditField(this.engagement.engagement_type)
-                   ? html` <!-- Shared Audit with-->
-                       <div
-                         class="col-12 col-lg-4 col-md-6 input-container"
-                         ?hidden="${this._hideField('shared_ip_with', this.optionsData)}"
-                       >
-                         <etools-dropdown-multi
-                           id="sharedWith"
-                           class="w100 validate-input ${this._setRequired('shared_ip_with', this.optionsData)}"
-                           label="${this.getLabel('shared_ip_with', this.optionsData)}"
-                           placeholder="${this.getPlaceholderText('shared_ip_with', this.optionsData)}"
-                           .options="${this.sharedIpWithOptions}"
-                           option-label="display_name"
-                           option-value="value"
-                           .selectedValues="${this.engagement.shared_ip_with || []}"
-                           ?required="${this._setRequired('shared_ip_with', this.optionsData)}"
-                           ?readonly="${this.itIsReadOnly('shared_ip_with', this.optionsData)}"
-                           ?invalid="${this.errors.shared_ip_with}"
-                           .errorMessage="${this.errors.shared_ip_with}"
-                           @focus="${(event: any) => this._resetFieldError(event)}"
-                           dynamic-align
-                           hide-search
-                           trigger-value-change-event
-                           @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                             const selected = (detail.selectedItems || []).map((x) => x.value);
-                             if (!isJsonStrMatch(this.engagement.shared_ip_with, selected)) {
-                               this.engagement.shared_ip_with = selected;
-                             }
-                           }}"
+                 ${
+                   /* this.showSharedAuditField(this.engagement.engagement_type)
+                     ? html` <!-- Shared Audit with-->
+                          <div
+                           class="col-12 col-lg-4 col-md-6 input-container"
+                           ?hidden="${this._hideField('shared_ip_with', this.optionsData)}"
                          >
-                         </etools-dropdown-multi>
-                       </div>`
-                   : ``
-               }    
+                           <etools-dropdown-multi
+                             id="sharedWith"
+                             class="w-200px validate-input ${this._setRequired('shared_ip_with', this.optionsData)}"
+                             label="${this.getLabel('shared_ip_with', this.optionsData)}"
+                             placeholder="${this.getPlaceholderText('shared_ip_with', this.optionsData)}"
+                             .options="${this.sharedIpWithOptions}"
+                             option-label="display_name"
+                             option-value="value"
+                             .selectedValues="${this.engagement.shared_ip_with || []}"
+                             ?required="${this._setRequired('shared_ip_with', this.optionsData)}"
+                             ?readonly="${this.itIsReadOnly('shared_ip_with', this.optionsData)}"
+                             ?invalid="${this.errors.shared_ip_with}"
+                             .errorMessage="${this.errors.shared_ip_with}"
+                             @focus="${(event: any) => this._resetFieldError(event)}"
+                             dynamic-align
+                             hide-search
+                             trigger-value-change-event
+                             @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                               const selected = (detail.selectedItems || []).map((x) => x.value);
+                               if (!isJsonStrMatch(this.engagement.shared_ip_with, selected)) {
+                                 this.engagement.shared_ip_with = selected;
+                               }
+                             }}"
+                           >
+                           </etools-dropdown-multi>
+                         </div>` -->
+                     : `` */
+                   ''
+                 }
                 ${
                   this.showAdditionalField(this.engagement.engagement_type)
                     ? html` <!-- Sections -->
@@ -770,7 +771,7 @@ export class EngagementStaffMembersTab extends connect(store)(
 
     if (changedProperties.has('optionsData')) {
       this.setPermission(this.optionsData);
-      this._setSharedIpWith(this.optionsData);
+      // this._setSharedIpWith(this.optionsData);
     }
     if (changedProperties.has('errorObject')) {
       this._handleUpdateError(this.errorObject?.staff_members);
@@ -787,10 +788,10 @@ export class EngagementStaffMembersTab extends connect(store)(
     }
   }
 
-  _setSharedIpWith(optionsData: AnyObject) {
-    const sharedIpWithOptions = getOptionsChoices(optionsData, 'shared_ip_with.child');
-    this.sharedIpWithOptions = sharedIpWithOptions || [];
-  }
+  // _setSharedIpWith(optionsData: AnyObject) {
+  //   const sharedIpWithOptions = getOptionsChoices(optionsData, 'shared_ip_with.child');
+  //   this.sharedIpWithOptions = sharedIpWithOptions || [];
+  // }
 
   partnerLoaded() {
     this.setOfficers(this.partner, this.engagement);
@@ -1198,11 +1199,11 @@ export class EngagementStaffMembersTab extends connect(store)(
       data.authorized_officers = [authorizedOfficer];
     }
 
-    const originalSharedIpWith = this.originalData?.shared_ip_with || [];
-    const sharedIpWith = this.engagement.shared_ip_with || [];
-    if (sharedIpWith.length && sharedIpWith.filter((x) => !originalSharedIpWith.includes(x)).length > 0) {
-      data.shared_ip_with = sharedIpWith;
-    }
+    // const originalSharedIpWith = this.originalData?.shared_ip_with || [];
+    // const sharedIpWith = this.engagement.shared_ip_with || [];
+    // if (sharedIpWith.length && sharedIpWith.filter((x) => !originalSharedIpWith.includes(x)).length > 0) {
+    //   data.shared_ip_with = sharedIpWith;
+    // }
 
     const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
     const officeIDs = (this.engagement?.offices || []).map((office) => +office.id);

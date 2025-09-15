@@ -46,7 +46,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
           <a
             class="nav-menu-item ${this.getItemClass(this.selectedOption, 'engagements')}"
             menu-name="engagements"
-            href="${Environment.basePath}engagements/list"
+            href="${Environment.basePath}engagements/list?ordering=id"
           >
             <sl-tooltip placement="right" hoist ?disabled="${!this.smallMenu}" content="Engagements">
               <etools-icon id="iconEngagements" name="av:playlist-add-check"></etools-icon>
@@ -58,7 +58,7 @@ export class AppMenu extends MatomoMixin(LitElement) {
             ? html`<a
                 class="nav-menu-item ${this.getItemClass(this.selectedOption, 'staff-sc')}"
                 menu-name="staff-sc"
-                href="${Environment.basePath}staff-sc/list"
+                href="${Environment.basePath}staff-sc/list?ordering=id"
               >
                 <sl-tooltip placement="right" ?disabled="${!this.smallMenu}" content="Staff Spot Checks">
                   <etools-icon id="iconStaffSpotCk" name="av:recent-actors"></etools-icon>
