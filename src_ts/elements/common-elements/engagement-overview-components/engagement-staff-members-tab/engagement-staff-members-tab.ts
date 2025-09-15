@@ -471,7 +471,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                   <etools-dropdown-multi
                     id="activePd"
                     class="${this._setPlaceholderColor(this.partner)}"
-                    .selectedValues="${this.activePdIds}"
+                    .selectedValues="${getObjectsIDs(this.engagement.active_pd)}"
                     label="${this.getLabel('active_pd', this.optionsData)}"
                     placeholder="${this.activePdPlaceholder(this.optionsData, this.partner)}"
                     .options="${this.partner?.interventions}"
@@ -484,8 +484,10 @@ export class EngagementStaffMembersTab extends connect(store)(
                     dynamic-align
                     trigger-value-change-event
                     @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      const newIds = detail.selectedItems.map((i: any) => i.id);
-                      this.activePdIds = newIds;
+                      if (!isJsonStrMatch(this.engagement.active_pd, detail.selectedItems)) {
+                        this.engagement.active_pd = detail.selectedItems;
+                        this.requestUpdate();
+                      }
                     }}"
                   >
                   </etools-dropdown-multi>
@@ -703,9 +705,6 @@ export class EngagementStaffMembersTab extends connect(store)(
   @property({type: Boolean})
   showInactive!: boolean;
 
-  @property({type: Array})
-  activePdIds!: any[];
-
   @property({type: Object})
   authorizedOfficer: GenericObject | null = null;
 
@@ -795,7 +794,6 @@ export class EngagementStaffMembersTab extends connect(store)(
 
   partnerLoaded() {
     this.setOfficers(this.partner, this.engagement);
-    this.setActivePd(this.engagement, this.partner?.interventions);
   }
 
   setOfficers(partner, engagement) {
@@ -830,42 +828,6 @@ export class EngagementStaffMembersTab extends connect(store)(
     }
     const engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
     return this.authorizedOfficer.id === engagementOfficer ? null : this.authorizedOfficer.id;
-  }
-
-  setActivePd(engagement, partnerInterv) {
-    if (!engagement || !partnerInterv) {
-      this.activePdIds = [];
-      return;
-    }
-
-    const originalPartnerId = this.originalData?.partner?.id;
-    const partnerId = this.partner.id;
-
-    if (!Number.isInteger(originalPartnerId) || !Number.isInteger(partnerId) || originalPartnerId !== partnerId) {
-      this.activePdIds = [];
-      this.validateActivePd();
-      return false;
-    }
-
-    const activePd = this.engagement.active_pd || [];
-    this.activePdIds = activePd.map((pd) => pd.id);
-    this.validateActivePd();
-    return true;
-  }
-
-  validateActivePd() {
-    // TODO - this logic doesn't seem to be needed, because activePdInput.required is always false, confirm & remove
-    const activePdInput = this.shadowRoot?.querySelector('#activePd') as EtoolsDropdownMultiEl;
-    const partnerType = this.engagement.partner?.partner_type;
-    const partnerRequiresActivePd = this.specialPartnerTypes.indexOf(partnerType) === -1;
-
-    if (activePdInput && activePdInput.required && partnerRequiresActivePd && !activePdInput.validate()) {
-      activePdInput.invalid = true;
-      activePdInput.errorMessage = 'Active PD is required';
-      return false;
-    }
-
-    return true;
   }
 
   validate() {
@@ -1217,9 +1179,10 @@ export class EngagementStaffMembersTab extends connect(store)(
       data.sections = sectionIDs;
     }
 
-    const activePds = (this.originalData.active_pd || []).map((pd) => pd.id);
-    if (this.collectionChanged(this.activePdIds, activePds)) {
-      data.active_pd = this.activePdIds;
+    const originalActivePds = (this.originalData.active_pd || []).map((pd) => pd.id);
+    const activePds = (this.engagement?.active_pd || []).map((pd) => pd.id);
+    if (this.collectionChanged(originalActivePds, activePds)) {
+      data.active_pd = activePds;
     }
 
     return data;
