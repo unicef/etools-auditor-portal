@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {LitElement, html, PropertyValues} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-panel';

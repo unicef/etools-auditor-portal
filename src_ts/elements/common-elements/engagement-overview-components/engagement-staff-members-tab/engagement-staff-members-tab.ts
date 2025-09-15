@@ -32,7 +32,7 @@ import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
 import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
-import {getOptionsChoices, readonlyPermission} from '../../../mixins/permission-controller';
+import {readonlyPermission} from '../../../mixins/permission-controller';
 import {EtoolsDropdownMultiEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi';
 import {getObjectsIDs} from '../../../utils/utils';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
