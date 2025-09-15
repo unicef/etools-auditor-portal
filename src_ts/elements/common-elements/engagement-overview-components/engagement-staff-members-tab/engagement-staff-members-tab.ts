@@ -33,7 +33,6 @@ import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {readonlyPermission} from '../../../mixins/permission-controller';
-import {EtoolsDropdownMultiEl} from '@unicef-polymer/etools-unicef/src/etools-dropdown/etools-dropdown-multi';
 import {getObjectsIDs} from '../../../utils/utils';
 import {CommonDataState} from '../../../../redux/reducers/common-data';
 import famEndpoints from '../../../config/endpoints';
@@ -471,7 +470,7 @@ export class EngagementStaffMembersTab extends connect(store)(
                   <etools-dropdown-multi
                     id="activePd"
                     class="${this._setPlaceholderColor(this.partner)}"
-                    .selectedValues="${getObjectsIDs(this.engagement.active_pd)}"
+                    .selectedValues="${getObjectsIDs(this.engagement?.active_pd)}"
                     label="${this.getLabel('active_pd', this.optionsData)}"
                     placeholder="${this.activePdPlaceholder(this.optionsData, this.partner)}"
                     .options="${this.partner?.interventions}"
