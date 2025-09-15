@@ -748,9 +748,11 @@ export class EngagementStaffMembersTab extends connect(store)(
   }
 
   stateChanged(state: RootState) {
-    if (state.commonData.loadedTimestamp) {
-      this.reduxCommonData = state.commonData;
+    if (!state.commonData.loadedTimestamp) {
+      return;
     }
+
+    this.reduxCommonData = state.commonData;
     if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
       this.user = state.user.data;
       this.populateDropdownsAndSetSelectedValues();
