@@ -96,14 +96,14 @@ export const toggleCssClass = (condition: boolean, firstClass: string, secondCla
   return condition ? firstClass : secondClass;
 };
 
-export const multiplyWithExchangeRate = (value: number, exchange_rate: number): number => {
+export const divideWithExchangeRate = (value: number, exchange_rate: number): number => {
   if (!value) {
     value = 0;
   }
   if (!exchange_rate) {
     exchange_rate = 1;
   }
-  return Math.round(value * exchange_rate * 100) / 100;
+  return Math.round((value / exchange_rate) * 100) / 100;
 };
 
 export const getDataFromSessionStorage = (key: string): any => {

@@ -21,7 +21,7 @@ import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styl
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../types/global';
 import {AnyObject} from '@unicef-polymer/etools-types';
-import {multiplyWithExchangeRate, toggleCssClass} from '../../../utils/utils';
+import {divideWithExchangeRate, toggleCssClass} from '../../../utils/utils';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
@@ -250,7 +250,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                             return;
                           }
                           this.numberChanged(detail, 'amount_refunded_local', this.engagement);
-                          detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
+                          detail.value = divideWithExchangeRate(detail.value, this.engagement.exchange_rate);
                           this.numberChanged(detail, 'amount_refunded', this.engagement);
                           this.setUnsupportedAmount(
                             this.engagement,
@@ -344,7 +344,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                             'additional_supporting_documentation_provided_local',
                             this.engagement
                           );
-                          detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
+                          detail.value = divideWithExchangeRate(detail.value, this.engagement.exchange_rate);
                           this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement);
                           this.setUnsupportedAmount(
                             this.engagement,
@@ -430,7 +430,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                             return;
                           }
                           this.numberChanged(detail, 'justification_provided_and_accepted_local', this.engagement);
-                          detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
+                          detail.value = divideWithExchangeRate(detail.value, this.engagement.exchange_rate);
                           this.numberChanged(detail, 'justification_provided_and_accepted', this.engagement);
                           this.setUnsupportedAmount(
                             this.engagement,
@@ -504,7 +504,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                             return;
                           }
                           this.numberChanged(detail, 'write_off_required_local', this.engagement);
-                          detail.value = multiplyWithExchangeRate(detail.value, this.engagement.exchange_rate);
+                          detail.value = divideWithExchangeRate(detail.value, this.engagement.exchange_rate);
                           this.numberChanged(detail, 'write_off_required', this.engagement);
                           this.setUnsupportedAmount(
                             this.engagement,
@@ -744,7 +744,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
     }
 
     this.engagement.pending_unsupported_amount_local = value; //.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-    this.engagement.pending_unsupported_amount = multiplyWithExchangeRate(
+    this.engagement.pending_unsupported_amount = divideWithExchangeRate(
       this.engagement.pending_unsupported_amount_local,
       this.engagement.exchange_rate
     );

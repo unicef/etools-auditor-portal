@@ -30,7 +30,7 @@ import transform from 'lodash-es/transform';
 import {refactorErrorObject} from '../../../../mixins/error-handler';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {getOptionsChoices} from '../../../../mixins/permission-controller';
-import {multiplyWithExchangeRate, toggleCssClass} from '../../../../utils/utils';
+import {divideWithExchangeRate, toggleCssClass} from '../../../../utils/utils';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
@@ -168,7 +168,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                                return;
                              }
                              this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
-                             detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
+                             detail.value = divideWithExchangeRate(detail.value, this.data.exchange_rate);
                              this.numberChanged(detail, 'audited_expenditure', this.data);
                              this.setPercentOfAuditedExpenditure();
                            }}"
@@ -217,7 +217,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                                return;
                              }
                              this.numberChanged(detail, 'financial_findings_local', this.editedItem);
-                             detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
+                             detail.value = divideWithExchangeRate(detail.value, this.data.exchange_rate);
                              this.numberChanged(detail, 'financial_findings', this.editedItem);
                            }}"
                            @focus="${() => {

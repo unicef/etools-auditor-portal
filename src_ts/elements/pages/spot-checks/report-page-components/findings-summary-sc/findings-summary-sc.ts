@@ -17,7 +17,7 @@ import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styl
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
 import {GenericObject} from '../../../../../types/global';
 import pickBy from 'lodash-es/pickBy';
-import {multiplyWithExchangeRate, toggleCssClass} from '../../../../utils/utils';
+import {divideWithExchangeRate, toggleCssClass} from '../../../../utils/utils';
 
 /**
  * @polymer
@@ -146,7 +146,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                         return;
                       }
                       this.numberChanged(detail, 'total_amount_tested_local', this.data);
-                      detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
+                      detail.value = divideWithExchangeRate(detail.value, this.data.exchange_rate);
                       this.numberChanged(detail, 'total_amount_tested', this.data);
                       this.setPercentExpenditure();
                     }}"
@@ -198,7 +198,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                         return;
                       }
                       this.numberChanged(detail, 'total_amount_of_ineligible_expenditure_local', this.data);
-                      detail.value = multiplyWithExchangeRate(detail.value, this.data.exchange_rate);
+                      detail.value = divideWithExchangeRate(detail.value, this.data.exchange_rate);
                       this.numberChanged(detail, 'total_amount_of_ineligible_expenditure', this.data);
                     }}"
                     @focus="${() => {
