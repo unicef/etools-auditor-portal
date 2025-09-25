@@ -333,7 +333,7 @@ export class KeyInternalControlsWeaknesses extends CommonMethodsMixin(LitElement
   }
 
   getKeyInternalWeaknessData() {
-    if (isJsonStrMatch(this.editedBlueprint, cloneDeep(this.dataModel))) {
+    if (isJsonStrMatch(this.editedBlueprint?.risks, cloneDeep(this.dataModel?.risks))) {
       return null;
     }
 
