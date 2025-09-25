@@ -99,7 +99,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 @value-changed="${({detail}: CustomEvent) => {
                   detail.value = detail.value || 0;
                   this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
-                  detail.value *= this.exchangeRate;
+                  detail.value /= this.exchangeRate;
                   this.numberChanged(detail, 'audited_expenditure', this.editedItem);
                 }}"
                 @blur="${this.customValidation}"

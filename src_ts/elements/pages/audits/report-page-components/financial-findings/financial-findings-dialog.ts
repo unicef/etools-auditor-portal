@@ -97,7 +97,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => {
                   this.numberChanged(detail, 'local_amount', this.editedItem);
-                  detail.value *= this.editedItem.exchange_rate || 1;
+                  detail.value /= this.editedItem.exchange_rate || 1;
                   this.numberChanged(detail, 'amount', this.editedItem);
                 }}"
               >
