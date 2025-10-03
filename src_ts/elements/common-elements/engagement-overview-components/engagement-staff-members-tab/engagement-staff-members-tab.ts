@@ -1000,7 +1000,7 @@ export class EngagementStaffMembersTab extends connect(store)(
     if (!partner || !partner.id) {
       return '–';
     }
-    return readonlyPermission('active_pd', permissions) ? '–' : 'Select Relevant PD(s) or SSFA(s)';
+    return readonlyPermission('active_pd', permissions) ? '–' : 'Select Relevant PD(s)';
   }
 
   _getAMPLink(user: EtoolsUser, organizationId: number) {

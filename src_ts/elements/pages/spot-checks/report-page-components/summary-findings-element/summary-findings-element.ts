@@ -35,6 +35,9 @@ import {getTableRowIndexText} from '../../../../utils/utils';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {RootState, store} from '../../../../../redux/store';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 
 /**
  * @LitEelement
@@ -44,8 +47,8 @@ import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
  * @appliesMixin DateMixin
  */
 @customElement('summary-findings-element')
-export class SummaryFindingsElement extends CommonMethodsMixin(
-  TableElementsMixin(DateMixin(ModelChangedMixin(LitElement)))
+export class SummaryFindingsElement extends connect(store)(
+  CommonMethodsMixin(TableElementsMixin(DateMixin(ModelChangedMixin(LitElement))))
 ) {
   static get styles() {
     return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
@@ -206,6 +209,9 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
   @property({type: Object})
   errorObject!: GenericObject;
 
+  @property({type: Object})
+  engagement!: GenericObject;
+
   connectedCallback() {
     super.connectedCallback();
     this.dialogKey = 'summary-findings-dialog';
@@ -221,6 +227,12 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
     this.removeEventListener('show-confirm-dialog', this.openConfirmDeleteDialog as any);
     this.removeEventListener('show-add-dialog', this.openAddEditDialog as any);
     this.removeEventListener('show-edit-dialog', this.openAddEditDialog as any);
+  }
+
+  stateChanged(state: RootState) {
+    if (state.engagement?.data && !isJsonStrMatch(this.engagement, state.engagement.data)) {
+      this.engagement = cloneDeep(state.engagement.data);
+    }
   }
 
   updated(changedProperties: PropertyValues): void {
@@ -249,7 +261,8 @@ export class SummaryFindingsElement extends CommonMethodsMixin(
         editedItem: this.editedItem,
         dialogTitle: this.dialogTitle,
         confirmBtnText: this.confirmBtnText,
-        categoryOfObservation: this.categoryOfObservation
+        categoryOfObservation: this.categoryOfObservation,
+        minDate: this.engagement?.partner_contacted_at
       }
     }).then(() => (this.isAddDialogOpen = false));
   }
