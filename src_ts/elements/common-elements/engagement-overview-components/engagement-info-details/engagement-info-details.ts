@@ -726,7 +726,10 @@ export class EngagementInfoDetails extends connect(store)(
   }
 
   _sortOrderChanged(e: CustomEvent) {
-    const sorted = sortBy(this.allFaceData, (item) => item[e.detail.field]);
+    const isNumericField = ['amount_local', 'amount_usd', 'exchange_rate'].includes(e.detail.field);
+    const sorted = sortBy(this.allFaceData, (item) =>
+      isNumericField ? Number(item[e.detail.field]) : item[e.detail.field]
+    );
     this.allFaceData = e.detail.direction === 'asc' ? sorted : sorted.reverse();
     this.paginatorChanged();
   }
