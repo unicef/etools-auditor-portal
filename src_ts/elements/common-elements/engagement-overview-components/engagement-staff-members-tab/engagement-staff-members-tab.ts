@@ -1174,13 +1174,13 @@ export class EngagementStaffMembersTab extends connect(store)(
       data.offices = officeIDs;
     }
 
-    const originalSectionIDs = (this.originalData.sections || []).map((section) => +section.id);
+    const originalSectionIDs = (this.originalData?.sections || []).map((section) => +section.id);
     const sectionIDs = (this.engagement?.sections || []).map((section) => +section.id);
     if (this.collectionChanged(originalSectionIDs, sectionIDs)) {
       data.sections = sectionIDs;
     }
 
-    const originalActivePds = (this.originalData.active_pd || []).map((pd) => pd.id);
+    const originalActivePds = (this.originalData?.active_pd || []).map((pd) => pd.id);
     const activePds = (this.engagement?.active_pd || []).map((pd) => pd.id);
     if (this.collectionChanged(originalActivePds, activePds)) {
       data.active_pd = activePds;
