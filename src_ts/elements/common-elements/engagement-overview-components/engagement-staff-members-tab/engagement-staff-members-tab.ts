@@ -98,7 +98,10 @@ export class EngagementStaffMembersTab extends connect(store)(
           --primary-color: var(--dark-primary-text-color);
         }
         .search-input-container .search-input::part(form-control-input)::after {
-          --secondary-text-color: var(--dark-primary-text-color);
+          --secondary-text-color: var(--dark-primary-text-color);          
+        }
+        .search-input-container .search-input::part(input) {
+          border-bottom: 1px solid var(--medium-primary-text-color);
         }
         .search-input-container .search-input::part(input):focus {
           --primary-color: var(--dark-primary-text-color);
@@ -854,7 +857,7 @@ export class EngagementStaffMembersTab extends connect(store)(
     if (!this.listQueries?.search) {
       this.datalength = data.count;
     }
-    this.paginator = {...this.paginator, page_size: 5, count: data.count};
+    this.paginator = {...this.paginator, page_size: this.listQueries?.page_size || 5, count: data.count};
     this.dataItems = data.results;
   }
 
