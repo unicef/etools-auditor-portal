@@ -108,7 +108,7 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
       ></etools-media-query>
 
       <div class="row">
-        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
+        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._isStaffSc(this.data?.engagement_type)}">
           <!-- Purchase Order -->
           <etools-input
             id="purchaseOrder"
@@ -199,7 +199,7 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
 
         <div class="col-12 col-lg-4 col-md-6 input-container" 
         ?hidden="${
-          this._hideForSc(this.isStaffSc) ||
+          this._isStaffSc(this.data?.engagement_type) ||
           !this._showPrefix(
             'contract_start_date',
             this.optionsData,
@@ -221,7 +221,7 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
           </datepicker-lite>
         </div>
 
-        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
+        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._isStaffSc(this.data?.engagement_type)}">
           <!-- Contract Expiry Date -->
           <datepicker-lite
             id="contractEndDateInput"
@@ -362,9 +362,6 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
     fields: ['agreement', 'end_date', 'start_date', 'engagement_type', 'partner_contacted_at']
   };
 
-  @property({type: Boolean})
-  isStaffSc = false;
-
   @property({type: Object})
   orderNumber!: GenericObject | null;
 
@@ -488,6 +485,10 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
 
   _isAudit(engagement_type: string) {
     return engagement_type === 'audit' || engagement_type === 'sa';
+  }
+
+  _isStaffSc(engagement_type: string) {
+    return engagement_type === 'sc';
   }
 
   poKeydown(event: any) {
@@ -685,10 +686,6 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
       !collectionExists(fieldName, optionsData, 'GET');
 
     return collectionNotExists;
-  }
-
-  _hideForSc(isStaffSc: any) {
-    return isStaffSc;
   }
 
   _checkInvalid(value) {
