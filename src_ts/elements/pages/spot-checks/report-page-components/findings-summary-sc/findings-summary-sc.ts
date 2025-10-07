@@ -15,6 +15,7 @@ import {tabLayoutStyles} from '../../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../../styles/module-styles';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/shared-styles-lit';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '../../../../../types/global';
 import pickBy from 'lodash-es/pickBy';
 import {divideWithExchangeRate, toggleCssClass} from '../../../../utils/utils';
@@ -131,6 +132,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                 <div class="col-data col-4">Total Amount Tested</div>
                 <div class="col-data col-4 no-colon" ?hidden="${this.data?.prior_face_forms}">
                   <etools-currency
+                    id="ecTotalAmountTestedLocal"
                     class="w100 ${this._setRequired('total_amount_tested_local', this.optionsData)}"
                     .value="${this.data?.total_amount_tested_local}"
                     placeholder="${this.getPlaceholderText('total_amount_tested_local', this.optionsData)}"
@@ -143,6 +145,9 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                         this.data?.prior_face_forms ||
                         Number(this.data?.total_amount_tested_local) === Number(detail?.value)
                       ) {
+                        return;
+                      }
+                      if (!this._validateTotalAmountValue(detail.value)) {
                         return;
                       }
                       this.numberChanged(detail, 'total_amount_tested_local', this.data);
@@ -297,6 +302,18 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject, this.errorObject);
     }
+  }
+
+  _validateTotalAmountValue(totalAmountValue: string) {
+    if ((parseFloat(totalAmountValue) || 0) > (parseFloat(this.data?.total_value_local) || 0)) {
+      fireEvent(this, 'toast', {
+        text: 'Total Amount Tested should not be higher than the amount in the Selected FACE forms'
+      });
+      (this.shadowRoot?.querySelector('#ecTotalAmountTestedLocal') as HTMLInputElement).value =
+        this.data?.total_amount_tested_local || 0;
+      return false;
+    }
+    return true;
   }
 
   getFindingsSummarySCData() {

@@ -400,7 +400,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
         text: 'Audited Expenditure should not be higher than the amount in the Selected FACE forms'
       });
       (this.shadowRoot?.querySelector('#ecAuditedExpenditureLocal') as HTMLInputElement).value =
-        this.data?.audited_expenditure_local || 0;
+        this.editedItem?.audited_expenditure_local || 0;
       return false;
     }
     return true;
