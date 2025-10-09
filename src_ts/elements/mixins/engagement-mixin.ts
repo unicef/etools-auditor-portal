@@ -64,6 +64,9 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Object})
     apOptions!: AnyObject;
 
+    @property({type: Array})
+    apItems: AnyObject[] = [];
+
     @property({type: Object})
     attachmentOptions!: AnyObject;
 

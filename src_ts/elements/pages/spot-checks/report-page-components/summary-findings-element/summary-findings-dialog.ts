@@ -88,7 +88,7 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
                 label="${this.getLabel('findings.recommendation', this.optionsData)}"
                 always-float-label
                 placeholder="${this.getPlaceholderText('findings.recommendation', this.optionsData)}"
-                ?required="${this._setRequired('findings.recommendation', this.optionsData)}"
+                required
                 ?disabled="${this.requestInProcess}"
                 max-rows="4"
                 ?invalid="${this.errors?.recommendation}"

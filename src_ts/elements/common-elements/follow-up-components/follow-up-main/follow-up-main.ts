@@ -18,6 +18,7 @@ import '../../../pages/audits/report-page-components/financial-findings/financia
 import assign from 'lodash-es/assign';
 import isEmpty from 'lodash-es/isEmpty';
 import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 
 /**
  * @LitElement
@@ -38,6 +39,10 @@ export class FollowUpMain extends LitElement {
         .engagementId="${this.engagement.id}"
         .partnerData="${this.engagement.partner}"
         .optionsData="${this.apOptionsData}"
+        @ap-loaded="${({detail}: CustomEvent) => {
+          fireEvent(this, 'ap-loaded', {data: detail.data || []});
+        }}"
+        ;
       >
       </follow-up-actions>
 

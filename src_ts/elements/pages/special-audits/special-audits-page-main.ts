@@ -177,6 +177,9 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                         .engagement="${this.engagement}"
                         .optionsData="${this.engagementOptions}"
                         .apOptionsData="${this.apOptions}"
+                        @ap-loaded="${({detail}: CustomEvent) => {
+                          this.apItems = detail.data || [];
+                        }}"
                       >
                       </follow-up-main>
                     </div>`
@@ -210,7 +213,11 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
               </div>
 
               <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
+                <status-tab-element
+                  .engagementData="${this.engagement}"
+                  .optionsData="${this.engagementOptions}"
+                  .apItems="${this.apItems}"
+                >
                 </status-tab-element>
               </div>
             </div>

@@ -11,6 +11,10 @@ import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import isEqual from 'lodash-es/isEqual';
 import {createDynamicDialog, removeDialog} from '@unicef-polymer/etools-unicef/src/etools-dialog/dynamic-dialog';
 import EtoolsDialog from '@unicef-polymer/etools-unicef/src/etools-dialog/etools-dialog';
+import {AnyObject} from '@unicef-polymer/etools-types';
+import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
+import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import './finalize-warning-dialog';
 
 /**
  * main menu
@@ -26,6 +30,14 @@ export class ActionButtons extends LitElement {
   render() {
     return html`
       ${ActionButtonsStyles}
+      <style>
+        #infoDialog etools-dialog::part(ed-button-styles) {
+          display: none;
+        }
+        sl-dialog.confirmation:part(ed-button-styles) {
+          display: none;
+        }
+      </style>
       <etools-button-group>
         <etools-button id="primary" variant="primary" @click="${this._handlePrimaryClick}">
           ${this.actions?.length ? this._setButtonText(this.actions[0]) : ''}
@@ -72,6 +84,12 @@ export class ActionButtons extends LitElement {
 
   @property({type: Object})
   submitConfirmationDialog!: EtoolsDialog;
+
+  @property({type: Object})
+  engagementData!: AnyObject;
+
+  @property({type: Array})
+  apItems: AnyObject[] = [];
 
   connectedCallback() {
     super.connectedCallback();
@@ -121,6 +139,8 @@ export class ActionButtons extends LitElement {
     const action = this.actions[0].code || this.actions[0];
     if (action === 'submit') {
       this.showSubmitConfirmation();
+    } else if (action === 'finalize') {
+      this.onFinalize();
     } else {
       this.fireActionActivated(action);
     }
@@ -131,9 +151,37 @@ export class ActionButtons extends LitElement {
     if (action) {
       if (action === 'submit') {
         this.showSubmitConfirmation();
+      } else if (action === 'finalize') {
+        this.onFinalize();
       } else {
         this.fireActionActivated(action);
       }
+    }
+  }
+
+  async onFinalize() {
+    let msg = '';
+    let hasFinancialOrPriorityFindings = false;
+    if (this.engagementData?.financial_finding_set?.length) {
+      hasFinancialOrPriorityFindings = true;
+      msg = 'Financial';
+    }
+    if (this.engagementData?.findings?.length) {
+      hasFinancialOrPriorityFindings = true;
+      msg += msg !== '' ? ' and Priority Findings' : 'Priority Findings';
+    } else {
+      msg += ' Findings';
+    }
+
+    if (hasFinancialOrPriorityFindings && this.apItems?.length) {
+      openDialog({
+        dialog: 'finalize-warning-dialog',
+        dialogData: {
+          content: `Engagement has ${msg}. <br /> Please provide Follow-Up Actions.`
+        }
+      });
+    } else {
+      this.fireActionActivated('finalize');
     }
   }
 

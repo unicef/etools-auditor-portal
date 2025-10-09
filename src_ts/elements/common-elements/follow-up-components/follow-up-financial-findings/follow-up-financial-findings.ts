@@ -237,7 +237,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                             return;
                           }
                           if (
-                            !this.validateAuditInputValues(
+                            !this.validateAuditInputValuesLocal(
                               this.engagement,
                               Number(detail?.value),
                               this.engagement.additional_supporting_documentation_provided_local,
@@ -252,7 +252,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                           this.numberChanged(detail, 'amount_refunded_local', this.engagement);
                           detail.value = divideWithExchangeRate(detail.value, this.engagement.exchange_rate);
                           this.numberChanged(detail, 'amount_refunded', this.engagement);
-                          this.setUnsupportedAmount(
+                          this.setUnsupportedAmountLocal(
                             this.engagement,
                             this.engagement.additional_supporting_documentation_provided_local,
                             this.engagement.amount_refunded_local,
@@ -326,7 +326,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                             return;
                           }
                           if (
-                            !this.validateAuditInputValues(
+                            !this.validateAuditInputValuesLocal(
                               this.engagement,
                               this.engagement.amount_refunded_local,
                               Number(detail?.value),
@@ -346,7 +346,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                           );
                           detail.value = divideWithExchangeRate(detail.value, this.engagement.exchange_rate);
                           this.numberChanged(detail, 'additional_supporting_documentation_provided', this.engagement);
-                          this.setUnsupportedAmount(
+                          this.setUnsupportedAmountLocal(
                             this.engagement,
                             this.engagement.additional_supporting_documentation_provided_local,
                             this.engagement.amount_refunded_local,
@@ -417,7 +417,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                             return;
                           }
                           if (
-                            !this.validateAuditInputValues(
+                            !this.validateAuditInputValuesLocal(
                               this.engagement,
                               this.engagement.amount_refunded_local,
                               this.engagement.additional_supporting_documentation_provided_local,
@@ -432,7 +432,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                           this.numberChanged(detail, 'justification_provided_and_accepted_local', this.engagement);
                           detail.value = divideWithExchangeRate(detail.value, this.engagement.exchange_rate);
                           this.numberChanged(detail, 'justification_provided_and_accepted', this.engagement);
-                          this.setUnsupportedAmount(
+                          this.setUnsupportedAmountLocal(
                             this.engagement,
                             this.engagement.additional_supporting_documentation_provided_local,
                             this.engagement.amount_refunded_local,
@@ -491,7 +491,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                             return;
                           }
                           if (
-                            !this.validateAuditInputValues(
+                            !this.validateAuditInputValuesLocal(
                               this.engagement,
                               this.engagement.amount_refunded_local,
                               this.engagement.additional_supporting_documentation_provided_local,
@@ -506,7 +506,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
                           this.numberChanged(detail, 'write_off_required_local', this.engagement);
                           detail.value = divideWithExchangeRate(detail.value, this.engagement.exchange_rate);
                           this.numberChanged(detail, 'write_off_required', this.engagement);
-                          this.setUnsupportedAmount(
+                          this.setUnsupportedAmountLocal(
                             this.engagement,
                             this.engagement.additional_supporting_documentation_provided_local,
                             this.engagement.amount_refunded_local,
@@ -657,6 +657,12 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
   @property({type: Object})
   errorObject!: GenericObject;
 
+  @property({type: String})
+  ineligibleExpenditureLabel = '';
+
+  @property({type: String})
+  financialFindingsLabel = '';
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
@@ -673,6 +679,11 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
       return [];
     }
     this.auditOpinionChoices = getOptionsChoices(options, 'audit_opinion') || [];
+    this.ineligibleExpenditureLabel = this.getLabelWithoutCurrency(
+      'total_amount_of_ineligible_expenditure',
+      this.optionsData
+    );
+    this.financialFindingsLabel = this.getLabelWithoutCurrency('financial_findings', this.optionsData);
   }
 
   getFindingsData() {
@@ -706,32 +717,39 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
     return label;
   }
 
-  validateAuditInputValues(
+  validateAuditInputValuesLocal(
     engagement: GenericObject,
     amount_refunded_local: number,
     additional_supporting_documentation_provided_local: number,
     justification_provided_and_accepted_local: number,
     write_off_required_local: number
   ) {
+    const higherLimit =
+      this.engagement.engagement_type === 'sc'
+        ? Number(engagement.total_amount_of_ineligible_expenditure_local || 0)
+        : Number(engagement.financial_findings_local || 0);
+
+    const msgField =
+      this.engagement.engagement_type === 'sc' ? this.ineligibleExpenditureLabel : this.financialFindingsLabel;
     const inputValid =
-      Number(engagement.financial_findings_local) >=
+      higherLimit >=
       Number(amount_refunded_local || 0) +
         Number(additional_supporting_documentation_provided_local || 0) +
         Number(justification_provided_and_accepted_local || 0) +
         Number(write_off_required_local || 0);
 
     if (!inputValid) {
-      fireEvent(this, 'toast', {text: `The sum of input values cannot be higher than Financial Findings value`});
+      fireEvent(this, 'toast', {text: `The sum of input values cannot be higher than ${msgField} value`});
     }
     return inputValid;
   }
 
-  setUnsupportedAmount(engagement, ...properties) {
+  setUnsupportedAmountLocal(engagement, ...properties) {
     engagement = engagement || {};
     let value = engagement.financial_findings_local || engagement.total_amount_of_ineligible_expenditure_local || 0;
     let changedValues = 0;
     each(properties, (property) => {
-      changedValues += property;
+      changedValues += Number(property || 0);
     });
     if (changedValues === 0) {
       // no value changed, just return;
@@ -743,7 +761,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
       value = 0;
     }
 
-    this.engagement.pending_unsupported_amount_local = value; //.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    this.engagement.pending_unsupported_amount_local = value;
     this.engagement.pending_unsupported_amount = divideWithExchangeRate(
       this.engagement.pending_unsupported_amount_local,
       this.engagement.exchange_rate

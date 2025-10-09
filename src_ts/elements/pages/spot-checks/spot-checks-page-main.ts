@@ -164,6 +164,9 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                         .engagement="${this.engagement}"
                         .optionsData="${this.engagementOptions}"
                         .apOptionsData="${this.apOptions}"
+                        @ap-loaded="${({detail}: CustomEvent) => {
+                          this.apItems = detail.data || [];
+                        }}"
                       >
                       </follow-up-main>
                     </div>`
@@ -197,7 +200,11 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
               </div>
 
               <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
+                <status-tab-element
+                  .engagementData="${this.engagement}"
+                  .optionsData="${this.engagementOptions}"
+                  .apItems="${this.apItems}"
+                >
                 </status-tab-element>
               </div>
             </div>
@@ -229,7 +236,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
       this.resetEngagementDataIfNeeded();
       return;
     }
-
     this.setEngagementDataFromRedux(state);
 
     if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
@@ -282,6 +288,10 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
     data = data || {};
     // Rport data
     const reportPage = this.getElement('#report');
+    const financialFindingData = reportPage && reportPage.getFinancialFindingsData();
+    if (!isNull(financialFindingData)) {
+      data.financial_finding_set = financialFindingData;
+    }
 
     const findingData = reportPage && reportPage.getFindingsData();
     if (findingData) {
@@ -295,11 +305,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
 
     const overviewData = (reportPage && reportPage.getFindingsSummarySCData()) || {};
     assign(data, overviewData);
-
-    const financialFindingData = reportPage && reportPage.getFinancialFindingsData();
-    if (!isNull(financialFindingData)) {
-      data.financial_finding_set = financialFindingData;
-    }
 
     // FollowUp data
     const followUpPage = this.getElement('#follow-up');

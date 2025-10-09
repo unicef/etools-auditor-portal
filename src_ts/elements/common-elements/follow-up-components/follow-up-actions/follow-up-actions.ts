@@ -97,6 +97,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
         @ap-loaded="${({detail}: CustomEvent) => {
           if (detail?.success) {
             this.dataItems = detail.data;
+            fireEvent(this, 'ap-loaded', {data: this.dataItems || []});
           }
         }}"
       ></get-action-points>
@@ -456,6 +457,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
       this._closeEditDialog();
       if (event.detail.data) {
         this.dataItems = [...event.detail.data];
+        fireEvent(this, 'ap-loaded', {data: this.dataItems || []});
       }
     } else {
       this.closeDialogLoading();
