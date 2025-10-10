@@ -149,7 +149,8 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
           </etools-input>
         </div>
 
-        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideField('po_item', this.optionsData)}">
+        <div class="col-12 col-lg-4 col-md-6 input-container" 
+          ?hidden="${this._isStaffSc(this.data?.engagement_type) || this._hideField('po_item', this.optionsData)}">
           <!-- PO Item Number -->
           <etools-dropdown
             id="ddlPOItem"

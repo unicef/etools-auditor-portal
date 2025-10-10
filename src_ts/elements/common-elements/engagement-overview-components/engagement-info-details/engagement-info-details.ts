@@ -94,6 +94,11 @@ export class EngagementInfoDetails extends connect(store)(
         etools-info-tooltip {
           width: 100%;
         }
+        .face-tooltip {
+          width: auto;
+          --etools-icon-fill-color: var(--risk-rating-moderate-color);
+          margin-inline-start: -4px;
+        }
         .w-200px {
           width: 200px;
         }
@@ -423,19 +428,23 @@ export class EngagementInfoDetails extends connect(store)(
                   <div slot="row-data" class="layout-horizontal">
                     <div class="col-data col-2 wrap-text" data-col-header-label="FACE No. (Liquidation)">
                       <etools-checkbox
+                        slot="field"
                         size="small"
-                        ?checked="${item.selected}"
+                        ?checked="${item.checked}"
                         ?disabled="${this.isFaceFormReadonly}"
                         id="${item.id}"
                         @sl-change="${(e: any) => {
                           this.showFaceRequired = false;
-                          this.allFaceData[Number(this.paginator.visible_range[0]) - 1 + _index].selected =
+                          this.allFaceData[Number(this.paginator.visible_range[0]) - 1 + _index].checked =
                             e.target.checked;
                           this.onFaceChange(this.allFaceData);
                         }}"
                       >
                         ${item.face_number}
                       </etools-checkbox>
+                      <etools-info-tooltip class="face-tooltip" ?hidden="${!item.selected}">
+                        <span slot="message"> Face Form is already in use </span>
+                      </etools-info-tooltip>
                     </div>
                     <div class="col-data col-1 wrap-text" data-col-header-label="FACE No. (Request)">
                       ${item.face_accounted}
@@ -708,13 +717,13 @@ export class EngagementInfoDetails extends connect(store)(
 
   setFaceData(faceData: any[], defaultSelection = false) {
     this.allFaceData = faceData || [];
-    this.allFaceData.forEach((x: any) => (x.selected = defaultSelection));
+    this.allFaceData.forEach((x: any) => (x.checked = defaultSelection));
     if (!defaultSelection) {
       // if opening an existing record check previous saved faceForms
       const selectedFaceForms = (this.data.face_forms || []).map((x: any) => x.id);
-      this.allFaceData.forEach((item) => (item.selected = selectedFaceForms.includes(item.id)));
+      this.allFaceData.forEach((item) => (item.checked = selectedFaceForms.includes(item.id)));
     }
-    this.noOfSelectedFaces = this.allFaceData.filter((x) => x.selected).length;
+    this.noOfSelectedFaces = this.allFaceData.filter((x) => x.checked).length;
     this.paginatedFaceData = [];
     this.paginator = JSON.parse(
       JSON.stringify({
@@ -752,7 +761,7 @@ export class EngagementInfoDetails extends connect(store)(
   }
 
   onFaceChange(allFaceData: any[]) {
-    const selectedFaceForms: any[] = (allFaceData || []).filter((x: any) => x.selected);
+    const selectedFaceForms: any[] = (allFaceData || []).filter((x: any) => x.checked);
     this.noOfSelectedFaces = selectedFaceForms.length;
     this.data.face_forms = [...selectedFaceForms];
     let amount_usd = 0;
