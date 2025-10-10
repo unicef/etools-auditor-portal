@@ -108,7 +108,7 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
       ></etools-media-query>
 
       <div class="row">
-        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._isStaffSc(this.data?.engagement_type)}">
+        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this.isStaffSc}">
           <!-- Purchase Order -->
           <etools-input
             id="purchaseOrder"
@@ -150,7 +150,7 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
         </div>
 
         <div class="col-12 col-lg-4 col-md-6 input-container" 
-          ?hidden="${this._isStaffSc(this.data?.engagement_type) || this._hideField('po_item', this.optionsData)}">
+          ?hidden="${this.isStaffSc || this._hideField('po_item', this.optionsData)}">
           <!-- PO Item Number -->
           <etools-dropdown
             id="ddlPOItem"
@@ -200,7 +200,7 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
 
         <div class="col-12 col-lg-4 col-md-6 input-container" 
         ?hidden="${
-          this._isStaffSc(this.data?.engagement_type) ||
+          this.isStaffSc ||
           !this._showPrefix(
             'contract_start_date',
             this.optionsData,
@@ -222,7 +222,7 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
           </datepicker-lite>
         </div>
 
-        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._isStaffSc(this.data?.engagement_type)}">
+        <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this.isStaffSc}">
           <!-- Contract Expiry Date -->
           <datepicker-lite
             id="contractEndDateInput"
@@ -387,6 +387,9 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
   @property({type: Boolean})
   lowResolutionLayout = false;
 
+  @property({type: Boolean})
+  isStaffSc!: boolean;
+
   stateChanged(state: RootState) {
     if (!isJsonStrMatch(this.detailsRoutePath, state.app.routeDetails?.path)) {
       this.detailsRoutePath = state.app.routeDetails?.path;
@@ -486,10 +489,6 @@ export class EngagementPurchaseDetails extends connect(store)(CommonMethodsMixin
 
   _isAudit(engagement_type: string) {
     return engagement_type === 'audit' || engagement_type === 'sa';
-  }
-
-  _isStaffSc(engagement_type: string) {
-    return engagement_type === 'sc';
   }
 
   poKeydown(event: any) {

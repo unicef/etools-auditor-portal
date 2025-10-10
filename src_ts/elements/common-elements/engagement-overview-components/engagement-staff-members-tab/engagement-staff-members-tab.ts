@@ -242,7 +242,8 @@ export class EngagementStaffMembersTab extends connect(store)(
               .data="${this.engagement}"
               .originalData="${this.originalData}"
               .errorObject="${this.errorObject}"
-              .optionsData="${this.optionsData}">
+              .optionsData="${this.optionsData}"
+              .isStaffSc="${this.isStaffSc}">
           </engagement-purchase-details>
           <div class="col-12 section-bottom"></div>
         </div>
@@ -679,6 +680,9 @@ export class EngagementStaffMembersTab extends connect(store)(
     page_size: 5,
     search: ''
   };
+
+  @property({type: Boolean})
+  isStaffSc!: boolean;
 
   @property({type: Object})
   engagementStaffs: GenericObject = {};

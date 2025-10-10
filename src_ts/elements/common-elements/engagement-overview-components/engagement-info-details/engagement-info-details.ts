@@ -443,7 +443,7 @@ export class EngagementInfoDetails extends connect(store)(
                         ${item.face_number}
                       </etools-checkbox>
                       <etools-info-tooltip class="face-tooltip" ?hidden="${!item.selected}">
-                        <span slot="message"> Face Form is already in use </span>
+                        <span slot="message"> Face Form used in another engagement </span>
                       </etools-info-tooltip>
                     </div>
                     <div class="col-data col-1 wrap-text" data-col-header-label="FACE No. (Request)">

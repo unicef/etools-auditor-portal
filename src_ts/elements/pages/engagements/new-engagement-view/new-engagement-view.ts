@@ -152,6 +152,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
               .engagement="${this.engagement}"
               .optionsData="${this.engagementOptions}"
               .errorObject="${this.errorObject}"
+              .isStaffSc="${this.isStaffSc}"
               save-with-button
             >
             </engagement-staff-members-tab>
@@ -221,7 +222,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
   @property({type: String, attribute: 'page-title'})
   pageTitle = '';
 
-  @property({type: Boolean})
+  @property({type: Boolean, attribute: 'is-staff-sc'})
   isStaffSc!: boolean;
 
   @property({type: Object})
