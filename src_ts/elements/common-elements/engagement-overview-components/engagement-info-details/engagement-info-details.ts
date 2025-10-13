@@ -126,6 +126,15 @@ export class EngagementInfoDetails extends connect(store)(
           color: var(--sl-input-label-color);
           display: block;
         }
+
+        .wm-240 {
+          width: 100%;
+          max-width: 240px;
+        }
+        .wm-300 {
+          width: 100%;
+          max-width: 300px;
+        }
         etools-data-table-header {
           --list-bg-color: var(--medium-theme-background-color, #eeeeee);
         }
@@ -329,54 +338,58 @@ export class EngagementInfoDetails extends connect(store)(
               }
               <div class="col-md-12 col-lg-6" ?hidden="${!this.showFace}">
                 <!-- Total Value of Selected FACE Forms -->
-                <etools-currency
-                  class="w100 validate-field
-                                  ${this._isAdditionalFieldRequired(
-                                    'total_value',
-                                    this.optionsData,
-                                    this.data.engagement_type
-                                  )}"
-                  field="total_value"
-                  .value="${this.data.total_value || 0}"
-                  label="Total Value of Selected FACE form(s) in USD"
-                  placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
-                  ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
-                  ?readonly="${
-                    this.itIsReadOnly('total_value', this.optionsData) &&
-                    !this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)
-                  }"
-                  ?invalid="${this._checkInvalid(this.errors.total_value)}"
-                  .errorMessage="${this.errors.total_value}"
-                  @focus="${(event: any) => this._resetFieldError(event)}"
-                  @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'total_value', this.data)}"
-                >
-                </etools-currency>
+                 <div class="wm-240">
+                  <etools-currency
+                    class="w100 validate-field
+                                    ${this._isAdditionalFieldRequired(
+                                      'total_value',
+                                      this.optionsData,
+                                      this.data.engagement_type
+                                    )}"
+                    field="total_value"
+                    .value="${this.data.total_value || 0}"
+                    label="Total Value of Selected FACE form(s) in USD"
+                    placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
+                    ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
+                    ?readonly="${
+                      this.itIsReadOnly('total_value', this.optionsData) &&
+                      !this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)
+                    }"
+                    ?invalid="${this._checkInvalid(this.errors.total_value)}"
+                    .errorMessage="${this.errors.total_value}"
+                    @focus="${(event: any) => this._resetFieldError(event)}"
+                    @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'total_value', this.data)}"
+                  >
+                  </etools-currency>
+                </div>
               </div>
               <div class="col-md-12 col-lg-6" ?hidden="${!this.showFace}">
                 <!-- Total Value of Selected FACE Forms Local in local currency -->
-                <etools-currency
-                  class="w100 validate-field
-                                  ${this._isAdditionalFieldRequired(
-                                    'total_value_local',
-                                    this.optionsData,
-                                    this.data.engagement_type
-                                  )}"
-                  field="total_value_local"
-                  .value="${this.data?.total_value_local || 0}"
-                  label="Total Value of Selected FACE form(s) in Local Currency"
-                  placeholder="${this.getPlaceholderText('total_value_local', this.optionsData)}"
-                  ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
-                  ?readonly="${
-                    this.itIsReadOnly('total_value_local', this.optionsData) &&
-                    !this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)
-                  }"
-                  ?invalid="${this._checkInvalid(this.errors.total_value_local)}"
-                  .errorMessage="${this.errors.total_value_local}"
-                  @focus="${(event: any) => this._resetFieldError(event)}"
-                  @value-changed="${({detail}: CustomEvent) =>
-                    this.numberChanged(detail, 'total_value_local', this.data)}"
-                >
-                </etools-currency>
+                 <div class="wm-300">
+                    <etools-currency
+                      class="w100 validate-field
+                                      ${this._isAdditionalFieldRequired(
+                                        'total_value_local',
+                                        this.optionsData,
+                                        this.data.engagement_type
+                                      )}"
+                      field="total_value_local"
+                      .value="${this.data?.total_value_local || 0}"
+                      label="Total Value of Selected FACE form(s) in Local Currency"
+                      placeholder="${this.getPlaceholderText('total_value_local', this.optionsData)}"
+                      ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
+                      ?readonly="${
+                        this.itIsReadOnly('total_value_local', this.optionsData) &&
+                        !this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)
+                      }"
+                      ?invalid="${this._checkInvalid(this.errors.total_value_local)}"
+                      .errorMessage="${this.errors.total_value_local}"
+                      @focus="${(event: any) => this._resetFieldError(event)}"
+                      @value-changed="${({detail}: CustomEvent) =>
+                        this.numberChanged(detail, 'total_value_local', this.data)}"
+                    >
+                    </etools-currency>
+                </div>
               </div>
             </div>
           </div>

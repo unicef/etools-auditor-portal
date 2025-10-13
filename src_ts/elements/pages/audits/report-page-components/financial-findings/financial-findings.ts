@@ -33,6 +33,10 @@ import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import './financial-findings-dialog.js';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/mixins/currency.js';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import {RootState, store} from '../../../../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 
 /**
  * @customElement
@@ -41,8 +45,8 @@ import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/mixins/currency.
  * @appliesMixin EtoolsCurrency
  */
 @customElement('financial-findings')
-export class FinancialFindings extends TableElementsMixin(
-  CommonMethodsMixin(ModelChangedMixin(EtoolsCurrency(LitElement)))
+export class FinancialFindings extends connect(store)(
+  TableElementsMixin(CommonMethodsMixin(ModelChangedMixin(EtoolsCurrency(LitElement))))
 ) {
   static get styles() {
     return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
@@ -194,6 +198,9 @@ export class FinancialFindings extends TableElementsMixin(
   @property({type: Boolean})
   priorFaceForms = false;
 
+  @property({type: Boolean, attribute: 'is-staff-sc'})
+  isStaffSc = false;
+
   @property({type: String})
   mainProperty = 'financial_finding_set';
 
@@ -242,6 +249,12 @@ export class FinancialFindings extends TableElementsMixin(
     this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
+  public stateChanged(state: RootState) {
+    if (state.engagement?.data && !isJsonStrMatch(this.engagementData, state.engagement.data)) {
+      this.engagementData = cloneDeep(state.engagement.data);
+    }
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
@@ -264,7 +277,9 @@ export class FinancialFindings extends TableElementsMixin(
         priorFaceForms: this.priorFaceForms,
         opener: this,
         dialogTitle: this.dialogTitle,
-        titleOptions: this.titleOptions
+        titleOptions: this.titleOptions,
+        engagement: this.engagementData,
+        isStaffSc: this.isStaffSc
       }
     }).then(() => (this.isAddDialogOpen = false));
   }

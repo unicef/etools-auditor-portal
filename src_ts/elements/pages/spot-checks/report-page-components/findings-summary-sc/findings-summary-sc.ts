@@ -237,7 +237,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                 <div
                   class="col-data align-right pr-20 ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}"
                 >
-                  <label>${this.data?.percent_of_audited_expenditure}</label>
+                  <label>${this.data?.percent_of_audited_expenditure} %</label>
                 </div>
               </div>
             </etools-data-table-row>

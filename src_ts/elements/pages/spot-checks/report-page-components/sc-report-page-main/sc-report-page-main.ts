@@ -57,6 +57,7 @@ export class ScReportPageMain extends LitElement {
         .exchangeRate="${this.engagement?.exchange_rate}"
         .priorFaceForms="${this.engagement?.prior_face_forms}"
         .optionsData="${this.optionsData}"
+        is-staff-sc
       >
       </financial-findings>
 

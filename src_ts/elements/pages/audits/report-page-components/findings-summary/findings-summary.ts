@@ -250,7 +250,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                     <div class="col-data col-4" ?hidden="${this.data.prior_face_forms}">&nbsp;</div>
                     <div class="col-data align-right pr-20
                        ${toggleCssClass(this.data?.prior_face_forms, 'col-8', 'col-4')}">
-                      <label>${this.data?.percent_of_audited_expenditure}</label>
+                      <label>${this.data?.percent_of_audited_expenditure} %</label>
                     </div>
                   </div>
               </etools-data-table-row>
