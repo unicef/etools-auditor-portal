@@ -142,7 +142,7 @@ export class SummaryFindingsElement extends connect(store)(
                     'findings.deadline_of_action',
                     'Deadline of Action'
                   )}"
-                  >${item.deadline_of_action}</span
+                  >${this.prettyDate(String(item.deadline_of_action), '') || '-'}</span
                 >
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
