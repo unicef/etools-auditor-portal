@@ -218,6 +218,15 @@ function CommonMethodsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       return `${prefix} ${label}`;
     }
 
+    getLabelWithoutCurrency(path: string, options: AnyObject) {
+      let label = this.getLabel(path, options);
+      if (label) {
+        label = label.replace(/ *\([^)]*\) */g, '');
+        label = label.replace('$', '');
+      }
+      return label;
+    }
+
     getReadonlyPlaceholder(_data) {
       return '–';
     }

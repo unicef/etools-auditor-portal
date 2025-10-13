@@ -708,15 +708,6 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
     return type === expectedType;
   }
 
-  getLabelWithoutCurrency(path: string, options: AnyObject) {
-    let label = this.getLabel(path, options);
-    if (label) {
-      label = label.replace(/ *\([^)]*\) */g, '');
-      label = label.replace('$', '');
-    }
-    return label;
-  }
-
   validateAuditInputValuesLocal(
     engagement: GenericObject,
     amount_refunded_local: number,

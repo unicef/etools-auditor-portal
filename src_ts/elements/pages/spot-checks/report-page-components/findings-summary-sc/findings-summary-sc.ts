@@ -182,7 +182,9 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
             </etools-data-table-row>
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
-                <div class="col-data col-4">Total Amount of Ineligible Expenditure</div>
+                <div class="col-data col-4">
+                  ${this.getLabelWithoutCurrency('total_amount_of_ineligible_expenditure', this.optionsData)}
+                </div>
                 <div class="col-data col-4 no-colon col" ?hidden="${this.data?.prior_face_forms}">
                   <etools-currency
                     class="w100 ${this._setRequired('total_amount_of_ineligible_expenditure_local', this.optionsData)}"
