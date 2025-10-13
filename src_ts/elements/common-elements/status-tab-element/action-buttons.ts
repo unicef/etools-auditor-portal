@@ -37,6 +37,11 @@ export class ActionButtons extends LitElement {
         sl-dialog.confirmation:part(ed-button-styles) {
           display: none;
         }
+        .action-icon {
+          --etools-icon-font-size: var(--etools-font-size-28, 28px);
+          vertical-align: middle;
+          padding-block-end: 4px;
+        }
       </style>
       <etools-button-group>
         <etools-button id="primary" variant="primary" @click="${this._handlePrimaryClick}">
@@ -48,7 +53,9 @@ export class ActionButtons extends LitElement {
               placement="bottom-end"
               @click="${(event: MouseEvent) => event.stopImmediatePropagation()}"
             >
-              <etools-button slot="trigger" variant="primary" caret></etools-button>
+              <etools-button slot="trigger" variant="primary">
+                <etools-icon name="caret" class="action-icon"></etools-icon>
+              </etools-button>
               <sl-menu>
                 ${(this.actions || [])
                   .filter((x) => this._filterActions(x))
