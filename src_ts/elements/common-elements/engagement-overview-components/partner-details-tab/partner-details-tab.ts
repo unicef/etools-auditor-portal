@@ -93,6 +93,11 @@ export class PartnerDetailsTab extends connect(store)(
         etools-checkbox {
           padding-block-start: 32px;
         }
+        .table-title {
+          color: var(--list-secondary-text-color, #757575);
+          font-size: var(--etools-font-size-18, 18px);
+          font-weight: 500;
+        }
       </style>
 
       <get-partner-data .partnerId="${this.partnerId}" @partner-loaded="${this._partnerLoaded}"></get-partner-data>
@@ -192,7 +197,7 @@ export class PartnerDetailsTab extends connect(store)(
               <etools-input
                 readonly
                 placeholder="—"
-                label="${'Date of Report'}"
+                label="${'Year of Assessment'}"
                 .value="${this.getDateDisplayValue(this.partner.last_assessment_date)}"
               >
               </etools-input>
@@ -205,6 +210,7 @@ export class PartnerDetailsTab extends connect(store)(
                 readonly
                 placeholder="—"
                 label="Amount Audited"
+                currency="$"
                 .value="${this.displayCurrencyAmount(this.totalAmountTested, 0, 0)}"
               >
               </etools-currency>
@@ -215,6 +221,7 @@ export class PartnerDetailsTab extends connect(store)(
                 readonly
                 placeholder="—"
                 label="Financial Findings"
+                currency="$"
                 .value="${this.displayCurrencyAmount(this.totalFinancialFindings, 0, 0)}"
               >
               </etools-currency>
@@ -232,6 +239,7 @@ export class PartnerDetailsTab extends connect(store)(
           </div>
 
           <div class="col-12 padding-v" ?hidden="${!this.partner?.id}">
+            <div class="center-align table-title">Summary of prior engagements</div>
             <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
               <etools-data-table-column class="col-1" field="engagement_type" sortable
                 >Engagement Type</etools-data-table-column

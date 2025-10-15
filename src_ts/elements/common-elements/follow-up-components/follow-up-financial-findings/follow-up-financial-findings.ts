@@ -192,9 +192,7 @@ export class FollowUpFinancialFindings extends CommonMethodsMixin(ModelChangedMi
 
             <etools-data-table-row no-collapse ?hidden="${!this.showFields(this.engagement.engagement_type, 'sc')}">
               <div slot="row-data" class="layout-horizontal h-50">
-                <div class="col-data col-4">
-                  ${this.getLabelWithoutCurrency('total_amount_of_ineligible_expenditure', this.optionsData)}
-                </div>
+                <div class="col-data col-4">Financial Findings</div>
                 <div class="col-data col-4 align-right" ?hidden="${this.engagement?.prior_face_forms}">
                   <etools-currency
                     class="w100"
