@@ -180,7 +180,7 @@ export class ActionButtons extends LitElement {
       msg += ' Findings';
     }
 
-    if (hasFinancialOrPriorityFindings && this.apItems?.length) {
+    if (hasFinancialOrPriorityFindings && !this.apItems?.length) {
       openDialog({
         dialog: 'finalize-warning-dialog',
         dialogData: {
