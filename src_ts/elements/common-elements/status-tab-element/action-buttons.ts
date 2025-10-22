@@ -90,38 +90,43 @@ export class ActionButtons extends LitElement {
   statusBtnMenuOpened!: boolean;
 
   @property({type: Object})
-  submitConfirmationDialog!: EtoolsDialog;
-
-  @property({type: Object})
   engagementData!: AnyObject;
 
   @property({type: Array})
   apItems: AnyObject[] = [];
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.createSubmitConfirmationDialog();
+  getExpenditureText() {
+    const isSC = this.engagementData?.engagement_type === 'sc';
+    const isAudit = this.engagementData?.engagement_type === 'audit';
+    if (!isSC && !isAudit) {
+      return '';
+    }
+    if (isAudit && !(Number(this.engagementData.audited_expenditure_local) > 0)) {
+      return `<p>Warning! Audited Expenditure is not set.</p>`;
+    } else if (isSC && !(Number(this.engagementData.total_amount_tested_local) > 0)) {
+      return `<p>Warning! Total Amount Tested is not set.</p>`;
+    }
+    return '';
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    removeDialog(this.submitConfirmationDialog);
-  }
-
-  createSubmitConfirmationDialog() {
+  openConfirmSubmitDialog() {
     const dialogContent = document.createElement('span');
-    dialogContent.innerText = `Are you sure you want to submit the final report to the UNICEF Audit Focal Point?
+    const expenditureWarningText = this.getExpenditureText();
+    dialogContent.innerHTML = `${expenditureWarningText}
+                               Are you sure you want to submit the final report to the UNICEF Audit Focal Point?
                                You will not be able to make any further changes to the report.`;
-    const dialogConfig = {
-      title: 'Submit',
-      size: 'md',
-      okBtnText: 'Yes',
-      cancelBtnText: 'No',
-      closeCallback: this.submitConfirmationClosed.bind(this),
-      content: dialogContent
-    };
-
-    this.submitConfirmationDialog = createDynamicDialog(dialogConfig);
+    openDialog({
+      dialog: 'are-you-sure',
+      dialogData: {
+        content: dialogContent,
+        confirmBtnText: 'Yes',
+        cancelBtnText: 'No'
+      }
+    }).then(({confirmed}) => {
+      if (confirmed) {
+        this.submitConfirmationClosed(true);
+      }
+    });
   }
 
   closeMenu() {
@@ -145,7 +150,7 @@ export class ActionButtons extends LitElement {
   _handlePrimaryClick() {
     const action = this.actions[0].code || this.actions[0];
     if (action === 'submit') {
-      this.showSubmitConfirmation();
+      this.openConfirmSubmitDialog();
     } else if (action === 'finalize') {
       this.onFinalize();
     } else {
@@ -157,7 +162,7 @@ export class ActionButtons extends LitElement {
     const action = item.code;
     if (action) {
       if (action === 'submit') {
-        this.showSubmitConfirmation();
+        this.openConfirmSubmitDialog();
       } else if (action === 'finalize') {
         this.onFinalize();
       } else {
@@ -192,19 +197,14 @@ export class ActionButtons extends LitElement {
     }
   }
 
-  submitConfirmationClosed(event: CustomEvent) {
-    if (event.detail.confirmed) {
+  submitConfirmationClosed(confirmed: boolean) {
+    if (confirmed) {
       this.fireActionActivated('submit');
     }
-    this.submitConfirmationDialog.opened = false;
   }
 
   fireActionActivated(action: string) {
     fireEvent(this, `action-activated`, {type: action});
-  }
-
-  showSubmitConfirmation() {
-    this.submitConfirmationDialog.opened = true;
   }
 
   _showOtherActions(length) {
