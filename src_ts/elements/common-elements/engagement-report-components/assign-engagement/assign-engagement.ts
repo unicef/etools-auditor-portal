@@ -191,7 +191,7 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
                   class="w100 validate-input ${this._setRequired('currency_of_report', this.optionsData)}"
                   .selected="${this.data.currency_of_report}"
                   .options="${this.currencies}"
-                  option-label="label"
+                  option-label="display_name"
                   option-value="value"
                   label="${this.getLabel('currency_of_report', this.optionsData)}"
                   placeholder="${this.getPlaceholderText('currency_of_report', this.optionsData, 'dropdown')}"

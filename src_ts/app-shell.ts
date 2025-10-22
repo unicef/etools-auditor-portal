@@ -292,7 +292,7 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
   }
 
   formatCurrencyLabel(currencies: [] | undefined) {
-    (currencies || []).forEach((c: any) => (c.label = `${c.value} ${c.label}`));
+    (currencies || []).forEach((c: any) => (c.display_name = `${c.value} ${c.display_name}`));
   }
 
   canAccessPage(page: string) {
