@@ -256,7 +256,6 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
     data.offices = getValueFromResponse(response[3]);
     data.staffMembersUsers = setUsersFullName(getValueFromResponse(response[4]));
     data.staticDropdown = getValueFromResponse(response[5]);
-    this.formatCurrencyLabel(data.staticDropdown?.currencies);
     data.filterAuditors = getValueFromResponse(response[6]);
     data.filterPartners = getValueFromResponse(response[7]);
     data.new_engagementOptions = addAllowedActions(getValueFromResponse(response[8]));
@@ -289,10 +288,6 @@ class AppShell extends connect(store)(LoadingMixin(LitElement)) {
         this._pageNotFound();
       }
     }
-  }
-
-  formatCurrencyLabel(currencies: [] | undefined) {
-    (currencies || []).forEach((c: any) => (c.display_name = `${c.value} ${c.display_name}`));
   }
 
   canAccessPage(page: string) {

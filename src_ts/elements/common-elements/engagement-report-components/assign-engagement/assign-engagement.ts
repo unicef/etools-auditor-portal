@@ -9,7 +9,7 @@ import pickBy from 'lodash-es/pickBy';
 import {GenericObject} from '../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
-import {collectionExists} from '../../../mixins/permission-controller';
+import {collectionExists, getOptionsChoices} from '../../../mixins/permission-controller';
 
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
@@ -247,9 +247,8 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
     if (state.engagement?.data && !isJsonStrMatch(this.data, state.engagement.data)) {
       this.data = cloneDeep(state.engagement.data);
       this.optionsData = cloneDeep(state.engagement.options!);
-    }
-    if (state.commonData.loadedTimestamp) {
-      this.currencies = [...state.commonData.staticDropdown.currencies];
+      this.currencies = getOptionsChoices(this.optionsData, 'currency_of_report');
+      this.formatCurrencyLabel(this.currencies);
     }
   }
 
@@ -259,6 +258,10 @@ export class AssignEngagement extends connect(store)(DateMixin(CommonMethodsMixi
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject, this.errorObject);
     }
+  }
+
+  formatCurrencyLabel(currencies: [] | undefined) {
+    (currencies || []).forEach((c: any) => (c.display_name = `${c.value} ${c.display_name}`));
   }
 
   _isReadOnly(field, prevDate, nextDate, permissions: AnyObject) {
