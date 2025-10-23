@@ -225,11 +225,11 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
       ? Number(this.engagement?.total_amount_tested_local || 0)
       : Number(this.engagement?.audited_expenditure_local || 0);
     const msg = this.isStaffSc ? 'Total Amount Tested' : 'Audited Expenditure';
-    let totalFinancialFindings = (this.engagement?.financial_finding_set || []).length
-      ? (this.engagement?.financial_finding_set || [])
-          .filter((x: any) => x.id !== this.editedItem?.id)
-          .map((x: any) => Number(x.local_amount))
-          .reduce((a, b) => a + b)
+    const financialFindingsArr = (this.engagement?.financial_finding_set || []).filter(
+      (x: any) => x.id !== this.editedItem?.id
+    );
+    let totalFinancialFindings = financialFindingsArr.length
+      ? financialFindingsArr.map((x: any) => Number(x.local_amount)).reduce((a, b) => a + b)
       : 0;
 
     totalFinancialFindings += Number(findingValue);

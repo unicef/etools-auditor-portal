@@ -129,7 +129,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
             </etools-data-table-row>
             <etools-data-table-row no-collapse>
               <div slot="row-data" class="layout-horizontal h-50">
-                <div class="col-data col-4">Total Amount Tested</div>
+                <div class="col-data col-4"><label required>Total Amount Tested</label></div>
                 <div class="col-data col-4 no-colon" ?hidden="${this.data?.prior_face_forms}">
                   <etools-currency
                     id="ecTotalAmountTestedLocal"

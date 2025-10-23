@@ -109,9 +109,9 @@ export class ActionButtons extends LitElement {
 
   openConfirmSubmitDialog() {
     const dialogContent = document.createElement('span');
-    const expenditureWarningText = this.getExpenditureText();
-    dialogContent.innerHTML = `${expenditureWarningText}
-                               Are you sure you want to submit the final report to the UNICEF Audit Focal Point?
+    // @dci not needed for now
+    // const expenditureWarningText = this.getExpenditureText();
+    dialogContent.innerHTML = `Are you sure you want to submit the final report to the UNICEF Audit Focal Point?
                                You will not be able to make any further changes to the report.`;
     openDialog({
       dialog: 'are-you-sure',
