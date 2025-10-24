@@ -147,12 +147,17 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                       ) {
                         return;
                       }
-                      this.onTotalAmountChanged(detail);
+                      if (!this._validateTotalAmountValue(detail.value)) {
+                        return;
+                      }
+                      this.numberChanged(detail, 'total_amount_tested_local', this.data);
+                      detail.value = divideWithExchangeRate(detail.value, this.data.exchange_rate);
+                      this.numberChanged(detail, 'total_amount_tested', this.data);
+                      this.setPercentExpenditure();
                     }}"
                     @focus="${() => {
                       this._resetFieldError;
                     }}"
-                    @blur="${this.onTotalAmountBlur}"
                   >
                   </etools-currency>
                 </div>
@@ -275,9 +280,6 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
   @property({type: Boolean})
   datepickerModal = false;
 
-  @property({type: String})
-  prevOkTotalAmountTestedLocal!: any;
-
   @property({type: Boolean})
   showUSDWarning = false;
 
@@ -300,24 +302,6 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject, this.errorObject);
     }
-    if (changedProperties.has('data')) {
-      this.prevOkTotalAmountTestedLocal = this.data.total_amount_tested_local;
-    }
-  }
-
-  onTotalAmountBlur() {
-    const totalAmountEl = this.shadowRoot?.querySelector('#ecTotalAmountTestedLocal') as HTMLInputElement;
-    const isValidValue = this._validateTotalAmountValue(totalAmountEl.value);
-    if (!isValidValue) {
-      this.onTotalAmountChanged({value: totalAmountEl.value});
-    }
-  }
-
-  onTotalAmountChanged(detail: any) {
-    this.numberChanged(detail, 'total_amount_tested_local', this.data);
-    detail.value = divideWithExchangeRate(detail.value, this.data.exchange_rate);
-    this.numberChanged(detail, 'total_amount_tested', this.data);
-    this.setPercentExpenditure();
   }
 
   _validateTotalAmountValue(totalAmountValue: string) {
@@ -326,8 +310,7 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
         text: 'Total Amount Tested should not be higher than the amount in the Selected FACE forms'
       });
       (this.shadowRoot?.querySelector('#ecTotalAmountTestedLocal') as HTMLInputElement).value =
-        this.prevOkTotalAmountTestedLocal || 0;
-      this.data.total_amount_tested_local = this.prevOkTotalAmountTestedLocal || 0;
+        this.data?.total_amount_tested_local || 0;
       return false;
     }
     let totalFinancialFindings = 0;
@@ -341,11 +324,9 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
         text: 'Total Amount Tested should not be lower than the Financial Findings total'
       });
       (this.shadowRoot?.querySelector('#ecTotalAmountTestedLocal') as HTMLInputElement).value =
-        this.prevOkTotalAmountTestedLocal || 0;
-      this.data.total_amount_tested_local = this.prevOkTotalAmountTestedLocal || 0;
+        this.data?.total_amount_tested_local || 0;
       return false;
     }
-    this.prevOkTotalAmountTestedLocal = this.data.total_amount_tested_local;
     return true;
   }
 
