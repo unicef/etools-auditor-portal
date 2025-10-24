@@ -32,6 +32,7 @@ import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins
 import {getOptionsChoices} from '../../../../mixins/permission-controller';
 import {divideWithExchangeRate, toggleCssClass} from '../../../../utils/utils';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import {SlDetails} from '@shoelace-style/shoelace';
 
 /**
  * @customElement
@@ -164,9 +165,7 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
                              ) {
                                return;
                              }
-                             if (!this._validateAuditedExpenditureValue(detail.value)) {
-                               return;
-                             }
+                             this._validateAuditedExpenditureValue(detail);
                              this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
                              detail.value = divideWithExchangeRate(detail.value, this.data.exchange_rate);
                              this.numberChanged(detail, 'audited_expenditure', this.data);
@@ -382,6 +381,9 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
   @property({type: Object})
   originalData!: GenericObject;
 
+  @property({type: Number})
+  totalFinancialFindings = 0;
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
@@ -394,16 +396,29 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
     }
   }
 
-  _validateAuditedExpenditureValue(auditedValue: string) {
-    if ((parseFloat(auditedValue) || 0) > (parseFloat(this.data?.total_value_local) || 0)) {
+  _validateAuditedExpenditureValue(detail: any) {
+    const auditedValue = detail.value;
+    let valueForReset = this.editedItem?.audited_expenditure_local || this.data?.audited_expenditure_local;
+    if ((Number(valueForReset) || 0) < (Number(this.totalFinancialFindings) || 0)) {
+      valueForReset = this.totalFinancialFindings;
+    }
+
+    if ((Number(auditedValue) || 0) > (Number(this.data?.total_value_local) || 0)) {
       fireEvent(this, 'toast', {
         text: 'Audited Expenditure should not be higher than the amount in the Selected FACE forms'
       });
-      (this.shadowRoot?.querySelector('#ecAuditedExpenditureLocal') as HTMLInputElement).value =
-        this.editedItem?.audited_expenditure_local || 0;
-      return false;
+      (this.shadowRoot?.querySelector('#ecAuditedExpenditureLocal') as HTMLInputElement).value = valueForReset;
+      detail.value = valueForReset;
+      return;
     }
-    return true;
+
+    if ((Number(auditedValue) || 0) < (Number(this.totalFinancialFindings) || 0)) {
+      fireEvent(this, 'toast', {
+        text: 'Audited Expenditure should not be lower than the Financial Findings total'
+      });
+      (this.shadowRoot?.querySelector('#ecAuditedExpenditureLocal') as HTMLInputElement).value = valueForReset;
+      detail.value = valueForReset;
+    }
   }
 
   _checkInvalid(value) {
@@ -416,6 +431,12 @@ export class FindingsSummary extends CommonMethodsMixin(TableElementsMixin(Model
       this.data.percent_of_audited_expenditure = Number(this.data.percent_of_audited_expenditure).toFixed(2);
     }
     this.editedItem = cloneDeep(this.itemModel);
+    this.totalFinancialFindings = 0;
+    if ((this.data?.financial_finding_set || []).length) {
+      this.totalFinancialFindings = this.data?.financial_finding_set
+        .map((x: any) => Number(x.local_amount))
+        .reduce((a, b) => a + b);
+    }
   }
 
   getFindingsSummaryData() {

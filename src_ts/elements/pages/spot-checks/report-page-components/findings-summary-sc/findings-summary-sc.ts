@@ -147,9 +147,8 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
                       ) {
                         return;
                       }
-                      if (!this._validateTotalAmountValue(detail.value)) {
-                        return;
-                      }
+                      this._validateTotalAmountValue(detail);
+
                       this.numberChanged(detail, 'total_amount_tested_local', this.data);
                       detail.value = divideWithExchangeRate(detail.value, this.data.exchange_rate);
                       this.numberChanged(detail, 'total_amount_tested', this.data);
@@ -283,6 +282,9 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
   @property({type: Boolean})
   showUSDWarning = false;
 
+  @property({type: Number})
+  totalFinancialFindings = 0;
+
   @property({type: Object})
   tabTexts: GenericObject = {
     name: 'Audit Overview',
@@ -302,32 +304,34 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
     if (changedProperties.has('errorObject')) {
       this._errorHandler(this.errorObject, this.errorObject);
     }
+    if (changedProperties.has('data')) {
+      this._onDataChanged();
+    }
   }
 
-  _validateTotalAmountValue(totalAmountValue: string) {
+  _validateTotalAmountValue(detail: any) {
+    const totalAmountValue = detail.value;
+    let valueForReset = this.data?.total_amount_tested_local || 0;
+    if ((Number(valueForReset) || 0) < (Number(this.totalFinancialFindings) || 0)) {
+      valueForReset = this.totalFinancialFindings;
+    }
+
     if ((Number(totalAmountValue) || 0) > (Number(this.data?.total_value_local) || 0)) {
       fireEvent(this, 'toast', {
         text: 'Total Amount Tested should not be higher than the amount in the Selected FACE forms'
       });
-      (this.shadowRoot?.querySelector('#ecTotalAmountTestedLocal') as HTMLInputElement).value =
-        this.data?.total_amount_tested_local || 0;
-      return false;
+      detail.value = valueForReset;
+      (this.shadowRoot?.querySelector('#ecTotalAmountTestedLocal') as HTMLInputElement).value = valueForReset;
+      return;
     }
-    let totalFinancialFindings = 0;
-    if ((this.data?.financial_finding_set || []).length) {
-      totalFinancialFindings = this.data?.financial_finding_set
-        .map((x: any) => Number(x.local_amount))
-        .reduce((a, b) => a + b);
-    }
-    if ((Number(totalAmountValue) || 0) < (Number(totalFinancialFindings) || 0)) {
+
+    if ((Number(totalAmountValue) || 0) < (Number(this.totalFinancialFindings) || 0)) {
       fireEvent(this, 'toast', {
         text: 'Total Amount Tested should not be lower than the Financial Findings total'
       });
-      (this.shadowRoot?.querySelector('#ecTotalAmountTestedLocal') as HTMLInputElement).value =
-        this.data?.total_amount_tested_local || 0;
-      return false;
+      detail.value = valueForReset;
+      (this.shadowRoot?.querySelector('#ecTotalAmountTestedLocal') as HTMLInputElement).value = valueForReset;
     }
-    return true;
   }
 
   getFindingsSummarySCData() {
@@ -341,6 +345,15 @@ export class FindingsSummarySC extends CommonMethodsMixin(ModelChangedMixin(Date
         ].indexOf(key) && value !== (this.originalData ? this.originalData[key] : undefined)
       );
     });
+  }
+
+  _onDataChanged() {
+    this.totalFinancialFindings = 0;
+    if ((this.data?.financial_finding_set || []).length) {
+      this.totalFinancialFindings = this.data?.financial_finding_set
+        .map((x: any) => Number(x.local_amount))
+        .reduce((a, b) => a + b);
+    }
   }
 
   _checkInvalid(value) {

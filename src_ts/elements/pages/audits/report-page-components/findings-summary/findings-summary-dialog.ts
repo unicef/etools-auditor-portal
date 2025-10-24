@@ -20,6 +20,7 @@ import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/etools-input/eto
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 // import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
+import {divideWithExchangeRate} from '../../../../utils/utils';
 
 /**
  * @customElement
@@ -99,7 +100,7 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
                 @value-changed="${({detail}: CustomEvent) => {
                   detail.value = detail.value || 0;
                   this.numberChanged(detail, 'audited_expenditure_local', this.editedItem);
-                  detail.value /= this.exchangeRate;
+                  detail.value = divideWithExchangeRate(detail.value, this.exchangeRate);
                   this.numberChanged(detail, 'audited_expenditure', this.editedItem);
                 }}"
                 @blur="${this.customValidation}"
