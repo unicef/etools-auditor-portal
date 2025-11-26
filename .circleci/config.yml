@@ -72,4 +72,4 @@ workflows:
                 - master
                 - staging
                 - develop
-                - dynamic_imports
+                - update-packages
