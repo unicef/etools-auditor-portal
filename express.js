@@ -1,11 +1,15 @@
-const express = require('express'); // eslint-disable-line
-const browserCapabilities = require('browser-capabilities'); // eslint-disable-line
-const UAParser = require('ua-parser-js').UAParser; // eslint-disable-line
-const compression = require('compression'); // eslint-disable-line
+import express from 'express';
+import compression from 'compression';
+import browserCapabilities from 'browser-capabilities';
+import {UAParser} from 'ua-parser-js';
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
-const basedir = __dirname + '/src/'; // eslint-disable-line
-app.use(compression());
+const basedir = __dirname + '/src/';
 
 function getSourcesPath(request, filePath = '') {
   const userAgent = request.headers['user-agent'];
@@ -16,11 +20,13 @@ function getSourcesPath(request, filePath = '') {
   return needToUpgrade ? `${basedir}upgrade-browser.html` : `${basedir}${filePath}`;
 }
 
+app.use(compression());
+
 app.use('/ap/', (req, res, next) => {
   express.static(getSourcesPath(req))(req, res, next);
 });
 
-app.get(/.*service-worker\.js/, function (req, res) {
+app.get(/.*service-worker\.js/, (req, res) => {
   res.sendFile(getSourcesPath(req, 'service-worker.js'));
 });
 
