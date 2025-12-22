@@ -501,11 +501,10 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
 
     _getBasicInfo(data) {
       data = data || {};
-      //@dci
+
       const partnerDetailsData = this.getElement('#partnerDetails').getPartnerData();
       const engagementDetailsData = this.getElement('#engagementDetails').getEngagementData();
 
-      // const authorizedOfficer = this.getElement('#staffMembers').getAuthorizedOfficer();
       const staffMembersData = this.getElement('#staffMembers').getTabData();
 
       if (engagementDetailsData) {
@@ -516,11 +515,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       }
       if (staffMembersData) {
         assign(data, staffMembersData);
-        // data.staff_members = staffMembersData;
       }
-      // if (authorizedOfficer) {
-      //   data.authorized_officers = [authorizedOfficer];
-      // }
 
       return [data, this.engagement.id];
     }

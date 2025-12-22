@@ -18,7 +18,6 @@ import toNumber from 'lodash-es/toNumber';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/etools-input/etools-currency';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
-// import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {divideWithExchangeRate} from '../../../../utils/utils';
 
@@ -83,7 +82,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
             </div>
 
             <div class="col-12 input-container col-md-6 col-lg-4">
-              <!--  ?hidden="${!this.showLocalCurrency}" -->
               <!-- Audited expenditure (Local) -->
               <etools-currency
                 id="audited-expenditure-local"
@@ -137,7 +135,6 @@ export class FindingsSummaryDialog extends CommonMethodsMixin(TableElementsMixin
             </div>
 
             <div class="col-12 input-container col-md-6 col-lg-4">
-              <!--  ?hidden="${!this.showLocalCurrency}" -->
               <!-- Financial findings (Local) -->
               <etools-currency
                 id="financial-findings-local"

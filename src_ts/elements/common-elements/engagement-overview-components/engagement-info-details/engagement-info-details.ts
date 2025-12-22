@@ -980,21 +980,6 @@ export class EngagementInfoDetails extends connect(store)(
     return (face_forms || []).map((item: any) => item.id);
   }
 
-  // collectionChanged(originalCollection: any[], newCollection: any[]) {
-  //   return (
-  //     this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
-  //     this.collectionsAreDifferent(originalCollection, newCollection)
-  //   );
-  // }
-
-  // collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
-  //   return originalCollection.length !== newCollection.length;
-  // }
-
-  // collectionsAreDifferent(originalCollection: any[], newCollection: any[]) {
-  //   return newCollection.filter((id) => !originalCollection.includes(+id)).length > 0;
-  // }
-
   _setShowInput(type: string, resetValues: boolean) {
     this.showFace = !!type && type !== 'ma';
     this.showJoinAudit = !!type && ['audit', 'sa'].includes(type);

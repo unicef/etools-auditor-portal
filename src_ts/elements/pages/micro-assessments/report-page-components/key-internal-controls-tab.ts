@@ -229,10 +229,5 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     this.editedArea = cloneDeep(editedArea);
     this.requestInProcess = true;
     fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
-    // @dci ? was ever getting here ???
-    // const data = cloneDeep(this.editedArea);
-    // data!.changed = true;
-    // this.subjectAreas.children.splice(this.editedAreaIndex, 1, data);
-    // this.dialogOpened = false;
   }
 }

@@ -779,7 +779,6 @@ export class EngagementStaffMembersTab extends connect(store)(
 
     if (changedProperties.has('optionsData')) {
       this.setPermission(this.optionsData);
-      // this._setSharedIpWith(this.optionsData);
     }
     if (changedProperties.has('errorObject')) {
       this._handleUpdateError(this.errorObject?.staff_members);
@@ -795,11 +794,6 @@ export class EngagementStaffMembersTab extends connect(store)(
       this._dataItemsChanged(this.dataItems);
     }
   }
-
-  // _setSharedIpWith(optionsData: AnyObject) {
-  //   const sharedIpWithOptions = getOptionsChoices(optionsData, 'shared_ip_with.child');
-  //   this.sharedIpWithOptions = sharedIpWithOptions || [];
-  // }
 
   partnerLoaded() {
     this.setOfficers(this.partner, this.engagement);
@@ -1171,12 +1165,6 @@ export class EngagementStaffMembersTab extends connect(store)(
     if (authorizedOfficer) {
       data.authorized_officers = [authorizedOfficer];
     }
-
-    // const originalSharedIpWith = this.originalData?.shared_ip_with || [];
-    // const sharedIpWith = this.engagement.shared_ip_with || [];
-    // if (sharedIpWith.length && sharedIpWith.filter((x) => !originalSharedIpWith.includes(x)).length > 0) {
-    //   data.shared_ip_with = sharedIpWith;
-    // }
 
     const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
     const officeIDs = (this.engagement?.offices || []).map((office) => +office.id);

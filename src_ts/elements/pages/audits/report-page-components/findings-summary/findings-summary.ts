@@ -32,7 +32,6 @@ import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins
 import {getOptionsChoices} from '../../../../mixins/permission-controller';
 import {divideWithExchangeRate, toggleCssClass} from '../../../../utils/utils';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
-import {SlDetails} from '@shoelace-style/shoelace';
 
 /**
  * @customElement
