@@ -10,6 +10,7 @@ import '@unicef-polymer/etools-unicef/src/etools-content-panel/etools-content-pa
 import '@unicef-polymer/etools-unicef/src/etools-loading/etools-loading';
 import each from 'lodash-es/each';
 import get from 'lodash-es/get';
+import findIndex from 'lodash-es/findIndex';
 import cloneDeep from 'lodash-es/cloneDeep';
 import isString from 'lodash-es/isString';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
@@ -22,6 +23,7 @@ import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {moduleStyles} from '../../../styles/module-styles';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
 import '../../../data-elements/get-staff-members-list';
+import '../engagement-staff-members-tab/engagement-purchase-details';
 import {checkNonField, refactorErrorObject} from '../../../mixins/error-handler';
 import SlSwitch from '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import '@unicef-polymer/etools-unicef/src/etools-data-table/etools-data-table.js';
@@ -30,6 +32,13 @@ import {AnyObject, EtoolsUser} from '@unicef-polymer/etools-types';
 import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../../redux/store';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {readonlyPermission} from '../../../mixins/permission-controller';
+import {getObjectsIDs} from '../../../utils/utils';
+import {CommonDataState} from '../../../../redux/reducers/common-data';
+import famEndpoints from '../../../config/endpoints';
+import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
+import clone from 'lodash-es/clone';
+import assign from 'lodash-es/assign';
 
 /**
  * @LitElement
@@ -72,7 +81,7 @@ export class EngagementStaffMembersTab extends connect(store)(
         .search-input-container {
           float: right;
           height: 48px;
-          color: #fff;
+          color: var(--dark-primary-text-color);
           overflow: hidden;
           width: 140px;          
         }
@@ -85,18 +94,21 @@ export class EngagementStaffMembersTab extends connect(store)(
         }
         .search-input-container .search-input,
         .search-input-container .search-input:focus {
-          --sl-input-color: var(--light-secondary-text-color);
-          --primary-color: var(--light-primary-text-color);
+          --sl-input-color: var(--dark-primary-text-color);
+          --primary-color: var(--dark-primary-text-color);
         }
         .search-input-container .search-input::part(form-control-input)::after {
-          --secondary-text-color: var(--light-primary-text-color);
+          --secondary-text-color: var(--dark-primary-text-color);          
+        }
+        .search-input-container .search-input::part(input) {
+          border-bottom: 1px solid var(--medium-primary-text-color);
         }
         .search-input-container .search-input::part(input):focus {
-          --primary-color: var(--light-primary-text-color);
-           color: var(--light-primary-text-color);
+          --primary-color: var(--dark-primary-text-color);
+           color: var(--dark-primary-text-color);
         }
         .search-input-container .search-input::part(input)::placeholder {
-          color: var(--light-primary-text-color);
+          color: var(--dark-primary-text-color);
         }
         .search-input-container .search-input[focused] {
           width: 100%;
@@ -106,7 +118,7 @@ export class EngagementStaffMembersTab extends connect(store)(
         }
         .search-input-container .search-input etools-icon {
           top: -1px;
-          color: #fff;
+          color: var(--dark-primary-text-color);
         }
         .panel-content {
           position: relative;
@@ -116,13 +128,14 @@ export class EngagementStaffMembersTab extends connect(store)(
         .etools-checkbox {
           margin-left: 15px;
         }
-        etools-content-panel::part(ecp-content) {
-          padding: 0;
-        }
         .editable-row {
           margin-top: 0;
           margin-bottom: 0;
           padding: 4px 0;
+        }
+        .blue-header {
+          background-color: var(--primary-color);
+          padding-block: 8px;      
         }
         .editable-row etools-icon-button {
           --iron-icon-fill-color: var(--gray-mid);
@@ -130,8 +143,8 @@ export class EngagementStaffMembersTab extends connect(store)(
         etools-loading {
           --etools-loading-overlay-transparency: 0.4;
         }
-        .white {
-          color: #ffffff;
+        .dark {
+          color: var(--dark-primary-text-color);
         }
         #toggleActive::part(control){
           background-color: var(--sl-color-neutral-400) !important;
@@ -139,19 +152,53 @@ export class EngagementStaffMembersTab extends connect(store)(
         #toggleActive[checked]::part(control){
           background-color: #eeeeee !important;
         }
-        .panel-btns-container {
+        .table-staff-header {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          width: 100%;
+          background-color: var(--medium-theme-background-color, #eeeeee);
+          color: var(--dark-primary-text-color);
+          align-items: center;
+        }
+        .table-staff-title {
+          font-weight: 500;
+          font-size: var(--etools-font-size-18, 18px);
+          color: var(--dark-primary-text-color);
+          padding-inline-start: 15px;
+        }
+        .table-staff-filter {
           display: flex;
           flex-direction: row;
           align-items: center;
           justify-content: flex-end;
           column-gap: 20px;
           line-height: 48px;
+          padding-inline-end: 15px;
         }
         sl-switch {
-          --sl-input-label-color: #ffffff;
+          --sl-input-label-color: #00000;
         }
         .center-align {
           justify-content: center !important;
+        }
+        .section-title {
+          color: var(--light-primary-text-color);
+          font-weight: 500;
+          font-size: var(--etools-font-size-18, 18px);
+          padding-inline-start: 12px !important;
+        }
+        .section-bottom {
+          border-bottom: solid 2px var(--primary-color);
+          margin-block-start: 8px;
+          margin-block-end: 16px;
+        }
+        .mt-24 {
+          margin-block-start: 24px;
+        }
+        .mt-8 {
+          margin-block-start: 8px;
         }
         @media(max-width: 576px) {
           .panel-btns-container {
@@ -160,6 +207,9 @@ export class EngagementStaffMembersTab extends connect(store)(
           .search-input-container {
             width: 110px;
           }
+        }
+        .pad-lr {
+          padding: 0 12px;
         }
       </style>
 
@@ -182,59 +232,78 @@ export class EngagementStaffMembersTab extends connect(store)(
       <!--end requests-->
 
       <etools-content-panel
-        panel-title="${this._getTitle(
-          'staff_members',
-          this.optionsData,
-          this.datalength,
-          this.dataItems.length,
-          this.listQueries?.search
-        )}"
-        list
+        class="content-section clearfix"
+        panel-title="Selecting Service Provider"
+        show-expand-btn
       >
-        <div slot="panel-btns">
-          <div class="panel-btns-container">
-            <div class="search-input-container" ?hidden="${!this._showPagination(this.datalength)}">
-              <etools-input
-                id="searchInput"
-                class="search-input  ${this._getSearchInputClass(this.searchString)}"
-                placeholder="Search"
-                .value="${this.searchString}"
-                @value-changed="${({detail}) => {
-                  if (detail.value !== this.searchString) {
-                    this.searchString = detail.value;
-                    this._searchChanged(this.searchString);
-                  }
-                }}"
-              >
-                <etools-icon id="searchIcon" name="search" class="panel-button" slot="prefix"></etools-icon>
-              </etools-input>
-            </div>
-            <sl-switch
-              class="white"
-              id="toggleActive"
-              ?checked="${this.showInactive}"
-              @sl-change="${this.onShowInactiveChanged}"
-            >
-              Show Inactive
-            </sl-switch>
-            <div class="add-button-container">
-              <a
-                class="white"
-                ?hidden="${!this.engagement.agreement?.auditor_firm?.organization_id}"
-                href="${this._getAMPLink(this.user, this.engagement.agreement?.auditor_firm?.organization_id)}"
-                target="_blank"
-              >
-               <sl-tooltip content="Access Management Portal">
-                <etools-icon id="information-icon" name="open-in-new"></etools-icon>
-               </sl-tooltip>
-              </a>
-            </div>
-          </div>
+        <div>
+          <engagement-purchase-details
+              id="engagementPurchaseDetails"
+              .data="${this.engagement}"
+              .originalData="${this.originalData}"
+              .errorObject="${this.errorObject}"
+              .optionsData="${this.optionsData}"
+              .isStaffSc="${this.isStaffSc}">
+          </engagement-purchase-details>
+          <div class="col-12 section-bottom"></div>
         </div>
 
-        <div class="panel-content group">
-          <etools-loading .active="${this.listLoading}" loading-text="Loading list data..." class="loading">
-          </etools-loading>
+        <div class="panel-content group padding-v">
+          <div class="row padding-v">
+            <etools-loading .active="${this.listLoading}" loading-text="Loading list data..." class="loading">
+            </etools-loading>
+            <div class="col-12">
+              <div class="table-staff-header">
+                <div class="table-staff-title">
+                  <label>${this._getTitle(
+                    'staff_members',
+                    this.optionsData,
+                    this.datalength,
+                    this.dataItems.length,
+                    this.listQueries?.search
+                  )}</label>
+                </div>
+                 <div class="table-staff-filter">
+                    <div class="search-input-container" ?hidden="${!this._showPagination(this.datalength)}">
+                      <etools-input
+                        id="searchInput"
+                        class="search-input  ${this._getSearchInputClass(this.searchString)}"
+                        placeholder="Search"
+                        .value="${this.searchString}"
+                        @value-changed="${({detail}) => {
+                          if (detail.value !== this.searchString) {
+                            this.searchString = detail.value;
+                            this._searchChanged(this.searchString);
+                          }
+                        }}"
+                      >
+                        <etools-icon id="searchIcon" name="search" class="panel-button" slot="prefix"></etools-icon>
+                      </etools-input>
+                    </div>
+                    <sl-switch
+                      class="dark"
+                      id="toggleActive"
+                      ?checked="${this.showInactive}"
+                      @sl-change="${this.onShowInactiveChanged}"
+                    >
+                      Show Inactive
+                    </sl-switch>
+                    <div class="add-button-container">
+                      <a
+                        class="dark"
+                        ?hidden="${!this.engagement.agreement?.auditor_firm?.organization_id}"
+                        href="${this._getAMPLink(this.user, this.engagement.agreement?.auditor_firm?.organization_id)}"
+                        target="_blank"
+                      >
+                      <sl-tooltip content="Access Management Portal">
+                        <etools-icon id="information-icon" name="open-in-new"></etools-icon>
+                      </sl-tooltip>
+                      </a>
+                    </div>
+                  </div>
+                 </div>
+              </div>
+            <div class="col-12">
 
           <etools-data-table-header no-collapse no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           ${
@@ -324,7 +393,272 @@ export class EngagementStaffMembersTab extends connect(store)(
               </etools-data-table-footer>`
             : ``
         }
+          <div class="col-12 section-bottom mt-24"></div>
+          </div>
+        </div>
+      </div>
+      
+        <div class="panel-content group">
+           <div class="row">
+            <div class="col-12">
+                <div class="w100 blue-header">
+                  <label class="section-title">Partner Contact</label>
+                </div>
+            </div>
+            <div class="col-12 col-md-12 col-lg-6 input-container">
+            <!-- Partner Address -->
+            <etools-input
+              class="${this._setReadonlyFieldClass(this.partner)}"
+              .value="${this._setPartnerAddress(this.partner)}"
+              label="Partner Address"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
+              readonly
+            >
+            </etools-input>
+          </div>
+          <div class="col-12 col-md-6 col-lg-3 input-container">
+            <!-- Partner Phone Number -->
+            <etools-input
+              class="${this._setReadonlyFieldClass(this.partner)}"
+              .value="${this.partner?.phone_number}"
+              label="${this.getLabel('partner.phone_number', this.optionsData)}"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
+              readonly
+            >
+            </etools-input>
+          </div>
 
+          <div class="col-12 col-md-6 col-lg-3 input-container">
+            <!-- Partner E-mail Address -->
+            <etools-input
+              class="${this._setReadonlyFieldClass(this.partner)}"
+              .value="${this.partner?.email}"
+              label="${this.getLabel('partner.email', this.optionsData)}"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
+              readonly
+            >
+            </etools-input>
+          </div>
+      
+             <div class="col-12 col-lg-6 col-md-6 input-container">
+            <!-- Partner  Officers-->
+            <etools-dropdown
+              id="authorizedOfficer"
+              class="${this._setRequired('authorized_officers', this.optionsData)} ${this._setPlaceholderColor(
+                this.partner
+              )}"
+              .selected="${this.authorizedOfficer?.id}"
+              label="${this.getLabel('authorized_officers', this.optionsData)}"
+              placeholder="${this.getReadonlyPlaceholder(this.partner)}"
+              .options="${this.partner?.partnerOfficers}"
+              option-label="fullName"
+              option-value="id"
+              ?required="${this._setRequired('authorized_officers', this.optionsData)}"
+              ?invalid="${this._checkInvalid(this.errors.authorized_officers)}"
+              ?readonly="${this.isOfficersReadonly(this.optionsData, this.requestInProcess, this.partner)}"
+              .errorMessage="${this.errors.authorized_officers}"
+              @focus="${this._resetFieldError}"
+              dynamic-align
+              @etools-selected-item-changed="${(event: CustomEvent) => {
+                if (this.authorizedOfficer) {
+                  this.authorizedOfficer = event.detail.selectedItem;
+                }
+              }}"
+              trigger-value-change-event
+            >
+            </etools-dropdown>
+          </div>
+          ${
+            this._showActivePd(this.partner?.partner_type, this.specialPartnerTypes)
+              ? html`<div class="col-1 col-lg-6 col-md-6 input-container">
+                  <!-- Active PD -->
+                  <etools-dropdown-multi
+                    id="activePd"
+                    class="${this._setPlaceholderColor(this.partner)}"
+                    .selectedValues="${getObjectsIDs(this.engagement?.active_pd)}"
+                    label="${this.getLabel('active_pd', this.optionsData)}"
+                    placeholder="${this.activePdPlaceholder(this.optionsData, this.partner)}"
+                    .options="${this.partner?.interventions}"
+                    option-label="number"
+                    option-value="id"
+                    ?readonly="${this.isPdReadonly(this.optionsData, this.requestInProcess, this.partner)}"
+                    ?invalid="${this.errors.active_pd}"
+                    .errorMessage="${this.errors.active_pd}"
+                    @focus="${this._resetFieldError}"
+                    dynamic-align
+                    trigger-value-change-event
+                    @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                      if (!isJsonStrMatch(this.engagement.active_pd, detail.selectedItems)) {
+                        this.engagement.active_pd = detail.selectedItems;
+                        this.requestUpdate();
+                      }
+                    }}"
+                  >
+                  </etools-dropdown-multi>
+                </div>`
+              : ``
+          }
+
+          </div>
+          <div class="col-12 section-bottom"></div>
+        </div>
+        
+        <div class="panel-content group">
+           <div class="row padding-v">
+            <div class="col-12 mt-8">
+                <div class="w100 blue-header">
+                  <label class="section-title">Unicef Contact</label>
+                </div>
+            </div>
+                 ${
+                   /* this.showSharedAuditField(this.engagement.engagement_type)
+                     ? html` <!-- Shared Audit with-->
+                          <div
+                           class="col-12 col-lg-4 col-md-6 input-container"
+                           ?hidden="${this._hideField('shared_ip_with', this.optionsData)}"
+                         >
+                           <etools-dropdown-multi
+                             id="sharedWith"
+                             class="w-200px validate-input ${this._setRequired('shared_ip_with', this.optionsData)}"
+                             label="${this.getLabel('shared_ip_with', this.optionsData)}"
+                             placeholder="${this.getPlaceholderText('shared_ip_with', this.optionsData)}"
+                             .options="${this.sharedIpWithOptions}"
+                             option-label="display_name"
+                             option-value="value"
+                             .selectedValues="${this.engagement.shared_ip_with || []}"
+                             ?required="${this._setRequired('shared_ip_with', this.optionsData)}"
+                             ?readonly="${this.itIsReadOnly('shared_ip_with', this.optionsData)}"
+                             ?invalid="${this.errors.shared_ip_with}"
+                             .errorMessage="${this.errors.shared_ip_with}"
+                             @focus="${(event: any) => this._resetFieldError(event)}"
+                             dynamic-align
+                             hide-search
+                             trigger-value-change-event
+                             @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                               const selected = (detail.selectedItems || []).map((x) => x.value);
+                               if (!isJsonStrMatch(this.engagement.shared_ip_with, selected)) {
+                                 this.engagement.shared_ip_with = selected;
+                               }
+                             }}"
+                           >
+                           </etools-dropdown-multi>
+                         </div>` -->
+                     : `` */
+                   ''
+                 }
+                ${
+                  this.showAdditionalField(this.engagement.engagement_type)
+                    ? html` <!-- Sections -->
+                        <div
+                          class="col-12 col-md-6 col-lg-4 input-container"
+                          ?hidden="${this._hideField('sections', this.optionsData)}"
+                        >
+                          <etools-dropdown-multi
+                            class="w100 validate-input ${this._setRequired('sections', this.optionsData)}"
+                            label="${this.getLabel('sections', this.optionsData)}"
+                            placeholder="${this.getPlaceholderText('sections', this.optionsData)}"
+                            .options="${this.sectionOptions}"
+                            option-label="name"
+                            option-value="id"
+                            .selectedValues="${getObjectsIDs(this.engagement?.sections)}"
+                            ?required="${this._setRequired('sections', this.optionsData)}"
+                            ?readonly="${this.itIsReadOnly('sections', this.optionsData)}"
+                            ?invalid="${this.errors.sections}"
+                            .errorMessage="${this.errors.sections}"
+                            @focus="${(event: any) => this._resetFieldError(event)}"
+                            dynamic-align
+                            hide-search
+                            trigger-value-change-event
+                            @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                              if (!isJsonStrMatch(this.engagement.sections, detail.selectedItems)) {
+                                this.engagement.sections = detail.selectedItems;
+                                this.requestUpdate();
+                              }
+                            }}"
+                          >
+                          </etools-dropdown-multi>
+                        </div>
+                        <!-- Offices -->
+                        <div
+                          class="col-12 col-lg-4 col-md-6 input-container"
+                          ?hidden="${this._hideField('offices', this.optionsData)}"
+                        >
+                          <etools-dropdown-multi
+                            class="w100 validate-input ${this._setRequired('offices', this.optionsData)}"
+                            label="${this.getLabel('offices', this.optionsData)}"
+                            placeholder="${this.getPlaceholderText('offices', this.optionsData)}"
+                            .options="${this.officeOptions}"
+                            option-label="name"
+                            option-value="id"
+                            .selectedValues="${getObjectsIDs(this.engagement?.offices)}"
+                            ?required="${this._setRequired('offices', this.optionsData)}"
+                            ?readonly="${this.itIsReadOnly('offices', this.optionsData)}"
+                            ?invalid="${this.errors.offices}"
+                            .errorMessage="${this.errors.offices}"
+                            @focus="${(event: any) => this._resetFieldError(event)}"
+                            dynamic-align
+                            hide-search
+                            trigger-value-change-event
+                            @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                              if (!isJsonStrMatch(this.engagement.offices, detail.selectedItems)) {
+                                this.engagement.offices = detail.selectedItems;
+                                this.requestUpdate();
+                              }
+                            }}"
+                          >
+                          </etools-dropdown-multi>
+                        </div>`
+                    : ``
+                }
+                      <!-- Notified when completed -->
+                      <div
+                        class="col-12 col-lg-4 col-md-6 input-container"
+                        ?hidden="${this._hideField('users_notified', this.optionsData)}"
+                      >
+                        <etools-dropdown-multi
+                          class="w100 validate-input ${this._setRequired('users_notified', this.optionsData)}"
+                          label="${this.getLabel('users_notified', this.optionsData)}"
+                          placeholder="${this.getPlaceholderText('users_notified', this.optionsData)}"
+                          .options="${this.usersNotifiedOptions}"
+                          .loadDataMethod="${this.loadUsersDropdownOptions}"
+                          preserve-search-on-close
+                          option-label="name"
+                          option-value="id"
+                          ?hidden="${this.itIsReadOnly('users_notified', this.optionsData)}"
+                          .selectedValues="${getObjectsIDs(this.engagement?.users_notified)}"
+                          ?required="${this._setRequired('users_notified', this.optionsData)}"
+                          ?invalid="${this.errors.users_notified}"
+                          .errorMessage="${this.errors.users_notified}"
+                          @focus="${(event: any) => this._resetFieldError(event)}"
+                          trigger-value-change-event
+                          @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                            if (!isJsonStrMatch(this.engagement.users_notified, detail.selectedItems)) {
+                              this.engagement.users_notified = detail.selectedItems;
+                              this.requestUpdate();
+                            }
+                          }}"
+                        >
+                        </etools-dropdown-multi>
+                        <div class="pad-lr" ?hidden="${!this.itIsReadOnly('users_notified', this.optionsData)}">
+                          <label for="notifiedLbl" class="paper-label">
+                            ${this.getLabel('users_notified', this.optionsData)}
+                          </label>
+                          <div class="input-label" ?empty="${this._emptyArray(this.engagement.users_notified)}">
+                            ${(this.engagement?.users_notified || []).map(
+                              (item, index) => html`
+                                <div>
+                                  ${item.name}
+                                  <span class="separator"
+                                    >${this.getSeparator(this.engagement?.users_notified, index)}</span
+                                  >
+                                </div>
+                              `
+                            )}
+                          </div>
+            
+          </div>
+        </div>
+        <div class="row-padding-v"></div>
       </etools-content-panel>
     `;
   }
@@ -339,11 +673,17 @@ export class EngagementStaffMembersTab extends connect(store)(
   dataItems: any[] = [];
 
   @property({type: Object})
+  partner!: AnyObject;
+
+  @property({type: Object})
   listQueries: GenericObject = {
     page: 1,
-    page_size: 10,
+    page_size: 5,
     search: ''
   };
+
+  @property({type: Boolean})
+  isStaffSc!: boolean;
 
   @property({type: Object})
   engagementStaffs: GenericObject = {};
@@ -363,11 +703,17 @@ export class EngagementStaffMembersTab extends connect(store)(
   @property({type: Object})
   engagement!: GenericObject;
 
+  @property({type: Object})
+  originalData!: GenericObject;
+
   @property({type: Number})
   organizationId!: number;
 
   @property({type: Boolean})
   showInactive!: boolean;
+
+  @property({type: Object})
+  authorizedOfficer: GenericObject | null = null;
 
   @property({type: String})
   pageType = '';
@@ -378,15 +724,53 @@ export class EngagementStaffMembersTab extends connect(store)(
   @property({type: Object})
   user!: EtoolsUser;
 
+  @property({type: Array})
+  sectionOptions!: GenericObject[];
+
+  @property({type: Array})
+  sectionIDs: number[] = [];
+
+  @property({type: Array})
+  users!: GenericObject[];
+
+  @property({type: Object})
+  reduxCommonData!: CommonDataState;
+
+  @property({type: Array})
+  officeOptions!: GenericObject[];
+
+  @property({type: Array})
+  specialPartnerTypes = ['Bilateral / Multilateral', 'Government'];
+
+  @property({type: Array})
+  sharedIpWithOptions: [] = [];
+
+  @property({type: Object})
+  loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
+
   connectedCallback() {
     super.connectedCallback();
 
+    this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
     this._searchChanged = debounce(this._searchChanged.bind(this), 400) as any;
   }
 
   stateChanged(state: RootState) {
+    if (!state.commonData.loadedTimestamp) {
+      return;
+    }
+
+    this.reduxCommonData = state.commonData;
     if (state.user?.data && !isJsonStrMatch(state.user.data, this.user)) {
       this.user = state.user.data;
+      this.populateDropdownsAndSetSelectedValues();
+    }
+    if (state.engagement?.partner && !isJsonStrMatch(this.partner, state.engagement?.partner)) {
+      this.partner = cloneDeep(state.engagement?.partner);
+      this.partnerLoaded();
+    }
+    if (state.engagement?.originalData && !isJsonStrMatch(this.originalData, state.engagement.originalData)) {
+      this.originalData = cloneDeep(state.engagement.originalData);
     }
   }
 
@@ -411,6 +795,51 @@ export class EngagementStaffMembersTab extends connect(store)(
     }
   }
 
+  partnerLoaded() {
+    this.setOfficers(this.partner, this.engagement);
+  }
+
+  setOfficers(partner, engagement) {
+    if (!partner || !partner.id) {
+      this.authorizedOfficer = null;
+      return;
+    }
+    const engagementOfficer = engagement && engagement.authorized_officers && engagement.authorized_officers[0];
+    const partnerOfficer = partner && partner.partnerOfficers && partner.partnerOfficers[0];
+    if (engagementOfficer) {
+      engagementOfficer.fullName = `${engagementOfficer.first_name} ${engagementOfficer.last_name}`;
+    }
+
+    if (this.isReadOnly('partner', this.optionsData) && engagementOfficer) {
+      this.partner.partnerOfficers = [engagementOfficer];
+      this.authorizedOfficer = engagementOfficer;
+    } else if (partner.partnerOfficers && partner.partnerOfficers.length) {
+      const officerIndex = !!(
+        engagementOfficer &&
+        ~findIndex(partner.partnerOfficers, (officer: any) => {
+          return officer.id === engagementOfficer.id;
+        })
+      );
+
+      this.authorizedOfficer = officerIndex ? engagementOfficer : partnerOfficer;
+    }
+  }
+
+  getAuthorizedOfficer() {
+    if (this.isReadOnly('partner', this.optionsData) || !this.authorizedOfficer || !this.authorizedOfficer.id) {
+      return null;
+    }
+    const engagementOfficer = get(this, 'engagement.authorized_officers[0].id');
+    return this.authorizedOfficer.id === engagementOfficer ? null : this.authorizedOfficer.id;
+  }
+
+  validate() {
+    const el: any = this.shadowRoot?.querySelector('#engagementPurchaseDetails');
+    const purchaseValid = el ? el.validate() : false;
+
+    return purchaseValid;
+  }
+
   setPermission(optionsData: AnyObject) {
     if (!optionsData) {
       return;
@@ -427,7 +856,7 @@ export class EngagementStaffMembersTab extends connect(store)(
     if (!this.listQueries?.search) {
       this.datalength = data.count;
     }
-    this.paginator = {...this.paginator, count: data.count};
+    this.paginator = {...this.paginator, page_size: this.listQueries?.page_size || 5, count: data.count};
     this.dataItems = data.results;
   }
 
@@ -457,6 +886,20 @@ export class EngagementStaffMembersTab extends connect(store)(
     return active || showInactive;
   }
 
+  _emptyArray(arr) {
+    return !arr || !arr.length;
+  }
+
+  getSeparator(collection, index) {
+    if (!collection) {
+      return '';
+    }
+    if (index < collection.length - 1) {
+      return '|';
+    }
+    return '';
+  }
+
   _organizationChanged(id) {
     if (!this.optionsData || !this._canBeChanged(this.optionsData)) {
       return;
@@ -465,6 +908,101 @@ export class EngagementStaffMembersTab extends connect(store)(
       this.resetList();
     }
     this.organizationId = +id;
+  }
+
+  populateDropdownsAndSetSelectedValues() {
+    // For firm staff auditors certain endpoints return 403
+    const userIsFirmStaffAuditor = !this.user.is_unicef_user;
+
+    const savedSections = this.engagement.sections || [];
+    this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData?.sections) || [];
+
+    const savedOffices = this.engagement.offices || [];
+    this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : this.reduxCommonData?.offices) || [];
+
+    if (!this.users) {
+      this.users = this.reduxCommonData?.users || [];
+    }
+    this.setUsersNotifiedOptions();
+
+    this.requestUpdate();
+  }
+
+  _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
+    const endpoint = clone(famEndpoints.users);
+    endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
+    return sendRequest({
+      method: 'GET',
+      endpoint: {
+        url: endpoint.url
+      }
+    }).then((resp: GenericObject) => {
+      this.users = page > 1 ? [...this.users, ...resp.results] : resp.results;
+      this.setUsersNotifiedOptions();
+      return resp;
+    });
+  }
+
+  setUsersNotifiedOptions() {
+    const availableUsers = [...this.users];
+    const notifiedUsers = this.engagement.users_notified || [];
+    this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
+    this.usersNotifiedOptions = availableUsers;
+  }
+
+  populateUsersNotifiedDropDown() {
+    this.usersNotifiedOptions = [...this.users];
+  }
+
+  itIsReadOnly(field: string, permissions: AnyObject) {
+    return !this.engagement.partner?.id || this.isReadOnly(field, permissions);
+  }
+
+  _setPartnerAddress(partner) {
+    if (!partner) {
+      return '';
+    }
+
+    return [partner.address, partner.postal_code, partner.city, partner.country].filter((info) => !!info).join(', ');
+  }
+
+  _setPlaceholderColor(partner) {
+    return !partner || !partner.id ? 'no-data-fetched' : '';
+  }
+
+  _checkInvalid(value) {
+    return !!value;
+  }
+
+  _hideField(fieldName: any, optionsData: AnyObject) {
+    if (!fieldName || !optionsData) {
+      return false;
+    }
+  }
+
+  isOfficersReadonly(permissions: AnyObject, requestInProcess, partner) {
+    return (
+      this.isReadOnly('authorized_officers', permissions, requestInProcess) ||
+      !partner ||
+      !partner.partnerOfficers ||
+      !partner.partnerOfficers.length ||
+      partner.partnerOfficers.length < 2
+    );
+  }
+
+  _showActivePd(partnerType, types) {
+    return typeof partnerType === 'string' && types.every((type) => !~partnerType.indexOf(type));
+  }
+
+  isPdReadonly(permissions: AnyObject, requestInProcess, partner) {
+    return this.isReadOnly('active_pd', permissions, requestInProcess) || !partner.id;
+  }
+
+  activePdPlaceholder(permissions: AnyObject, partner) {
+    if (!partner || !partner.id) {
+      return '–';
+    }
+    return readonlyPermission('active_pd', permissions) ? '–' : 'Select Relevant PD(s)';
   }
 
   _getAMPLink(user: EtoolsUser, organizationId: number) {
@@ -527,7 +1065,7 @@ export class EngagementStaffMembersTab extends connect(store)(
   }
 
   _showPagination(dataItemsCount) {
-    return !!(+dataItemsCount && +dataItemsCount > 10);
+    return !!(+dataItemsCount && +dataItemsCount > 5);
   }
 
   _getTitle(path, basePermission, length, length2, search) {
@@ -569,18 +1107,40 @@ export class EngagementStaffMembersTab extends connect(store)(
     }
   }
 
+  showSharedAuditField(engagement_type: string) {
+    return !!engagement_type && engagement_type !== 'sc';
+  }
+
+  showAdditionalField(engagement_type: string) {
+    return ['sa', 'audit', 'sc'].includes(engagement_type);
+  }
+
   resetList() {
     this.dataItems = [];
-    this.listQueries = {page: 1, page_size: 10, search: ''};
+    this.listQueries = {page: 1, page_size: 5, search: ''};
     this.searchString = '';
     this.engagementStaffs = {};
     this.datalength = 0;
   }
 
   getTabData() {
-    if (!this._canBeChanged(this.optionsData)) {
-      return null;
+    const data: any = {};
+
+    const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
+    const usersNotifiedIDs = (this.engagement?.users_notified || []).map((user) => +user.id);
+    if (this.collectionChanged(originalUsersNotifiedIDs, usersNotifiedIDs)) {
+      data.users_notified = usersNotifiedIDs;
     }
+
+    if (!this._canBeChanged(this.optionsData)) {
+      return data?.users_notified ? data : null;
+    }
+
+    const el: any = this.shadowRoot?.querySelector('#engagementPurchaseDetails');
+    if (el) {
+      assign(data, el.getEngagementData());
+    }
+
     const staffs: any[] = [];
     each(this.engagementStaffs, (value) => {
       staffs.push(value);
@@ -596,8 +1156,50 @@ export class EngagementStaffMembersTab extends connect(store)(
         }
       });
     }
+    if (dataChanged) {
+      data.staff_members = staffs;
+    }
 
-    return dataChanged ? staffs : null;
+    const authorizedOfficer = this.getAuthorizedOfficer();
+
+    if (authorizedOfficer) {
+      data.authorized_officers = [authorizedOfficer];
+    }
+
+    const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
+    const officeIDs = (this.engagement?.offices || []).map((office) => +office.id);
+    if (this.collectionChanged(originalOfficeIDs, officeIDs)) {
+      data.offices = officeIDs;
+    }
+
+    const originalSectionIDs = (this.originalData?.sections || []).map((section) => +section.id);
+    const sectionIDs = (this.engagement?.sections || []).map((section) => +section.id);
+    if (this.collectionChanged(originalSectionIDs, sectionIDs)) {
+      data.sections = sectionIDs;
+    }
+
+    const originalActivePds = (this.originalData?.active_pd || []).map((pd) => pd.id);
+    const activePds = (this.engagement?.active_pd || []).map((pd) => pd.id);
+    if (this.collectionChanged(originalActivePds, activePds)) {
+      data.active_pd = activePds;
+    }
+
+    return data;
+  }
+
+  collectionChanged(originalCollection: any[], newCollection: any[]) {
+    return (
+      this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
+      this.collectionsAreDifferent(originalCollection, newCollection)
+    );
+  }
+
+  collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
+    return originalCollection.length !== newCollection.length;
+  }
+
+  collectionsAreDifferent(originalCollection: any[], newCollection: any[]) {
+    return newCollection.filter((id) => !originalCollection.includes(+id)).length > 0;
   }
 
   _searchChanged(searchString) {

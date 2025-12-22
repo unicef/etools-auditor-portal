@@ -121,15 +121,6 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                       </etools-content-panel>`
                     : ``}
 
-                  <engagement-info-details
-                    id="engagementDetails"
-                    .data="${this.engagement}"
-                    .originalData="${this.originalData}"
-                    .errorObject="${this.errorObject}"
-                    .optionsData="${this.engagementOptions}"
-                  >
-                  </engagement-info-details>
-
                   <partner-details-tab
                     .originalData="${this.originalData}"
                     id="partnerDetails"
@@ -138,6 +129,15 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                     .optionsData="${this.engagementOptions}"
                   >
                   </partner-details-tab>
+
+                  <engagement-info-details
+                    id="engagementDetails"
+                    .data="${this.engagement}"
+                    .originalData="${this.originalData}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
+                  >
+                  </engagement-info-details>
 
                   <engagement-staff-members-tab
                     id="staffMembers"
@@ -170,42 +170,47 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
                         .engagement="${this.engagement}"
                         .optionsData="${this.engagementOptions}"
                         .apOptionsData="${this.apOptions}"
+                        @ap-loaded="${({detail}: CustomEvent) => {
+                          this.apItems = detail.data || [];
+                        }}"
                       >
                       </follow-up-main>
                     </div>`
                   : ``}
 
                 <div name="attachments" ?hidden="${!isActiveTab(this.tab, 'attachments')}">
-                  <div id="attachments">
-                    <file-attachments-tab
-                      id="engagement_attachments"
-                      .optionsData="${this.attachmentOptions}"
-                      .engagement="${this.engagement}"
-                      .errorObject="${this.errorObject}"
-                      .isUnicefUser="${this.user?.is_unicef_user}"
-                      error-property="engagement_attachments"
-                      endpoint-name="attachments"
-                    >
-                    </file-attachments-tab>
+                  <file-attachments-tab
+                    id="engagement_attachments"
+                    .optionsData="${this.attachmentOptions}"
+                    .engagement="${this.engagement}"
+                    .errorObject="${this.errorObject}"
+                    .isUnicefUser="${this.user?.is_unicef_user}"
+                    error-property="engagement_attachments"
+                    endpoint-name="attachments"
+                  >
+                  </file-attachments-tab>
 
-                    ${this.hasReportAccess(this.engagementOptions, this.engagement)
-                      ? html`<file-attachments-tab
-                          id="report_attachments"
-                          is-report-tab="true"
-                          .optionsData="${this.reportAttachmentOptions}"
-                          .engagement="${this.engagement}"
-                          .errorObject="${this.errorObject}"
-                          error-property="report_attachments"
-                          endpoint-name="reportAttachments"
-                        >
-                        </file-attachments-tab>`
-                      : ``}
-                  </div>
+                  ${this.hasReportAccess(this.engagementOptions, this.engagement)
+                    ? html`<file-attachments-tab
+                        id="report_attachments"
+                        is-report-tab="true"
+                        .optionsData="${this.reportAttachmentOptions}"
+                        .engagement="${this.engagement}"
+                        .errorObject="${this.errorObject}"
+                        error-property="report_attachments"
+                        endpoint-name="reportAttachments"
+                      >
+                      </file-attachments-tab>`
+                    : ``}
                 </div>
               </div>
 
               <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
+                <status-tab-element
+                  .engagementData="${this.engagement}"
+                  .optionsData="${this.engagementOptions}"
+                  .apItems="${this.apItems}"
+                >
                 </status-tab-element>
               </div>
             </div>
@@ -250,7 +255,7 @@ export class AuditsPageMain extends connect(store)(CommonMethodsMixin(Engagement
   onEngagementLoaded() {
     if (this.engagementOptions && this.engagement && this.user) {
       this.tabsList = [
-        {tab: 'overview', tabLabel: 'Engagement Overview'},
+        {tab: 'overview', tabLabel: 'Engagement Details'},
         {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
         {tab: 'follow-up', hidden: !this._showFollowUpTabs(this.apOptions), tabLabel: 'Follow-Up'},
         {tab: 'attachments', tabLabel: 'Attachments'}

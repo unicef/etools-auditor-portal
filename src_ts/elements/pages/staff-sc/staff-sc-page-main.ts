@@ -58,7 +58,7 @@ export class StaffScPageMain extends connect(store)(LitElement) {
             ?hidden="${!this.isActivePage(this.activePath, 'new')}"
             .auditFirm="${this.auditFirm}"
             page-title="Add New Staff Spot Check"
-            isStaffSc
+            is-staff-sc
             .requestQueries="${this.partnersListQueries}"
             .partner="${this.partnerDetails}"
             .endpointName="${this.endpointName}"

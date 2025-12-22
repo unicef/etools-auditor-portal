@@ -110,15 +110,6 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                       </etools-content-panel>`
                     : ``}
 
-                  <engagement-info-details
-                    id="engagementDetails"
-                    .data="${this.engagement}"
-                    .originalData="${this.originalData}"
-                    .errorObject="${this.errorObject}"
-                    .optionsData="${this.engagementOptions}"
-                  >
-                  </engagement-info-details>
-
                   <partner-details-tab
                     .originalData="${this.originalData}"
                     id="partnerDetails"
@@ -127,6 +118,15 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                     .optionsData="${this.engagementOptions}"
                   >
                   </partner-details-tab>
+
+                  <engagement-info-details
+                    id="engagementDetails"
+                    .data="${this.engagement}"
+                    .originalData="${this.originalData}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
+                  >
+                  </engagement-info-details>
 
                   <engagement-staff-members-tab
                     id="staffMembers"
@@ -171,6 +171,9 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
                         .engagement="${this.engagement}"
                         .optionsData="${this.engagementOptions}"
                         .apOptionsData="${this.apOptions}"
+                        @ap-loaded="${({detail}: CustomEvent) => {
+                          this.apItems = detail.data || [];
+                        }}"
                       >
                       </follow-up-main>
                     </div>`
@@ -204,7 +207,11 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
               </div>
 
               <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
+                <status-tab-element
+                  .engagementData="${this.engagement}"
+                  .optionsData="${this.engagementOptions}"
+                  .apItems="${this.apItems}"
+                >
                 </status-tab-element>
               </div>
             </div>
@@ -271,7 +278,7 @@ export class MicroAssessmentsPageMain extends connect(store)(EngagementMixin(Com
   onEngagementLoaded() {
     if (this.engagementOptions && this.engagement && this.user) {
       this.tabsList = [
-        {tab: 'overview', tabLabel: 'Engagement Overview'},
+        {tab: 'overview', tabLabel: 'Engagement Details'},
         {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
         {
           tab: 'questionnaire',

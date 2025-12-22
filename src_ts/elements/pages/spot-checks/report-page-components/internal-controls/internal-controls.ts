@@ -33,6 +33,7 @@ export class InternalControls extends CommonMethodsMixin(LitElement) {
       <etools-content-panel
         class="content-section clearfx"
         .panelTitle="${this.getLabel('internal_controls', this.optionsData)}"
+        show-expand-btn
       >
         <div class="layout-horizontal">
           <div class="static-text">

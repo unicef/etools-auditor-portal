@@ -11,11 +11,14 @@ const famEndpoints = {
   engagementInfo: {
     template: '/api/audit/<%=type%>/<%=id%>/'
   },
+  partnerEngagements: {
+    url: '/api/audit/engagements/hact/'
+  },
   createEngagement: {
     url: '/api/audit/engagements/'
   },
   partnerOrganisations: {
-    url: '/api/pmp/v3/partners/?hidden=false',
+    url: '/api/pmp/v3/partners/?with_name=true',
     exp: 24 * 60 * 60 * 1000, // 24h
     cacheTableName: 'partners'
   },
@@ -82,6 +85,9 @@ const famEndpoints = {
   },
   linkAttachment: {
     template: '/api/v2/attachments/links/<%=id%>/'
+  },
+  linkFace: {
+    template: '/api/audit/face-forms/<%=id%>/?page_size=all'
   },
   static: {
     url: '/api/v2/dropdowns/static/',

@@ -188,7 +188,11 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
 
         ${this._showActionButtons(this.actions)
           ? html`<div class="status-buttons">
-              <action-buttons .actions="${this.actions}"></action-button>
+              <action-buttons 
+                .actions="${this.actions}"
+                .engagementData="${this.engagementData}"
+                .apItems="${this.apItems}">
+              </action-button>
             </div>`
           : ``}
       </etools-content-panel>
@@ -200,6 +204,9 @@ export class StatusTabElement extends CommonMethodsMixin(LitElement) {
 
   @property({type: Object})
   statusStates: GenericObject = {};
+
+  @property({type: Array})
+  apItems: AnyObject[] = [];
 
   @property({type: Boolean})
   cancelled = false;

@@ -64,6 +64,9 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     @property({type: Object})
     apOptions!: AnyObject;
 
+    @property({type: Array})
+    apItems: AnyObject[] = [];
+
     @property({type: Object})
     attachmentOptions!: AnyObject;
 
@@ -424,7 +427,6 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if (!this.isStaffSc) {
         data.engagement_type = this.engagement.engagement_type;
       }
-
       // @ts-ignore Defined in derived class when needed
       if (this.customDataPrepare) {
         // @ts-ignore Defined in derived class when needed
@@ -464,9 +466,10 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     _validateBasicInfo(property?) {
       const detailsValid = this.getElement('#engagementDetails').validate();
       const partnerDetailsValid = this.getElement('#partnerDetails').validate();
+      const assigneeValid = this.getElement('#staffMembers').validate();
 
-      if (!detailsValid || !partnerDetailsValid) {
-        const openTab = partnerDetailsValid && detailsValid ? 'attachments' : 'overview';
+      if (!detailsValid || !partnerDetailsValid || !assigneeValid) {
+        const openTab = partnerDetailsValid && detailsValid && assigneeValid ? 'attachments' : 'overview';
         this[property || 'tab'] = openTab;
         fireEvent(this, 'toast', {text: 'Fix invalid fields before saving'});
         return false;
@@ -499,9 +502,9 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
     _getBasicInfo(data) {
       data = data || {};
 
-      const engagementDetailsData = this.getElement('#engagementDetails').getEngagementData();
       const partnerDetailsData = this.getElement('#partnerDetails').getPartnerData();
-      const authorizedOfficer = this.getElement('#partnerDetails').getAuthorizedOfficer();
+      const engagementDetailsData = this.getElement('#engagementDetails').getEngagementData();
+
       const staffMembersData = this.getElement('#staffMembers').getTabData();
 
       if (engagementDetailsData) {
@@ -511,10 +514,7 @@ function EngagementMixin<T extends Constructor<LitElement>>(baseClass: T) {
         assign(data, partnerDetailsData);
       }
       if (staffMembersData) {
-        data.staff_members = staffMembersData;
-      }
-      if (authorizedOfficer) {
-        data.authorized_officers = [authorizedOfficer];
+        assign(data, staffMembersData);
       }
 
       return [data, this.engagement.id];
