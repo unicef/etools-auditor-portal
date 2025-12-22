@@ -338,9 +338,10 @@ export class EngagementStaffMembersTab extends connect(store)(
                             ?disabled="${this._isCheckboxReadonly(
                               item.hasAccess,
                               this.engagementStaffs,
-                              this.saveWithButton
+                              this.saveWithButton,
+                              item
                             )}"
-                            @click="${(e) => this._isActive(e, item)}"
+                            @sl-change="${(e) => this._isActive(e, item)}"
                           >
                           </etools-checkbox>
                         </span>`
@@ -788,7 +789,7 @@ export class EngagementStaffMembersTab extends connect(store)(
       this._selectedStaffsChanged(this.engagement.staff_members);
     }
     if (changedProperties.has('dataItems') || changedProperties.has('engagementStaffs')) {
-      this._staffMembersListChanged(this.dataItems, this.engagementStaffs);
+      this._staffMembersListChanged(this.dataItems);
     }
     if (changedProperties.has('dataItems')) {
       this._dataItemsChanged(this.dataItems);
@@ -1021,13 +1022,15 @@ export class EngagementStaffMembersTab extends connect(store)(
     return url;
   }
 
-  _staffMembersListChanged(data, staffs) {
-    if (!staffs) {
+  _staffMembersListChanged(data) {
+    if (!this.dataItems) {
       return;
     }
+
     each(data, (staff, index) => {
       this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
     });
+
     if (!this.originalTableData) {
       this._dataItemsChanged(this.dataItems);
     }
@@ -1041,12 +1044,12 @@ export class EngagementStaffMembersTab extends connect(store)(
       this.dataItems = cloneDeep(data);
       return;
     }
-    if (!this.engagementStaffs) {
-      this.engagementStaffs = {};
-    }
-    each(data, (staff) => {
-      this.engagementStaffs[staff.user.email] = staff.id;
-    });
+
+    this.engagementStaffs = data.reduce((acc, staff) => {
+      acc[staff.user.email] = staff.id;
+      return acc;
+    }, {});
+
     if (this.dataItems) {
       each(this.dataItems, (staff: GenericObject, index) => {
         this.dataItems[index].hasAccess = !!this.engagementStaffs[staff.user.email];
@@ -1216,7 +1219,11 @@ export class EngagementStaffMembersTab extends connect(store)(
     this.listQueries = {...this.listQueries, search: searchString, page: 1};
   }
 
-  _isCheckboxReadonly(checked, staffs, buttonSave) {
+  _isCheckboxReadonly(checked, staffs, buttonSave, item) {
+    if (!item.has_active_realm) {
+      return true;
+    }
+
     return !buttonSave && checked && Object.keys(staffs || {}).length === 1;
   }
 

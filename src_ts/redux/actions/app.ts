@@ -45,55 +45,31 @@ export const updateStoreRouteDetails: ActionCreator<AppActionUpdateRouteDetails>
   };
 };
 
-const loadPageComponents = (routeDetails: EtoolsRouteDetails) => (_dispatch: any, _getState: any) => {
+const loadPageComponents = (routeDetails: EtoolsRouteDetails) => async (_dispatch: any, _getState: any) => {
   if (!routeDetails) {
     // invalid route => redirect to 404 page
     EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
     return;
   }
 
-  let imported: Promise<any> | undefined;
   const appShell = document.body.querySelector('app-shell');
-  switch (routeDetails.routeName) {
-    case 'engagements':
-      imported = import(`../../elements/pages/engagements/engagements-page-main.js`);
-      break;
-    case 'micro-assessments':
-      imported = import(`../../elements/pages/micro-assessments/micro-assessments-page-main.js`);
-      break;
-    case 'spot-checks':
-    case 'staff-spot-checks':
-      imported = import(`../../elements/pages/spot-checks/spot-checks-page-main.js`);
-      break;
-    case 'audits':
-      imported = import(`../../elements/pages/audits/audits-page-main.js`);
-      break;
-    case 'special-audits':
-      imported = import(`../../elements/pages/special-audits/special-audits-page-main.js`);
-      break;
-    case 'staff-sc':
-      imported = import(`../../elements/pages/staff-sc/staff-sc-page-main.js`);
-      break;
-    case 'not-found':
-    default:
-      imported = import(`../../elements/pages/not-found-page-view/not-found-page-view.js`);
-      break;
+  let page = routeDetails.routeName;
+
+  if (page === 'staff-spot-checks') {
+    page = 'spot-checks';
   }
 
-  if (imported) {
-    imported
-      .then()
-      .catch((err) => {
-        console.log(err);
-        EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
-      })
-      .finally(() =>
-        fireEvent(appShell, 'global-loading', {
-          active: false,
-          loadingSource: 'initialisation'
-        })
-      );
+  try {
+    await import(`../../elements/pages/${page}/${page}-page-main.ts`);
+  } catch {
+    console.log(`No file imports configuration found: ${page}!`);
+    EtoolsRouter.updateAppLocation(EtoolsRouter.getRedirectPath(EtoolsRedirectPath.NOT_FOUND));
   }
+
+  fireEvent(appShell, 'global-loading', {
+    active: false,
+    loadingSource: 'initialisation'
+  });
 };
 
 /** Update Redux route details and import lazy loaded pages */
