@@ -72,7 +72,7 @@ export class ControlFindingsTab extends CommonMethodsMixin(TableElementsMixin(Li
           this.lowResolutionLayout = e.detail.value;
         }}"
       ></etools-media-query>
-      <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations" list>
+      <etools-content-panel panel-title="Detailed Internal Control Findings and Recommendations" list show-expand-btn>
         <div slot="panel-btns">
           <div ?hidden="${!this.canBeChanged}">
             <sl-tooltip content="Add">

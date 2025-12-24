@@ -294,7 +294,6 @@ export class UpdateEngagement extends LitElement {
       // Finish data updating, run submitting if submit url has been saved
       fireEvent(this, 'global-loading', {type: 'submit-engagement', active: true, message: 'Submitting engagement...'});
       fireEvent(this, 'global-loading', {type: 'update-engagement'});
-      // this.requestOptions.method = 'POST';
       this.requestOptions = {
         method: 'POST',
         endpoint: {
@@ -314,8 +313,6 @@ export class UpdateEngagement extends LitElement {
       const url =
         getEndpoint('engagementInfo', {type: engagementInfo.engagement_type, id: engagementInfo.id}).url +
         engagementInfo.finalize;
-      // this.requestOptions.method = 'POST';
-      // this.url = url;
 
       this.actionUrl = url;
       this.postData = engagementInfo.data;

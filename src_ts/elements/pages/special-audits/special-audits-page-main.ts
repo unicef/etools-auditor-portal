@@ -117,15 +117,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                       </etools-content-panel>`
                     : ``}
 
-                  <engagement-info-details
-                    id="engagementDetails"
-                    .data="${this.engagement}"
-                    .originalData="${this.originalData}"
-                    .errorObject="${this.errorObject}"
-                    .optionsData="${this.engagementOptions}"
-                  >
-                  </engagement-info-details>
-
                   <partner-details-tab
                     .originalData="${this.originalData}"
                     id="partnerDetails"
@@ -134,6 +125,15 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                     .optionsData="${this.engagementOptions}"
                   >
                   </partner-details-tab>
+
+                  <engagement-info-details
+                    id="engagementDetails"
+                    .data="${this.engagement}"
+                    .originalData="${this.originalData}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
+                  >
+                  </engagement-info-details>
 
                   <specific-procedure
                     id="specificProcedures"
@@ -177,6 +177,9 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
                         .engagement="${this.engagement}"
                         .optionsData="${this.engagementOptions}"
                         .apOptionsData="${this.apOptions}"
+                        @ap-loaded="${({detail}: CustomEvent) => {
+                          this.apItems = detail.data || [];
+                        }}"
                       >
                       </follow-up-main>
                     </div>`
@@ -210,7 +213,11 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
               </div>
 
               <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
+                <status-tab-element
+                  .engagementData="${this.engagement}"
+                  .optionsData="${this.engagementOptions}"
+                  .apItems="${this.apItems}"
+                >
                 </status-tab-element>
               </div>
             </div>
@@ -256,7 +263,7 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
   onEngagementLoaded() {
     if (this.engagementOptions && this.engagement && this.user) {
       this.tabsList = [
-        {tab: 'overview', tabLabel: 'Engagement Overview'},
+        {tab: 'overview', tabLabel: 'Engagement Details'},
         {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
         {tab: 'follow-up', hidden: !this._showFollowUpTabs(this.apOptions), tabLabel: 'Follow-Up'},
         {tab: 'attachments', tabLabel: 'Attachments'}
@@ -293,7 +300,6 @@ export class SpecialAuditsPageMain extends connect(store)(CommonMethodsMixin(Eng
     if (!reportPage) {
       return data;
     }
-
     const specificProceduresData = reportPage.getSpecificProceduresData();
     const otherRecommendationsData = reportPage.getOtherRecommendationsData();
 

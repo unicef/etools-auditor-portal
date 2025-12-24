@@ -63,6 +63,7 @@ export class OtherRecommendations extends TableElementsMixin(CommonMethodsMixin(
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('other_recommendations', this.optionsData)}"
+        show-expand-btn
         list
       >
         <div slot="panel-btns">

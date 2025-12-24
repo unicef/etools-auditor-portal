@@ -33,7 +33,7 @@ import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 import {EtoolsRouter} from '@unicef-polymer/etools-utils/dist/singleton/router';
 import {AnyObject, RouteDetails} from '@unicef-polymer/etools-types';
-import {setEngagementData, updateCurrentEngagement} from '../../../../redux/actions/engagement';
+import {setEngagementData} from '../../../../redux/actions/engagement';
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {isActiveTab} from '../../../utils/utils';
 /**
@@ -118,6 +118,14 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
       <div class="view-container">
         <div id="pageContent">
           <div name="overview" ?hidden="${!isActiveTab(this.tab, 'overview')}">
+            <partner-details-tab
+              id="partnerDetails"
+              .errorObject="${this.errorObject}"
+              .engagement="${this.engagement}"
+              .optionsData="${this.engagementOptions}"
+            >
+            </partner-details-tab>
+
             <engagement-info-details
               .errorObject="${this.errorObject}"
               .data="${this.engagement}"
@@ -126,14 +134,6 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
               ?isStaffSc="${this.isStaffSc}"
             >
             </engagement-info-details>
-
-            <partner-details-tab
-              id="partnerDetails"
-              .errorObject="${this.errorObject}"
-              .engagement="${this.engagement}"
-              .optionsData="${this.engagementOptions}"
-            >
-            </partner-details-tab>
 
             <specific-procedure
               id="specificProcedures"
@@ -144,19 +144,16 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
               save-with-button
               .dataItems="${this.engagement.specific_procedures}"
               .optionsData="${this.engagementOptions}"
-              @data-items-changed="${({detail}) => {
-                this.engagement.specific_procedures = detail || [];
-                store.dispatch(updateCurrentEngagement(this.engagement));
-              }}"
             >
             </specific-procedure>
 
             <engagement-staff-members-tab
               id="staffMembers"
-              .errorObject="${this.errorObject}"
-              save-with-button
               .engagement="${this.engagement}"
               .optionsData="${this.engagementOptions}"
+              .errorObject="${this.errorObject}"
+              .isStaffSc="${this.isStaffSc}"
+              save-with-button
             >
             </engagement-staff-members-tab>
           </div>
@@ -212,7 +209,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
 
   @property({type: Array})
   tabsList: AnyObject[] = [
-    {tab: 'overview', tabLabel: 'Engagement Overview'},
+    {tab: 'overview', tabLabel: 'Engagement Details'},
     {tab: 'attachments', tabLabel: 'Attachments'}
   ];
 
@@ -225,7 +222,7 @@ export class NewEngagementView extends connect(store)(EngagementMixin(CommonMeth
   @property({type: String, attribute: 'page-title'})
   pageTitle = '';
 
-  @property({type: Boolean})
+  @property({type: Boolean, attribute: 'is-staff-sc'})
   isStaffSc!: boolean;
 
   @property({type: Object})

@@ -5,6 +5,14 @@ export const tabInputsStyles = css`
     display: none !important;
   }
 
+  label[required] {
+    background: url('./assets/images/required.svg') no-repeat 99% 10%/6px;
+    width: auto !important;
+    max-width: 100%;
+    inset-inline-end: auto;
+    padding-inline-end: 15px;
+  }
+
   etools-icon-button[hidden] {
     display: inline-block !important;
     visibility: hidden;
@@ -214,6 +222,7 @@ export const tabInputsStyles = css`
     padding-left: 12px;
   }
 
+  .etools-container,
   etools-dropdown,
   etools-dropdown-multi,
   etools-input,
@@ -259,5 +268,13 @@ export const tabInputsStyles = css`
   .editable-row {
     position: relative;
     align-items: center;
+  }
+  .align-right {
+    justify-content: flex-end !important;
+  }
+  .align-center {
+    justify-content: center !important;
+    text-align: center !important;
+    align-items: center !important;
   }
 `;

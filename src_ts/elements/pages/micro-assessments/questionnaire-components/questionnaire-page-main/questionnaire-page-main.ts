@@ -97,6 +97,7 @@ export class QuestionnairePageMain extends CommonMethodsMixin(LitElement) {
         class="totals"
         .panelTitle="OVERALL RISK RATING ${this.getRating(this.riskAssessment)}"
         .open="${this.overalRiskOpen}"
+        show-expand-btn
       >
       </etools-content-panel>
       ${(this.questionnaire.children || []).map(

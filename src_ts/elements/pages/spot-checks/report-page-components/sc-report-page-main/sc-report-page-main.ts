@@ -2,7 +2,7 @@ import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import '../../../../common-elements/engagement-report-components/send-back-comment/send-back-comment';
-import '../overview-element/overview-element';
+import '../findings-summary-sc/findings-summary-sc';
 import '../summary-findings-element/summary-findings-element';
 import '../internal-controls/internal-controls';
 import {GenericObject} from '../../../../../types/global';
@@ -13,7 +13,8 @@ import isNull from 'lodash-es/isNull';
 import {AssignEngagement} from '../../../../common-elements/engagement-report-components/assign-engagement/assign-engagement';
 import {SummaryFindingsElement} from '../summary-findings-element/summary-findings-element';
 import {InternalControls} from '../internal-controls/internal-controls';
-import {OverviewElement} from '../overview-element/overview-element';
+import {FindingsSummarySC} from '../findings-summary-sc/findings-summary-sc';
+import {FinancialFindings} from '../../../audits/report-page-components/financial-findings/financial-findings';
 
 /**
  * @LitElement
@@ -39,14 +40,26 @@ export class ScReportPageMain extends LitElement {
       >
       </assign-engagement>
 
-      <overview-element
-        id="overviewEngagement"
+      <findings-summary-sc
+        id="findingsSummarySc"
         .data="${this.engagement}"
         .originalData="${this.originalData}"
         .errorObject="${this.errorObject}"
         .optionsData="${this.optionsData}"
       >
-      </overview-element>
+      </findings-summary-sc>
+
+      <financial-findings
+        id="financialFindings"
+        class="mb-24"
+        .errorObject="${this.errorObject}"
+        .dataItems="${this.engagement?.financial_finding_set}"
+        .exchangeRate="${this.engagement?.exchange_rate}"
+        .priorFaceForms="${this.engagement?.prior_face_forms}"
+        .optionsData="${this.optionsData}"
+        is-staff-sc
+      >
+      </financial-findings>
 
       <summary-findings-element
         id="findingsHighPriority"
@@ -123,6 +136,10 @@ export class ScReportPageMain extends LitElement {
     return findings.length ? findings : null;
   }
 
+  getFinancialFindingsData() {
+    return (this.shadowRoot!.querySelector('#financialFindings') as FinancialFindings).getTabData();
+  }
+
   getInternalControlsData() {
     const internalControlsData = (
       this.shadowRoot!.querySelector('#internalControls') as InternalControls
@@ -138,7 +155,9 @@ export class ScReportPageMain extends LitElement {
     return (this.shadowRoot!.querySelector('#assignEngagement') as AssignEngagement).getAssignVisitData() || null;
   }
 
-  getOverviewData() {
-    return (this.shadowRoot!.querySelector('#overviewEngagement') as OverviewElement).getOverviewData() || null;
+  getFindingsSummarySCData() {
+    return (
+      (this.shadowRoot!.querySelector('#findingsSummarySc') as FindingsSummarySC).getFindingsSummarySCData() || null
+    );
   }
 }

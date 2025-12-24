@@ -7,6 +7,7 @@ export interface CommonDataState {
   users: [];
   offices: [];
   partners: [];
+  allPartners: [];
   sections: [];
   staffMembersUsers: AnyObject[];
   staticDropdown: {
@@ -36,6 +37,7 @@ export interface CommonDataState {
 
 const INITIAL_COMMON_DATA: CommonDataState = {
   partners: [],
+  allPartners: [],
   users: [],
   sections: [],
   offices: [],
@@ -70,7 +72,8 @@ const commonData: Reducer<CommonDataState, RootAction> = (state = INITIAL_COMMON
     case SET_ALL_STATIC_DATA:
       return {
         ...state,
-        partners: action.staticData.partners,
+        allPartners: action.staticData.partners,
+        partners: (action.staticData.partners || []).filter((p) => !p.hidden),
         users: action.staticData.users,
         sections: action.staticData.sections,
         offices: action.staticData.offices,

@@ -97,6 +97,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
         @ap-loaded="${({detail}: CustomEvent) => {
           if (detail?.success) {
             this.dataItems = detail.data;
+            fireEvent(this, 'ap-loaded', {data: this.dataItems || []});
           }
         }}"
       ></get-action-points>
@@ -117,7 +118,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
       >
       </get-partner-data>
 
-      <etools-content-panel panel-title="UNICEF Follow-Up Actions" list>
+      <etools-content-panel panel-title="UNICEF Follow-Up Actions" list show-expand-btn>
         <div slot="panel-btns">
           <div ?hidden="${!this.canBeChanged}">
             <sl-tooltip content="Add">
@@ -456,6 +457,7 @@ export class FollowUpActions extends connect(store)(CommonMethodsMixin(TableElem
       this._closeEditDialog();
       if (event.detail.data) {
         this.dataItems = [...event.detail.data];
+        fireEvent(this, 'ap-loaded', {data: this.dataItems || []});
       }
     } else {
       this.closeDialogLoading();
