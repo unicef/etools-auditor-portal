@@ -17,17 +17,16 @@ import {sharedStyles} from '@unicef-polymer/etools-modules-common/dist/styles/sh
 import {tabInputsStyles} from '../../../styles/tab-inputs-styles';
 import {tabLayoutStyles} from '../../../styles/tab-layout-styles';
 import {moduleStyles} from '../../../styles/module-styles';
+import {dataTableStylesLit} from '@unicef-polymer/etools-unicef/src/etools-data-table/styles/data-table-styles';
 
-import get from 'lodash-es/get';
 import {EtoolsInput} from '@unicef-polymer/etools-unicef/src/etools-input/etools-input';
 import CommonMethodsMixin from '../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
+import PaginationMixin from '@unicef-polymer/etools-unicef/src/mixins/pagination-mixin';
+import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/mixins/currency.js';
 import {collectionExists, getOptionsChoices} from '../../../mixins/permission-controller';
-import '../../../data-elements/get-agreement-data';
-import '../../../data-elements/update-agreement-data';
-import famEndpoints from '../../../config/endpoints';
+import {getArraysDiff} from '@unicef-polymer/etools-utils/dist/array.util';
 import {sendRequest} from '@unicef-polymer/etools-utils/dist/etools-ajax';
-import clone from 'lodash-es/clone';
 import {AnyObject, GenericObject} from '@unicef-polymer/etools-types';
 import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
 import {RootState, store} from '../../../../redux/store';
@@ -35,16 +34,21 @@ import {CommonDataState} from '../../../../redux/reducers/common-data';
 import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
 import {updateCurrentEngagement} from '../../../../redux/actions/engagement';
 import cloneDeep from 'lodash-es/cloneDeep';
-import {getObjectsIDs} from '../../../utils/utils';
-import {waitForCondition} from '@unicef-polymer/etools-utils/dist/wait.util';
+import sortBy from 'lodash-es/sortBy';
 import {layoutStyles} from '@unicef-polymer/etools-unicef/src/styles/layout-styles';
+import {getEndpoint} from '../../../config/endpoints-controller';
+import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import dayjs from 'dayjs';
+import {repeat} from 'lit/directives/repeat.js';
 
 /**
  * @customElement
  * @appliesMixin CommonMethodsMixin
  */
 @customElement('engagement-info-details')
-export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(ModelChangedMixin(LitElement))) {
+export class EngagementInfoDetails extends connect(store)(
+  PaginationMixin(CommonMethodsMixin(ModelChangedMixin(EtoolsCurrency(LitElement))))
+) {
   static get styles() {
     return [tabInputsStyles, moduleStyles, tabLayoutStyles, layoutStyles];
   }
@@ -57,10 +61,22 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return html`
       ${sharedStyles}
       <style>
-        :host {
+        ${dataTableStylesLit} :host {
           position: relative;
           display: block;
           margin-bottom: 24px;
+        }
+        etools-currency {
+          width: 100%;
+        }
+        etools-currency::part(form-control-label) {
+          text-align: start;
+        }
+        etools-currency.centered::part(form-control-label) {
+          text-align: center;
+        }
+        etools-currency {
+          text-align: end;
         }
         .po-loading {
           position: absolute;
@@ -68,498 +84,418 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
           left: auto;
           background-color: #fff;
         }
-
         .etools-loading:not([active]) {
           display: none !important;
         }
-
         etools-info-tooltip span[slot='message'] {
           white-space: nowrap;
           line-height: 15px;
         }
-
         etools-info-tooltip {
           width: 100%;
         }
-
+        .face-tooltip {
+          width: auto;
+          --etools-icon-fill-color: var(--risk-rating-moderate-color);
+          margin-inline-start: -4px;
+        }
+        .w-200px {
+          width: 200px;
+        }
+        .wrap {
+          flex-wrap: wrap;
+        }
+        .top-aligned {
+          align-items: flex-start;
+        }
         .join-audit {
-          padding-inline-start: 27px !important;
+          padding-block-start: 12px !important;
+          padding-inline-start: 12px !important;
           box-sizing: border-box;
           align-self: center;
-          margin-bottom: 8px;
         }
-
         .row .input-container {
           margin-bottom: 8px;
           display: flex;
         }
-
-        .pad-lr {
-          padding: 0 12px;
+        .error-label {
+          color: var(--error-color, #ea4022);
+          display: block;
+        }
+        .info-label {
+          color: var(--sl-input-label-color);
+          display: block;
         }
 
-        .year-of-audit.hide {
-          visibility: hidden;
+        .wm-240 {
+          width: 100%;
+          max-width: 240px;
+        }
+        .wm-300 {
+          width: 100%;
+          max-width: 300px;
+        }
+        etools-data-table-header {
+          --list-bg-color: var(--medium-theme-background-color, #eeeeee);
+        }
+        *[slot='row-data'] {
+          padding-block: 6px;
+        }
+        etools-content-panel::part(ecp-content) {
+          padding: 16px 0 !important;
+        }
+        datepicker-lite {
+          padding: 0 !important;
         }
       </style>
 
-      <get-agreement-data
-        .agreement="${this.data.agreement}"
-        .orderNumber="${this.orderNumber}"
-        @agreement-loaded="${this._agreementLoaded}"
-      >
-      </get-agreement-data>
+      <etools-media-query
+        query="(max-width: 1400px)"
+        @query-matches-changed="${(e: CustomEvent) => {
+          this.lowResolutionLayout = e.detail.value;
+        }}"
+      ></etools-media-query>
 
-      <update-agreement-data
-        .agreement="${this.data.agreement}"
-        .newDate="${this.contractExpiryDate}"
-        @loading-state-changed="${this._poUpdatingStateChanged}"
-        @agreement-changed="${this._agreementLoaded}"
-      >
-      </update-agreement-data>
-
-      <etools-content-panel class="content-section clearfix" panel-title="Engagement Overview">
+      <etools-content-panel class="content-section clearfix" panel-title="Selecting Engagement" show-expand-btn>
+        <etools-loading .active="${this.loadingFaceForms}" loading-text="Loading Face Forms..." class="loading">
+        </etools-loading>
         <div class="row">
-          <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
-            <!-- Purchase Order -->
-            <etools-input
-              id="purchaseOrder"
-              class="w100 ${this._setRequired('agreement', this.optionsData)}"
-              field="agreement"
-              .value="${this.data.agreement?.order_number}"
-              allowed-pattern="[0-9]"
-              label="${this.getLabel('agreement.order_number', this.optionsData)}"
-              placeholder="Enter ${this.getLabel('agreement.order_number', this.optionsData)}"
-              ?readonly="${this.isReadOnly('agreement', this.optionsData)}"
-              maxlength="30"
-              required
-              ?invalid="${this._checkInvalid(this.errors.agreement)}"
-              .errorMessage="${this.errors?.agreement}"
-              @focus="${(event: any) => this._resetFieldError(event)}"
-              @keydown="${(event: any) => this.poKeydown(event)}"
-              @blur="${(event: any) => this._requestAgreement(event)}"
-              @value-changed="${({detail}: CustomEvent) => {
-                this.valueChanged(detail, 'order_number', this.data.agreement);
-              }}"
-            >
-            </etools-input>
-
-            <etools-loading .active="${this.requestInProcess}" no-overlay loading-text="" class="po-loading">
-            </etools-loading>
-          </div>
-
-          <div class="col-12 col-lg-4 col-md-6 input-container">
-            <!-- Auditor -->
-            <etools-input
-              id="auditorInput"
-              class="w100 ${this._setReadonlyFieldClass(this.data.agreement)}"
-              .value="${this.data.agreement?.auditor_firm?.name}"
-              label="${this.getLabel('agreement.auditor_firm.name', this.optionsData)}"
-              placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
-              readonly
-            >
-            </etools-input>
-          </div>
-
-          <div
-            class="col-12 col-lg-4 col-md-6 input-container"
-            ?hidden="${this._hideField('po_item', this.optionsData)}"
-          >
-            <!-- PO Item Number -->
-            <etools-dropdown
-              id="ddlPOItem"
-              class="w100 validate-field ${this._setRequired('po_item', this.optionsData)}"
-              .selected="${this.data.po_item}"
-              label="${this.getLabel('po_item', this.optionsData)}"
-              placeholder="&#8212;"
-              .options="${this._getPoItems(this.data.agreement)}"
-              option-label="number"
-              option-value="id"
-              ?required="${this._setRequired('po_item', this.optionsData)}"
-              ?readonly="${this._isDataAgreementReadonly('po_item', this.optionsData, this.data.agreement)}"
-              ?invalid="${this._checkInvalid(this.errors.po_item)}"
-              .errorMessage="${this.errors.po_item}"
-              @focus="${(event: any) => this._resetFieldError(event)}"
-              @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                this.selectedItemChanged(detail, 'po_item', 'id', this.data)}"
-              hide-search
-              trigger-value-change-event
-            >
-            </etools-dropdown>
-          </div>
-
-          <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
-            <!-- PO Date -->
-            <datepicker-lite
-              id="contractStartDateInput"
-              class="w100 ${this._setReadonlyFieldClass(this.data.agreement)}"
-              .value="${this.data.agreement?.contract_start_date}"
-              label="${this.getLabel('agreement.contract_start_date', this.optionsData)}"
-              placeholder="${this.getReadonlyPlaceholder(this.data.agreement)}"
-              readonly
-              selected-date-display-format="D MMM YYYY"
-              ?hidden="${!this._showPrefix(
-                'contract_start_date',
-                this.optionsData,
-                this.data.agreement?.contract_start_date,
-                'readonly'
-              )}"
-              name="date-range"
-            >
-            </datepicker-lite>
-          </div>
-
-          <div class="col-12 col-lg-4 col-md-6 input-container" ?hidden="${this._hideForSc(this.isStaffSc)}">
-            <!-- Contract Expiry Date -->
-            <datepicker-lite
-              id="contractEndDateInput"
-              class="w100 ${this._setRequired('related_agreement.contract_end_date', this.optionsData)} validate-field"
-              .value="${this.data.agreement?.contract_end_date}"
-              label="${this.getLabel('agreement.contract_end_date', this.optionsData)}"
-              placeholder="${this.getPlaceholderText('agreement.contract_end_date', this.optionsData, 'datepicker')}"
-              ?required="${this._setRequired('related_agreement.contract_end_date', this.optionsData)}"
-              ?readonly="${this.isReadOnly('related_agreement.contract_end_date', this.optionsData)}"
-              ?invalid="${this._checkInvalid(this.errors.contract_end_date)}"
-              .errorMessage="${this.errors.contract_end_date}"
-              @focus="${(event: any) => this._resetFieldError(event)}"
-              @date-has-changed="${(e: CustomEvent) => this._contractEndDateHasChanged(e)}"
-              selected-date-display-format="D MMM YYYY"
-              min-date="${this._setExpiryMinDate(this.data.agreement?.contract_start_date)}"
-            >
-            </datepicker-lite>
-            <etools-loading .active="${this.poUpdating}" no-overlay loading-text="" class="po-loading"></etools-loading>
-          </div>
-
-          <div
-            class="col-12 col-lg-4 col-md-6 input-container"
-            ?hidden="${this._hideField('partner_contacted_at', this.optionsData)}"
-          >
-            <!-- Date Partner Was Contacted -->
-            <datepicker-lite
-              id="contactedDateInput"
-              class="w100 ${this._setRequired('partner_contacted_at', this.optionsData)} validate-field"
-              .value="${this.data.partner_contacted_at}"
-              label="${this.getLabel('partner_contacted_at', this.optionsData)}"
-              placeholder="${this.getPlaceholderText('partner_contacted_at', this.optionsData, 'datepicker')}"
-              ?required="${this._setRequired('partner_contacted_at', this.optionsData)}"
-              ?readonly="${this.isReadOnly('partner_contacted_at', this.optionsData)}"
-              ?invalid="${this._checkInvalid(this.errors.partner_contacted_at)}"
-              .errorMessage="${this.errors.partner_contacted_at}"
-              @focus="${(event: any) => this._resetFieldError(event)}"
-              selected-date-display-format="D MMM YYYY"
-              max-date="${this.maxDate}"
-              fire-date-has-changed
-              property-name="partner_contacted_at"
-              @date-has-changed="${({detail}: CustomEvent) =>
-                this.dateHasChanged(detail, 'partner_contacted_at', this.data)}"
-            >
-            </datepicker-lite>
-          </div>
-
-          <div class="col-12 col-lg-4 col-md-6 input-container">
-            <etools-info-tooltip
-              .hideTooltip="${this._hideTooltip(this.optionsData, this.showInput, this.data.engagement_type)}"
-            >
-              <!-- Engagement Type -->
-              <etools-dropdown
-                slot="field"
-                id="engagementType"
-                class="w100 ${this._setRequired('engagement_type', this.optionsData)} validate-field"
-                .selected="${this.data.engagement_type}"
-                label="${this.getLabel('engagement_type', this.optionsData)}"
-                placeholder="${this.getPlaceholderText('engagement_type', this.optionsData, 'dropdown')}"
-                .options="${this.engagementTypes}"
-                option-label="label"
-                option-value="value"
-                ?required="${this._setRequired('engagement_type', this.optionsData)}"
-                ?readonly="${this.isReadOnly('engagement_type', this.optionsData)}"
-                ?invalid="${this._checkInvalid(this.errors.engagement_type)}"
-                .errorMessage="${this.errors.engagement_type}"
-                @focus="${(event: any) => this._resetFieldError(event)}"
-                trigger-value-change-event
-                @etools-selected-item-changed="${({detail}: CustomEvent) => {
-                  this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
-                  if (detail.selectedItem) {
-                    this.onEngagementTypeChanged();
-                  }
-                }}"
-                hide-search
+          <div class="col-6 layout-horizontal layout-wrap top-aligned">
+            <div class="col-md-12 col-lg-6">
+              <etools-info-tooltip
+                .hideTooltip="${this._hideTooltip(this.optionsData, this.showFace, this.data.engagement_type)}"
               >
-              </etools-dropdown>
-              <span slot="message"
-                >Attach FACE Form Requesting Funding, <br />
-                ICE Form, FACE Form Reporting,<br />
-                Statement of Expenditure</span
-              >
-            </etools-info-tooltip>
-          </div>
-
-          ${this.showInput
-            ? html`<div
-                class="col-12 col-lg-4 col-md-6 input-container"
-                ?hidden="${this._hideField('start_date', this.optionsData)}"
-              >
-                <!-- Period Start Date -->
-                <datepicker-lite
-                  id="periodStartDateInput"
-                  class="w100 ${this._isAdditionalFieldRequired(
-                    'start_date',
-                    this.optionsData,
-                    this.data.engagement_type
-                  )} validate-field"
-                  .value="${this.data.start_date}"
-                  label="${this.getStartEndDateLabel(this.data.engagement_type, 'start_date', this.optionsData)}"
-                  placeholder="${this.getPlaceholderText('start_date', this.optionsData, 'datepicker')}"
-                  selected-date-display-format="D MMM YYYY"
-                  ?required="${this._isAdditionalFieldRequired(
-                    'start_date',
-                    this.optionsData,
-                    this.data.engagement_type
-                  )}"
-                  ?readonly="${this.isReadOnly('start_date', this.optionsData)}"
-                  ?invalid="${this._checkInvalid(this.errors.start_date)}"
-                  .errorMessage="${this.errors.start_date}"
+                <!-- Engagement Type -->
+                <etools-dropdown
+                  slot="field"
+                  id="engagementType"
+                  class="w100 ${this._setRequired('engagement_type', this.optionsData)} validate-field"
+                  .selected="${this.data.engagement_type}"
+                  label="${this.getLabel('engagement_type', this.optionsData)}"
+                  placeholder="${this.getPlaceholderText('engagement_type', this.optionsData, 'dropdown')}"
+                  .options="${this.engagementTypes}"
+                  option-label="label"
+                  option-value="value"
+                  ?required="${this._setRequired('engagement_type', this.optionsData)}"
+                  ?readonly="${this.itIsReadOnly('engagement_type', this.optionsData)}"
+                  ?invalid="${this._checkInvalid(this.errors.engagement_type)}"
+                  .errorMessage="${this.errors.engagement_type}"
                   @focus="${(event: any) => this._resetFieldError(event)}"
-                  fire-date-has-changed
-                  @date-has-changed="${({detail}: CustomEvent) => this.dateHasChanged(detail, 'start_date', this.data)}"
+                  trigger-value-change-event
+                  @etools-selected-item-changed="${({detail}: CustomEvent) => {
+                    if (detail.selectedItem && this.data?.engagement_type !== detail.selectedItem?.value) {
+                      this.selectedItemChanged(detail, 'engagement_type', 'value', this.data);
+                      this.onEngagementTypeChanged();
+                    }
+                  }}"
+                  hide-search
                 >
-                </datepicker-lite>
-              </div>`
-            : ``}
-          ${this.showInput
-            ? html` <div
-                  class="col-12 col-lg-4 col-md-6 input-container"
-                  ?hidden="${this._hideField('end_date', this.optionsData)}"
+                </etools-dropdown>
+                <span slot="message"
+                  >Attach FACE Form Requesting Funding, <br />
+                  ICE Form, FACE Form Reporting,<br />
+                  Statement of Expenditure</span
                 >
-                  <!-- Period End Date -->
-                  <datepicker-lite
-                    id="periodEndDateInput"
-                    class="w100 ${this._isAdditionalFieldRequired(
-                      'end_date',
-                      this.optionsData,
-                      this.data.engagement_type
-                    )} validate-field"
-                    .value="${this.data.end_date}"
-                    label="${this.getStartEndDateLabel(this.data.engagement_type, 'end_date', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('end_date', this.optionsData, 'datepicker')}"
-                    data-selector="periodEndDate"
-                    ?required="${this._isAdditionalFieldRequired(
-                      'end_date',
-                      this.optionsData,
-                      this.data.engagement_type
-                    )}"
-                    ?readonly="${this.isReadOnly('end_date', this.optionsData)}"
-                    ?invalid="${this._checkInvalid(this.errors.end_date)}"
-                    .errorMessage="${this.errors.end_date}"
-                    @focus="${(event: any) => this._resetFieldError(event)}"
-                    selected-date-display-format="D MMM YYYY"
-                    fire-date-has-changed
-                    @date-has-changed="${({detail}: CustomEvent) => this.dateHasChanged(detail, 'end_date', this.data)}"
-                  >
-                  </datepicker-lite>
-                </div>
-                <div
-                  class="col-12 col-lg-4 col-md-6 input-container"
-                  ?hidden="${this._hideField('total_value', this.optionsData)}"
-                >
-                  <!-- Total Value of Selected FACE Forms -->
+              </etools-info-tooltip>
+            </div>
+               ${
+                 this.showJoinAudit
+                   ? html` <!-- Year of Audit -->
+                       <div class="col-md-12 col-lg-6">
+                         <etools-dropdown
+                           id="yearOfAudit"
+                           class="w100 ${this._setRequired('year_of_audit', this.optionsData)} validate-field"
+                           .selected="${this.data.year_of_audit}"
+                           label="${this.getLabel('year_of_audit', this.optionsData)}"
+                           placeholder="${this.getPlaceholderText('year_of_audit', this.optionsData, 'dropdown')}"
+                           .options="${this.yearOfAuditOptions}"
+                           option-label="label"
+                           option-value="value"
+                           ?required="${this.isAuditOrSpecialAudit(this.data.engagement_type)}"
+                           ?readonly="${this.itIsReadOnly('year_of_audit', this.optionsData)}"
+                           ?invalid="${this._checkInvalid(this.errors.year_of_audit)}"
+                           .errorMessage="${this.errors.year_of_audit}"
+                           @focus="${this._resetFieldError}"
+                           trigger-value-change-event
+                           @etools-selected-item-changed="${({detail}: CustomEvent) =>
+                             this.selectedItemChanged(detail, 'year_of_audit', 'value', this.data)}"
+                           hide-search
+                         >
+                         </etools-dropdown>
+                       </div>`
+                   : html`<div class="col-md-12 col-lg-6"></div>`
+               }
+
+            ${
+              this.showJoinAudit
+                ? html`<div class="col-md-12 col-lg-6">
+                    <!-- Joint Audit -->
+                    <etools-checkbox
+                      class="join-audit"
+                      ?checked="${this.data.joint_audit}"
+                      ?disabled="${this.itIsReadOnly('joint_audit', this.optionsData)}"
+                      @sl-change="${(e: any) => {
+                        this.data.joint_audit = e.target.checked;
+                      }}"
+                    >
+                      ${this.getLabel('joint_audit', this.optionsData)}
+                    </etools-checkbox>
+                  </div>`
+                : html``
+            }
+              ${
+                this.showSharedAuditField(this.data.engagement_type)
+                  ? html` <!-- Shared Audit with-->
+                      <div class="col-md-12 col-lg-6" ?hidden="${this._hideField('shared_ip_with', this.optionsData)}">
+                        <etools-dropdown-multi
+                          id="sharedWith"
+                          class="w100 validate-input ${this._setRequired('shared_ip_with', this.optionsData)}"
+                          label="${this.getLabel('shared_ip_with', this.optionsData)}"
+                          placeholder="${this.getPlaceholderText('shared_ip_with', this.optionsData)}"
+                          .options="${this.sharedIpWithOptions}"
+                          option-label="display_name"
+                          option-value="value"
+                          .selectedValues="${this.data.shared_ip_with || []}"
+                          ?required="${this._setRequired('shared_ip_with', this.optionsData)}"
+                          ?readonly="${this.itIsReadOnly('shared_ip_with', this.optionsData)}"
+                          ?invalid="${this.errors.shared_ip_with}"
+                          .errorMessage="${this.errors.shared_ip_with}"
+                          @focus="${(event: any) => this._resetFieldError(event)}"
+                          dynamic-align
+                          hide-search
+                          trigger-value-change-event
+                          @etools-selected-items-changed="${({detail}: CustomEvent) => {
+                            const selected = (detail.selectedItems || []).map((x) => x.value);
+                            if (!isJsonStrMatch(this.data.shared_ip_with, selected)) {
+                              this.data.shared_ip_with = selected;
+                            }
+                          }}"
+                        >
+                        </etools-dropdown-multi>
+                      </div>`
+                  : html`<div class="col-md-12 col-lg-6"></div>`
+              }
+            </div>
+
+            <div class="col-6 layout-horizontal layout-wrap">
+              ${
+                this.showFaceForm(this.data.engagement_type, this.data?.partner?.id)
+                  ? html`<div class="col-md-12 col-lg-6">
+                        <!-- Period Start Date -->
+                        <datepicker-lite
+                          id="periodStartDateInput"
+                          class="w100 ${this._isAdditionalFieldRequired(
+                            'start_date',
+                            this.optionsData,
+                            this.data.engagement_type
+                          )} validate-field"
+                          .value="${this.data.start_date}"
+                          label="${this.getStartEndDateLabel(
+                            this.data.engagement_type,
+                            'start_date',
+                            this.optionsData
+                          )}"
+                          placeholder="${this.getPlaceholderText('start_date', this.optionsData, 'datepicker')}"
+                          selected-date-display-format="D MMM YYYY"
+                          ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
+                          ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                          ?invalid="${this._checkInvalid(this.errors.start_date)}"
+                          .errorMessage="${this.errors.start_date}"
+                          @focus="${(event: any) => this._resetFieldError(event)}"
+                          fire-date-has-changed
+                          @date-has-changed="${({detail}: CustomEvent) =>
+                            this.dateHasChanged(detail, 'start_date', this.data)}"
+                        >
+                        </datepicker-lite>
+                      </div>
+
+                      <div class="col-md-12 col-lg-6">
+                        <!-- Period End Date -->
+                        <datepicker-lite
+                          id="periodEndDateInput"
+                          class="w100 ${this._isAdditionalFieldRequired(
+                            'end_date',
+                            this.optionsData,
+                            this.data.engagement_type
+                          )} validate-field"
+                          .value="${this.data.end_date}"
+                          label="${this.getStartEndDateLabel(this.data.engagement_type, 'end_date', this.optionsData)}"
+                          placeholder="${this.getPlaceholderText('end_date', this.optionsData, 'datepicker')}"
+                          data-selector="periodEndDate"
+                          ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
+                          ?readonly="${!this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)}"
+                          ?invalid="${this._checkInvalid(this.errors.end_date)}"
+                          .errorMessage="${this.errors.end_date}"
+                          @focus="${(event: any) => this._resetFieldError(event)}"
+                          selected-date-display-format="D MMM YYYY"
+                          fire-date-has-changed
+                          @date-has-changed="${({detail}: CustomEvent) =>
+                            this.dateHasChanged(detail, 'end_date', this.data)}"
+                        >
+                        </datepicker-lite>
+                      </div>`
+                  : ``
+              }
+              <div class="col-md-12 col-lg-6" ?hidden="${!this.showFace}">
+                <!-- Total Value of Selected FACE Forms -->
+                 <div class="wm-240">
                   <etools-currency
                     class="w100 validate-field
-                                ${this._isAdditionalFieldRequired(
-                      'total_value',
-                      this.optionsData,
-                      this.data.engagement_type
-                    )}"
+                                    ${this._isAdditionalFieldRequired(
+                                      'total_value',
+                                      this.optionsData,
+                                      this.data.engagement_type
+                                    )}"
                     field="total_value"
-                    .value="${this.data.total_value}"
-                    currency="$"
-                    label="${this.getLabel('total_value', this.optionsData)}"
+                    .value="${this.data.total_value || 0}"
+                    label="Total Value of Selected FACE form(s) in USD"
                     placeholder="${this.getPlaceholderText('total_value', this.optionsData)}"
-                    ?required="${this._isAdditionalFieldRequired(
-                      'total_value',
-                      this.optionsData,
-                      this.data.engagement_type
-                    )}"
-                    ?readonly="${this.isReadOnly('total_value', this.optionsData)}"
+                    ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
+                    ?readonly="${
+                      this.itIsReadOnly('total_value', this.optionsData) &&
+                      !this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)
+                    }"
                     ?invalid="${this._checkInvalid(this.errors.total_value)}"
                     .errorMessage="${this.errors.total_value}"
                     @focus="${(event: any) => this._resetFieldError(event)}"
                     @value-changed="${({detail}: CustomEvent) => this.numberChanged(detail, 'total_value', this.data)}"
                   >
                   </etools-currency>
-                </div>`
-            : ``}
-          ${this.showJoinAudit
-            ? html` <!-- Joint Audit -->
-                <div class="col-md-3 col-lg-2 col-12 join-audit">
-                  <etools-checkbox
-                    ?checked="${this.data.joint_audit}"
-                    ?disabled="${this.isReadOnly('joint_audit', this.optionsData)}"
-                    @sl-change="${(e: any) => {
-                      this.data.joint_audit = e.target.checked;
-                    }}"
-                  >
-                    ${this.getLabel('joint_audit', this.optionsData)}
-                  </etools-checkbox>
                 </div>
-                <div class="col-md-3 col-lg-2 col-12 ${this.getYearOfAuditStyle(this.data.engagement_type)}">
-                  <!-- Year of Audit -->
-                  <etools-dropdown
-                    id="yearOfAudit"
-                    class="w100 ${this._setRequired('year_of_audit', this.optionsData)} validate-field"
-                    .selected="${this.data.year_of_audit}"
-                    label="Year of Audit"
-                    placeholder="${this.getPlaceholderText('year_of_audit', this.optionsData, 'dropdown')}"
-                    .options="${this.yearOfAuditOptions}"
-                    option-label="label"
-                    option-value="value"
-                    ?required="${this.isAuditOrSpecialAudit(this.data.engagement_type)}"
-                    ?readonly="${this.isReadOnly('year_of_audit', this.optionsData)}"
-                    ?invalid="${this._checkInvalid(this.errors.year_of_audit)}"
-                    .errorMessage="${this.errors.year_of_audit}"
-                    @focus="${this._resetFieldError}"
-                    trigger-value-change-event
-                    @etools-selected-item-changed="${({detail}: CustomEvent) =>
-                      this.selectedItemChanged(detail, 'year_of_audit', 'value', this.data)}"
-                    hide-search
-                  >
-                  </etools-dropdown>
-                </div>`
-            : ``}
-          ${this.showAdditionalInput
-            ? html` <!-- Shared Audit with-->
-                <div
-                  class="col-12 col-lg-4 col-md-6 input-container"
-                  ?hidden="${this._hideField('shared_ip_with', this.optionsData)}"
-                >
-                  <etools-dropdown-multi
-                    id="sharedWith"
-                    class="w100 validate-input ${this._setRequired('shared_ip_with', this.optionsData)}"
-                    label="${this.getLabel('shared_ip_with', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('shared_ip_with', this.optionsData)}"
-                    .options="${this.sharedIpWithOptions}"
-                    option-label="display_name"
-                    option-value="value"
-                    .selectedValues="${this.data.shared_ip_with || []}"
-                    ?required="${this._setRequired('shared_ip_with', this.optionsData)}"
-                    ?readonly="${this.isReadOnly('shared_ip_with', this.optionsData)}"
-                    ?invalid="${this.errors.shared_ip_with}"
-                    .errorMessage="${this.errors.shared_ip_with}"
-                    @focus="${(event: any) => this._resetFieldError(event)}"
-                    dynamic-align
-                    hide-search
-                    trigger-value-change-event
-                    @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      this.selectedItemsChanged(detail, 'shared_ip_with', 'value', this.data);
-                    }}"
-                  >
-                  </etools-dropdown-multi>
-                </div>`
-            : ``}
-          ${this.showInput
-            ? html` <!-- Sections -->
-                <div
-                  class="col-12 col-lg-4 col-md-6 input-container"
-                  ?hidden="${this._hideField('sections', this.optionsData)}"
-                >
-                  <etools-dropdown-multi
-                    class="w100 validate-input ${this._setRequired('sections', this.optionsData)}"
-                    label="${this.getLabel('sections', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('sections', this.optionsData)}"
-                    .options="${this.sectionOptions}"
-                    option-label="name"
-                    option-value="id"
-                    .selectedValues="${getObjectsIDs(this.data?.sections)}"
-                    ?required="${this._setRequired('sections', this.optionsData)}"
-                    ?readonly="${this.isReadOnly('sections', this.optionsData)}"
-                    ?invalid="${this.errors.sections}"
-                    .errorMessage="${this.errors.sections}"
-                    @focus="${(event: any) => this._resetFieldError(event)}"
-                    dynamic-align
-                    hide-search
-                    trigger-value-change-event
-                    @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      if (!isJsonStrMatch(this.data.sections, detail.selectedItems)) {
-                        this.data.sections = detail.selectedItems;
-                        this.requestUpdate();
-                      }
-                    }}"
-                  >
-                  </etools-dropdown-multi>
+              </div>
+              <div class="col-md-12 col-lg-6" ?hidden="${!this.showFace}">
+                <!-- Total Value of Selected FACE Forms Local in local currency -->
+                 <div class="wm-300">
+                    <etools-currency
+                      class="w100 validate-field
+                                      ${this._isAdditionalFieldRequired(
+                                        'total_value_local',
+                                        this.optionsData,
+                                        this.data.engagement_type
+                                      )}"
+                      field="total_value_local"
+                      .value="${this.data?.total_value_local || 0}"
+                      label="Total Value of Selected FACE form(s) in Local Currency"
+                      placeholder="${this.getPlaceholderText('total_value_local', this.optionsData)}"
+                      ?required="${this.isFaceFieldRequired(this.data?.engagement_type)}"
+                      ?readonly="${
+                        this.itIsReadOnly('total_value_local', this.optionsData) &&
+                        !this.isSpecialAuditEditable(this.data?.id, this.data?.engagement_type)
+                      }"
+                      ?invalid="${this._checkInvalid(this.errors.total_value_local)}"
+                      .errorMessage="${this.errors.total_value_local}"
+                      @focus="${(event: any) => this._resetFieldError(event)}"
+                      @value-changed="${({detail}: CustomEvent) =>
+                        this.numberChanged(detail, 'total_value_local', this.data)}"
+                    >
+                    </etools-currency>
                 </div>
-                <!-- Offices -->
-                <div
-                  class="col-12 col-lg-4 col-md-6 input-container"
-                  ?hidden="${this._hideField('offices', this.optionsData)}"
-                >
-                  <etools-dropdown-multi
-                    class="w100 validate-input ${this._setRequired('offices', this.optionsData)}"
-                    label="${this.getLabel('offices', this.optionsData)}"
-                    placeholder="${this.getPlaceholderText('offices', this.optionsData)}"
-                    .options="${this.officeOptions}"
-                    option-label="name"
-                    option-value="id"
-                    .selectedValues="${getObjectsIDs(this.data?.offices)}"
-                    ?required="${this._setRequired('offices', this.optionsData)}"
-                    ?readonly="${this.isReadOnly('offices', this.optionsData)}"
-                    ?invalid="${this.errors.offices}"
-                    .errorMessage="${this.errors.offices}"
-                    @focus="${(event: any) => this._resetFieldError(event)}"
-                    dynamic-align
-                    hide-search
-                    trigger-value-change-event
-                    @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                      if (!isJsonStrMatch(this.data.offices, detail.selectedItems)) {
-                        this.data.offices = detail.selectedItems;
-                        this.requestUpdate();
-                      }
-                    }}"
-                  >
-                  </etools-dropdown-multi>
-                </div>`
-            : ``}
-          <!-- Notified when completed -->
-          <div
-            class="col-12 col-lg-4 col-md-6 input-container"
-            ?hidden="${this._hideField('users_notified', this.optionsData)}"
-          >
-            <etools-dropdown-multi
-              class="w100 validate-input ${this._setRequired('users_notified', this.optionsData)}"
-              label="${this.getLabel('users_notified', this.optionsData)}"
-              placeholder="${this.getPlaceholderText('users_notified', this.optionsData)}"
-              .options="${this.usersNotifiedOptions}"
-              .loadDataMethod="${this.loadUsersDropdownOptions}"
-              preserve-search-on-close
-              option-label="name"
-              option-value="id"
-              ?hidden="${this.isReadOnly('users_notified', this.optionsData)}"
-              .selectedValues="${getObjectsIDs(this.data?.users_notified)}"
-              ?required="${this._setRequired('users_notified', this.optionsData)}"
-              ?invalid="${this.errors.users_notified}"
-              .errorMessage="${this.errors.users_notified}"
-              @focus="${(event: any) => this._resetFieldError(event)}"
-              trigger-value-change-event
-              @etools-selected-items-changed="${({detail}: CustomEvent) => {
-                if (!isJsonStrMatch(this.data.users_notified, detail.selectedItems)) {
-                  this.data.users_notified = detail.selectedItems;
-                  this.requestUpdate();
-                }
-              }}"
-            >
-            </etools-dropdown-multi>
-            <div class="pad-lr" ?hidden="${!this.isReadOnly('users_notified', this.optionsData)}">
-              <label for="notifiedLbl" class="paper-label">${this.getLabel('users_notified', this.optionsData)}</label>
-              <div class="input-label" ?empty="${this._emptyArray(this.data.users_notified)}">
-                ${(this.data.users_notified || []).map(
-                  (item, index) => html`
-                    <div>
-                      ${item.name}
-                      <span class="separator">${this.getSeparator(this.data.users_notified, index)}</span>
-                    </div>
-                  `
-                )}
               </div>
             </div>
+          </div>
+
+          <div
+            class="col-12 padding-v"
+            ?hidden="${
+              !this.showFaceForm(this.data?.engagement_type, this.data?.partner?.id) ||
+              this.doesNotHaveFaceData(this.data, this.isFaceFormReadonly)
+            }"
+          >
+            <label class="error-label" id="lblFaceRequired" ?hidden="${!this.showFaceRequired}">
+              Please select at least one Face item
+            </label>
+            <label class="info-label" id="lblFaceRequired"> No. of selected Face(s): ${this.noOfSelectedFaces} </label>
+            <etools-data-table-header no-title no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
+              <etools-data-table-column class="col-2 wrap-text" field="face_number" sortable>
+                FACE No. (Liquidation)
+              </etools-data-table-column>
+              <etools-data-table-column class="col-1 wrap-text" field="face_accounted" sortable>
+                FACE No. (Request)
+              </etools-data-table-column>
+              <etools-data-table-column class="col-1" field="currency" sortable> Currency </etools-data-table-column>
+              <etools-data-table-column class="col-2 center-align" field="amount_local" sortable>
+                Amount
+              </etools-data-table-column>
+              <etools-data-table-column class="col-1 center-align" field="amount_usd" sortable>
+                Amount (USD)
+              </etools-data-table-column>
+              <etools-data-table-column class="col-1 center-align" field="exchange_rate" sortable>
+                Exchange rate
+              </etools-data-table-column>
+              <etools-data-table-column class="col-1" field="date_of_liquidation" sortable>
+                Date of <br />
+                Liquidation
+              </etools-data-table-column>
+              <etools-data-table-column class="col-1" field="start_date" sortable>
+                Start Date
+              </etools-data-table-column>
+              <etools-data-table-column class="col-1" field="end_date" sortable> End Date </etools-data-table-column>
+              <etools-data-table-column class="col-1"> Modality </etools-data-table-column>
+            </etools-data-table-header>
+
+            ${repeat(
+              this.paginatedFaceData || [],
+              (item: any) => item.id,
+              (item, _index) => html`
+                <etools-data-table-row no-collapse .lowResolutionLayout="${this.lowResolutionLayout}">
+                  <div slot="row-data" class="layout-horizontal">
+                    <div class="col-data col-2 wrap-text" data-col-header-label="FACE No. (Liquidation)">
+                      <etools-checkbox
+                        slot="field"
+                        size="small"
+                        ?checked="${item.checked}"
+                        ?disabled="${this.isFaceFormReadonly}"
+                        id="${item.id}"
+                        @sl-change="${(e: any) => {
+                          this.showFaceRequired = false;
+                          this.allFaceData[Number(this.paginator.visible_range[0]) - 1 + _index].checked =
+                            e.target.checked;
+                          this.onFaceChange(this.allFaceData);
+                        }}"
+                      >
+                        ${item.face_number}
+                      </etools-checkbox>
+                      <etools-info-tooltip class="face-tooltip" ?hidden="${!item.selected}">
+                        <span slot="message">FACE already audited.</span>
+                      </etools-info-tooltip>
+                    </div>
+                    <div class="col-data col-1 wrap-text" data-col-header-label="FACE No. (Request)">
+                      ${item.face_accounted}
+                    </div>
+                    <div class="col-data col-1 wrap-text" data-col-header-label="Currency">${item.currency}</div>
+                    <div class="col-data col-2 align-right" data-col-header-label="Amount">
+                      ${this.displayCurrencyAmount(item.amount_local, 0, 2)}
+                    </div>
+                    <div class="col-data col-1 align-right" data-col-header-label="Amount (USD)">
+                      ${this.displayCurrencyAmount(item.amount_usd, 0, 2)}
+                    </div>
+                    <div class="col-data col-1 align-right" data-col-header-label="Exchange rate">
+                      ${item.exchange_rate}
+                    </div>
+                    <div class="col-data col-1 wrap-text" data-col-header-label="Date of Liquidation">
+                      ${this.getDateDisplayValue(item.date_of_liquidation)}
+                    </div>
+                    <div class="col-data col-1 wrap-text" data-col-header-label="Start Date">
+                      ${this.getDateDisplayValue(item.start_date)}
+                    </div>
+                    <div class="col-data col-1 wrap-text" data-col-header-label="End Date">
+                      ${this.getDateDisplayValue(item.end_date)}
+                    </div>
+                    <div class="col-data col-1 wrap-text" data-col-header-label="Modality">${item.modality}</div>
+                  </div>
+                </etools-data-table-row>
+              `
+            )}
+            <etools-data-table-footer
+              .lowResolutionLayout="${this.lowResolutionLayout}"
+              .pageSize="${this.paginator.page_size}"
+              .pageNumber="${this.paginator.page}"
+              .totalResults="${this.paginator.count}"
+              .visibleRange="${this.paginator.visible_range}"
+              @page-size-changed="${this.pageSizeChanged}"
+              @page-number-changed="${this.pageNumberChanged}"
+            >
+            </etools-data-table-footer>
           </div>
         </div>
       </etools-content-panel>
@@ -612,9 +548,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if (idChanged) {
       // needed when we load an engagement to set visible fields
       this.onEngagementTypeChanged(false);
-      waitForCondition(() => !!this.user).then(() => {
-        this._prepareData();
-      });
+      this.setYearOfAuditOptions(this.data.year_of_audit);
     }
   }
 
@@ -634,17 +568,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: Date})
   maxDate = new Date();
 
-  @property({type: String})
-  contractExpiryDate!: string | undefined;
-
   @property({type: Object})
   tabTexts = {
-    name: 'Engagement Overview',
-    fields: ['agreement', 'end_date', 'start_date', 'engagement_type', 'partner_contacted_at', 'total_value']
+    name: 'Engagement Details',
+    fields: ['agreement', 'end_date', 'start_date', 'engagement_type', 'total_value', 'face_forms']
   };
-
-  @property({type: Array})
-  sharedIpWithOptions: [] = [];
 
   @property({type: Boolean})
   showJoinAudit = false;
@@ -653,22 +581,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   isStaffSc = false;
 
   @property({type: Boolean})
-  showAdditionalInput!: boolean;
+  showFace!: boolean;
 
   @property({type: Boolean})
-  showInput!: boolean;
-
-  @property({type: Object})
-  orderNumber!: GenericObject | null;
-
-  @property({type: Array})
-  sectionOptions!: GenericObject[];
-
-  @property({type: Array})
-  sectionIDs: number[] = [];
-
-  @property({type: Array})
-  officeOptions!: GenericObject[];
+  loadingFaceForms!: boolean;
 
   @property({type: Array})
   users!: GenericObject[];
@@ -676,14 +592,14 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: Object})
   reduxCommonData!: CommonDataState;
 
+  @property({type: Number})
+  noOfSelectedFaces = 0;
+
   @property({type: Object})
   errorObject!: GenericObject;
 
   @property({type: Object})
   user!: GenericObject;
-
-  @property({type: Array})
-  usersNotifiedOptions: GenericObject[] = [];
 
   @property({type: Boolean})
   poUpdating!: boolean;
@@ -691,13 +607,32 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
   @property({type: String})
   detailsRoutePath!: string;
 
-  @property({type: Object})
-  loadUsersDropdownOptions?: (search: string, page: number, shownOptionsLimit: number) => void;
+  @property({type: Array})
+  allFaceData: any[] = [];
+
+  @property({type: Array})
+  paginatedFaceData: any[] = [];
+
+  @property({type: Number})
+  prevPartnerId!: number;
+
+  @property({type: Boolean})
+  showFaceRequired = false;
+
+  @property({type: Boolean})
+  isFaceFormReadonly = false;
+
+  @property({type: Array})
+  sharedIpWithOptions: [] = [];
 
   connectedCallback() {
     super.connectedCallback();
+    this.addEventListener('sort-changed', this._sortOrderChanged as EventListenerOrEventListenerObject);
+  }
 
-    this.loadUsersDropdownOptions = this._loadUsersDropdownOptions.bind(this);
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('sort-changed', this._sortOrderChanged as EventListenerOrEventListenerObject);
   }
 
   stateChanged(state: RootState) {
@@ -714,13 +649,6 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     }
   }
 
-  firstUpdated(changedProperties: PropertyValues): void {
-    super.firstUpdated(changedProperties);
-
-    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
-    purchaseOrderEl.validate = this._validatePurchaseOrder.bind(this, purchaseOrderEl);
-  }
-
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
@@ -728,11 +656,9 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       this._errorHandler(this.errorObject, this.errorObject);
     }
     if (changedProperties.has('optionsData')) {
+      this.isFaceFormReadonly = this.isReadOnly('face_forms', this.optionsData);
       this._setEngagementTypes(this.optionsData);
       this._setSharedIpWith(this.optionsData);
-    }
-    if (changedProperties.has('showInput') || changedProperties.has('showAdditionalInput')) {
-      this._showJoinAudit(this.showInput, this.showAdditionalInput);
     }
   }
 
@@ -746,18 +672,164 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return true;
   }
 
+  showSharedAuditField(engagement_type: string) {
+    return !!engagement_type && engagement_type !== 'sc';
+  }
+
+  isSpecialAuditEditable(id: string, engagement_type: string) {
+    return !id && this.isSpecialAudit(engagement_type);
+  }
+
+  isFaceFieldRequired(engagement_type: string) {
+    return engagement_type && !['ma', 'sa'].includes(engagement_type);
+  }
+
+  itIsReadOnly(field: string, permissions: AnyObject) {
+    return !this.data.partner?.id || this.isReadOnly(field, permissions);
+  }
+
+  _setSharedIpWith(optionsData: AnyObject) {
+    const sharedIpWithOptions = getOptionsChoices(optionsData, 'shared_ip_with.child');
+    this.sharedIpWithOptions = sharedIpWithOptions || [];
+  }
+
+  showFaceForm(engagement_type: string, partnerId?: number) {
+    this.showFace = !!engagement_type && engagement_type !== 'ma';
+    this.showJoinAudit = !!engagement_type && ['audit', 'sa'].includes(engagement_type);
+    if (this.showFace && partnerId && this.prevPartnerId !== partnerId) {
+      this.prevPartnerId = partnerId;
+      //@dci this.data.face_forms = [];
+      this.loadFaceData(this.prevPartnerId);
+    }
+    return this.showFace;
+  }
+
+  doesNotHaveFaceData(data: GenericObject, isFaceFormReadonly: boolean) {
+    return isFaceFormReadonly && data?.id && !(data?.face_forms || []).length;
+  }
+
+  loadFaceData(partnerId: number) {
+    if (this.isFaceFormReadonly) {
+      // for existing engagements table is not editable, just show selected face_forms for info,
+      //  no need to request all existing forms,
+      this.setFaceData([...(this.data.face_forms || [])], true);
+      return;
+    }
+    this.loadingFaceForms = true;
+    const url = getEndpoint('linkFace', {id: partnerId}).url;
+    sendRequest({
+      endpoint: {url}
+    })
+      .then((resp) => {
+        this.setFaceData(resp || []);
+        this.requestUpdate();
+      })
+      .catch((err) => fireEvent(this, 'toast', {text: `Error fetching Face forms data for ${partnerId}: ${err}`}))
+      .finally(() => (this.loadingFaceForms = false));
+  }
+
+  setFaceData(faceData: any[], defaultSelection = false) {
+    this.allFaceData = faceData || [];
+    this.allFaceData.forEach((x: any) => (x.checked = defaultSelection));
+    if (!defaultSelection) {
+      // if opening an existing record check previous saved faceForms
+      const selectedFaceForms = (this.data.face_forms || []).map((x: any) => x.id);
+      this.allFaceData.forEach((item) => (item.checked = selectedFaceForms.includes(item.id)));
+    }
+    this.noOfSelectedFaces = this.allFaceData.filter((x) => x.checked).length;
+    this.paginatedFaceData = [];
+    this.paginator = JSON.parse(
+      JSON.stringify({
+        count: faceData.length,
+        page: 1,
+        page_size: 5
+      })
+    );
+  }
+
+  _sortOrderChanged(e: CustomEvent) {
+    const isNumericField = ['amount_local', 'amount_usd', 'exchange_rate'].includes(e.detail.field);
+    const sorted = sortBy(this.allFaceData, (item) =>
+      isNumericField ? Number(item[e.detail.field]) : item[e.detail.field]
+    );
+    this.allFaceData = e.detail.direction === 'asc' ? sorted : sorted.reverse();
+    this.paginatorChanged();
+  }
+
+  // Override from PaginationMixin
+  paginatorChanged() {
+    this._paginate(this.paginator.page, this.paginator.page_size);
+  }
+
+  _paginate(pageNumber: number, pageSize: number) {
+    if (!this.allFaceData) {
+      return;
+    }
+    let faceData = cloneDeep(this.allFaceData);
+    faceData = faceData
+      .sort((a: any, b: any) => dayjs(b.status_date).unix() - dayjs(a.status_date).unix())
+      .slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+
+    this.paginatedFaceData = faceData;
+  }
+
+  onFaceChange(allFaceData: any[]) {
+    const selectedFaceForms: any[] = (allFaceData || []).filter((x: any) => x.checked);
+    this.noOfSelectedFaces = selectedFaceForms.length;
+    this.data.face_forms = [...selectedFaceForms];
+    let amount_usd = 0;
+    let amount_local = 0;
+    let start_date: any = null;
+    let end_date: any = null;
+    let end_date_local: any = null;
+    let exchange_rate = 1;
+
+    for (const faceForm of selectedFaceForms) {
+      amount_usd += Number(faceForm.amount_usd);
+      if (faceForm.start_date && (!start_date || dayjs(faceForm.start_date) < start_date)) {
+        start_date = dayjs(faceForm.start_date);
+      }
+      if (faceForm.end_date && (!end_date || dayjs(faceForm.end_date) > end_date)) {
+        end_date = dayjs(faceForm.end_date);
+      }
+      if (faceForm.currency !== 'USD') {
+        // get the exchange rate from the latest face item with  different currency than $
+        if (faceForm.end_date && (!end_date_local || dayjs(faceForm.end_date) > end_date_local)) {
+          end_date_local = dayjs(faceForm.end_date);
+          exchange_rate = Number(faceForm.exchange_rate);
+        }
+      }
+    }
+    console.log(`exchange rate: ${exchange_rate}`);
+    for (const faceForm of selectedFaceForms) {
+      if (faceForm.currency === 'USD') {
+        amount_local += exchange_rate * Number(faceForm.amount_local);
+      } else {
+        amount_local += Number(faceForm.amount_local);
+      }
+    }
+
+    this.data = {
+      ...this.data,
+      total_value: amount_usd,
+      total_value_local: amount_local,
+      start_date: start_date ? dayjs(start_date).format('YYYY-MM-DD') : start_date,
+      end_date: end_date ? dayjs(end_date).format('YYYY-MM-DD') : end_date
+    };
+    store.dispatch(updateCurrentEngagement(this.data));
+  }
+
   cleanUpStoredValues() {
     this.data = {};
-    this.orderNumber = null;
   }
 
   onEngagementTypeChanged(updateEngagement = true) {
     this._setShowInput(this.data.engagement_type, updateEngagement);
-    this._setAdditionalInput(this.data.engagement_type);
     if (updateEngagement) {
       store.dispatch(updateCurrentEngagement(this.data));
     }
   }
+
   setYearOfAuditOptions(savedYearOfAudit: number) {
     const currYear = new Date().getFullYear();
     this.yearOfAuditOptions = [
@@ -772,40 +844,10 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
 
   getYearOfAuditStyle(engagementType: string) {
     let cssClasses = 'year-of-audit';
-    if (!['audit', 'sa'].includes(engagementType)) {
+    if (!['audit', 'sa', 'sc'].includes(engagementType)) {
       cssClasses += ' hide';
     }
     return cssClasses;
-  }
-
-  _loadUsersDropdownOptions(search: string, page: number, shownOptionsLimit: number) {
-    const endpoint = clone(famEndpoints.users);
-    endpoint.url += `?page_size=${shownOptionsLimit}&page=${page}&search=${search || ''}`;
-    return sendRequest({
-      method: 'GET',
-      endpoint: {
-        url: endpoint.url
-      }
-    }).then((resp: GenericObject) => {
-      this.users = page > 1 ? [...this.users, ...resp.results] : resp.results;
-      this.setUsersNotifiedOptions();
-      return resp;
-    });
-  }
-
-  _prepareData() {
-    // reset orderNumber
-    if (!this.user || !this.data) {
-      return;
-    }
-    this.orderNumber = null;
-    this.populateDropdownsAndSetSelectedValues();
-
-    const poItemId = get(this.data, 'po_item.id');
-    if (poItemId && poItemId !== this.data.po_item) {
-      this.data.po_item = poItemId;
-      store.dispatch(updateCurrentEngagement(this.data));
-    }
   }
 
   getStartEndDateLabel(engType: string, field: string, options: AnyObject) {
@@ -820,43 +862,11 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     return this.getLabel(field, options);
   }
 
-  populateDropdownsAndSetSelectedValues() {
-    // For firm staff auditors certain endpoints return 403
-    const userIsFirmStaffAuditor = !this.user.is_unicef_user;
-
-    const savedSections = this.data.sections || [];
-    this.sectionOptions = (userIsFirmStaffAuditor ? savedSections : this.reduxCommonData?.sections) || [];
-
-    const savedOffices = this.data.offices || [];
-    this.officeOptions = (userIsFirmStaffAuditor ? savedOffices : this.reduxCommonData?.offices) || [];
-
-    if (!this.users) {
-      this.users = this.reduxCommonData?.users || [];
-    }
-    this.setUsersNotifiedOptions();
-
-    this.setYearOfAuditOptions(this.data.year_of_audit);
-  }
-
-  setUsersNotifiedOptions() {
-    const availableUsers = [...this.users];
-    const notifiedUsers = this.data.users_notified || [];
-    this.handleUsersNoLongerAssignedToCurrentCountry(availableUsers, notifiedUsers);
-    this.usersNotifiedOptions = availableUsers;
-  }
-
-  populateUsersNotifiedDropDown() {
-    this.usersNotifiedOptions = [...this.users];
-  }
-
-  _setSharedIpWith(optionsData: AnyObject) {
-    const sharedIpWithOptions = getOptionsChoices(optionsData, 'shared_ip_with.child');
-    this.sharedIpWithOptions = sharedIpWithOptions || [];
-  }
-
   validate() {
-    const orderField = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
-    const orderValid = orderField && orderField.validate();
+    if (this.itIsReadOnly('engagement_type', this.optionsData)) {
+      // type is not editable (and the other fields)
+      return true;
+    }
 
     const elements = this.shadowRoot!.querySelectorAll('.validate-field');
     let valid = true;
@@ -869,6 +879,16 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       }
     });
 
+    this.showFaceRequired = false;
+    if (
+      this.data.engagement_type &&
+      ['audit', 'sc'].includes(this.data.engagement_type) &&
+      !this.data?.face_forms?.length
+    ) {
+      this.showFaceRequired = true;
+      valid = false;
+    }
+
     const periodStart = this.shadowRoot!.querySelector('#periodStartDateInput') as EtoolsInput;
     const periodEnd = this.shadowRoot!.querySelector('#periodEndDateInput') as EtoolsInput;
     const startValue = periodStart ? Date.parse(periodStart.value! as string) : 0;
@@ -880,7 +900,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       valid = false;
     }
 
-    return orderValid && valid;
+    return valid;
   }
 
   resetValidationErrors() {
@@ -901,145 +921,26 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     })[0];
   }
 
-  poKeydown(event: any) {
-    if (event.keyCode === 13) {
-      this._requestAgreement(event);
-    }
-  }
-
-  _requestAgreement(event: any) {
-    if (this.requestInProcess) {
-      return;
-    }
-
-    const input = event && event.target;
-    const value = input && input.value;
-
-    if ((+value || +value === 0) && value === this.orderNumber) {
-      return;
-    }
-    this.resetAgreement();
-
-    if (!value) {
-      this.orderNumber = null;
-      return;
-    }
-
-    if (!this._validatePOLength(value)) {
-      this.errors = {...this.errors, agreement: 'Purchase order number must be 10 digits'};
-      this.orderNumber = null;
-      return;
-    }
-
-    this.requestInProcess = true;
-    this.orderNumber = value;
-    return true;
-  }
-
-  _agreementLoaded(event: CustomEvent) {
-    if (event.detail?.success) {
-      this.data = {...this.data, agreement: event.detail.agreement};
-      store.dispatch(updateCurrentEngagement(this.data));
-    } else if (event.detail?.errors) {
-      this.errors = event.detail.errors;
-    }
-    this.requestInProcess = false;
-
-    const purchaseOrderEl = this.shadowRoot!.querySelector('#purchaseOrder') as EtoolsInput;
-    purchaseOrderEl.validate();
-  }
-
   _poUpdatingStateChanged(event: CustomEvent): void {
     this.poUpdating = event.detail.state;
   }
 
-  resetAgreement() {
-    this.contractExpiryDate = undefined;
-    this.orderNumber = null;
-    const agreementNewValue = {order_number: this.data && this.data.agreement && this.data.agreement.order_number};
-    if (!isJsonStrMatch(agreementNewValue, this.data.agreement)) {
-      this.data.agreement = {order_number: this.data && this.data.agreement && this.data.agreement.order_number};
-      store.dispatch(updateCurrentEngagement(this.data));
-    }
-  }
-
-  _validatePurchaseOrder(orderInput: any) {
-    if (orderInput && (orderInput.readonly || orderInput.disabled)) {
-      return true;
-    }
-    if (this.requestInProcess) {
-      this.errors = {...this.errors, agreement: 'Please, wait until Purchase Order loaded'};
-      return false;
-    }
-    const value = orderInput && orderInput.value;
-    if (!value && orderInput && orderInput.required) {
-      this.errors = {...this.errors, agreement: 'Purchase order is required'};
-      return false;
-    }
-    if (!this._validatePOLength(value)) {
-      this.errors = {...this.errors, agreement: 'Purchase order number must be 10 digits'};
-      return false;
-    }
-    if (!this.data || !this.data.agreement || !this.data.agreement.id) {
-      this.errors = {...this.errors, agreement: 'Purchase order not found'};
-      return false;
-    }
-    this.errors = {...this.errors, agreement: false};
-    return true;
-  }
-
-  _validatePOLength(po: any) {
-    return !po || `${po}`.length === 10;
-  }
-
   getEngagementData() {
     const data: any = {};
-    const agreementId = String(get(this, 'data.agreement.id'));
-    const originalAgreementId = String(get(this, 'originalData.agreement.id'));
 
-    if (this.originalData.start_date !== this.data.start_date) {
-      data.start_date = this.data.start_date;
-    }
-    if (this.originalData.end_date !== this.data.end_date) {
-      data.end_date = this.data.end_date;
-    }
-    if (this.originalData.partner_contacted_at !== this.data.partner_contacted_at) {
-      data.partner_contacted_at = this.data.partner_contacted_at;
-    }
-
-    if ((!originalAgreementId && agreementId) || originalAgreementId !== agreementId) {
-      data.agreement = this.data.agreement.id;
-    }
-
-    if (this.showInput) {
-      if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
-        this.data.total_value = null;
+    if (!this.isReadOnly('engagement_type', this.optionsData)) {
+      if (this.originalData.engagement_type !== this.data.engagement_type && !this.isStaffSc) {
+        data.engagement_type = this.data.engagement_type;
       }
     }
-    if (this.originalData.total_value !== this.data.total_value) {
-      data.total_value = this.data.total_value;
-    }
 
-    if (this.originalData.engagement_type !== this.data.engagement_type && !this.isStaffSc) {
-      data.engagement_type = this.data.engagement_type;
-    }
-
-    if (this.data.po_item && (!this.originalData.po_item || this.originalData.po_item.id !== +this.data.po_item)) {
-      data.po_item = this.data.po_item;
-    }
-
-    if (['audit', 'sa'].includes(this.data.engagement_type)) {
-      data.joint_audit = !!this.data.joint_audit;
-    }
-
-    if (['sa', 'audit'].includes(this.data.engagement_type)) {
-      data.year_of_audit = this.data.year_of_audit;
-    }
-
-    const originalUsersNotifiedIDs = (this.originalData?.users_notified || []).map((user) => +user.id);
-    const usersNotifiedIDs = (this.data?.users_notified || []).map((user) => +user.id);
-    if (this.collectionChanged(originalUsersNotifiedIDs, usersNotifiedIDs)) {
-      data.users_notified = usersNotifiedIDs;
+    if (!this.isReadOnly('start_date', this.optionsData)) {
+      if (this.originalData.start_date !== this.data.start_date) {
+        data.start_date = this.data.start_date;
+      }
+      if (this.originalData.end_date !== this.data.end_date) {
+        data.end_date = this.data.end_date;
+      }
     }
 
     const originalSharedIpWith = this.originalData?.shared_ip_with || [];
@@ -1048,73 +949,51 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
       data.shared_ip_with = sharedIpWith;
     }
 
-    const originalOfficeIDs = (this.originalData?.offices || []).map((office) => +office.id);
-    const officeIDs = (this.data?.offices || []).map((office) => +office.id);
-    if (this.collectionChanged(originalOfficeIDs, officeIDs)) {
-      data.offices = officeIDs;
-    }
+    if (!this.isFaceFormReadonly) {
+      if (['audit', 'sa', 'sc'].includes(this.data.engagement_type)) {
+        if (isNaN(parseFloat(this.data.total_value)) || parseFloat(this.data.total_value) === 0) {
+          this.data.total_value = null;
+        }
 
-    const originalSectionIDs = (this.originalData.sections || []).map((section) => +section.id);
-    const sectionIDs = (this.data?.sections || []).map((section) => +section.id);
-    if (this.collectionChanged(originalSectionIDs, sectionIDs)) {
-      data.sections = sectionIDs;
+        if (this.originalData.total_value !== this.data.total_value) {
+          data.total_value = this.data.total_value || 0;
+        }
+
+        if (this.originalData.total_value_local !== this.data.total_value_local) {
+          data.total_value_local = this.data.total_value_local || 0;
+        }
+
+        data.joint_audit = !!this.data.joint_audit;
+
+        data.year_of_audit = this.data.year_of_audit;
+        const diff = getArraysDiff(this.originalData.face_forms || [], this.data?.face_forms || [], 'id');
+        if (diff.length) {
+          data.face_forms = this.getFaceFormsToSave(this.data?.face_forms);
+        }
+      }
     }
 
     return data;
   }
 
-  collectionChanged(originalCollection: any[], newCollection: any[]) {
-    return (
-      this.collectionsHaveDifferentLength(originalCollection, newCollection) ||
-      this.collectionsAreDifferent(originalCollection, newCollection)
-    );
-  }
-
-  collectionsHaveDifferentLength(originalCollection: any[], newCollection: any[]) {
-    return originalCollection.length !== newCollection.length;
-  }
-
-  collectionsAreDifferent(originalCollection: any[], newCollection: any[]) {
-    return newCollection.filter((id) => !originalCollection.includes(+id)).length > 0;
+  getFaceFormsToSave(face_forms: any[]) {
+    return (face_forms || []).map((item: any) => item.id);
   }
 
   _setShowInput(type: string, resetValues: boolean) {
-    this.showInput = !!type && type !== 'ma';
-    if (!this.showInput && resetValues) {
+    this.showFace = !!type && type !== 'ma';
+    this.showJoinAudit = !!type && ['audit', 'sa'].includes(type);
+    if (!this.showFace && resetValues) {
       // reset values
       this.data.total_value = 0;
+      this.data.total_value_local = 0;
       this.data.start_date = undefined;
       this.data.end_date = undefined;
-      this.data.sections = [];
-      this.data.offices = [];
     }
-  }
-
-  _setAdditionalInput(type: string) {
-    this.showAdditionalInput = !!type && type !== 'sc';
-  }
-
-  _contractEndDateHasChanged(event: CustomEvent) {
-    if (!this.data?.agreement?.id) {
-      return;
-    }
-    this.contractExpiryDate = event.detail.date;
-  }
-
-  _showJoinAudit(showInput: boolean, showAdditionalInput: boolean) {
-    this.showJoinAudit = showAdditionalInput && showInput;
-  }
-
-  _setExpiryMinDate(minDate: any) {
-    if (!minDate) {
-      return false;
-    }
-    const today = new Date(new Date(minDate).getFullYear(), new Date(minDate).getMonth(), new Date(minDate).getDate());
-    return new Date(today.getDate() - 1);
   }
 
   _hideTooltip(options: AnyObject, showInput: any, type: any) {
-    return this.isReadOnly('engagement_type', options) || this.isSpecialAudit(type) || !showInput;
+    return this.itIsReadOnly('engagement_type', options) || this.isSpecialAudit(type) || !showInput;
   }
 
   _setEngagementTypes(options: AnyObject) {
@@ -1164,7 +1043,7 @@ export class EngagementInfoDetails extends connect(store)(CommonMethodsMixin(Mod
     if (!agreement) {
       return false;
     }
-    return this.isReadOnly(field, permissions) || !agreement.id;
+    return this.itIsReadOnly(field, permissions) || !agreement.id;
   }
 
   _hideField(fieldName: any, optionsData: AnyObject) {

@@ -18,6 +18,7 @@ import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {GenericObject} from '../../../../../types/global';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
+import dayjs from 'dayjs';
 
 /**
  * @LitEelement
@@ -87,7 +88,7 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
                 label="${this.getLabel('findings.recommendation', this.optionsData)}"
                 always-float-label
                 placeholder="${this.getPlaceholderText('findings.recommendation', this.optionsData)}"
-                ?required="${this._setRequired('findings.recommendation', this.optionsData)}"
+                required
                 ?disabled="${this.requestInProcess}"
                 max-rows="4"
                 ?invalid="${this.errors?.recommendation}"
@@ -130,6 +131,7 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
                 .errorMessage="${this.errors?.deadline_of_action}"
                 ?required="${this._setRequired('findings.deadline_of_action', this.optionsData)}"
                 ?readonly="${this.requestInProcess}"
+                .minDate="${this.minDate}"
                 fire-date-has-changed
                 property-name="deadline_of_action"
                 @date-has-changed="${this.deadlineDateHasChanged}"
@@ -148,8 +150,11 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
   @property({type: Object})
   opener!: GenericObject;
 
+  @property({type: Object})
+  minDate!: GenericObject;
+
   set dialogData(data: any) {
-    const {optionsData, editedItem, opener, dialogTitle, confirmBtnText, categoryOfObservation}: any = data;
+    const {optionsData, editedItem, opener, dialogTitle, confirmBtnText, categoryOfObservation, minDate}: any = data;
 
     this.optionsData = optionsData;
     this.editedItem = editedItem;
@@ -157,6 +162,7 @@ export class SummaryFindingsDialog extends CommonMethodsMixin(
     this.opener = opener;
     this.confirmBtnText = confirmBtnText;
     this.categoryOfObservation = categoryOfObservation;
+    this.minDate = minDate ? new Date(dayjs(minDate).format()) : new Date();
   }
 
   onSave() {

@@ -20,6 +20,7 @@ import CommonMethodsMixin from '../../../../mixins/common-methods-mixin';
 import ModelChangedMixin from '@unicef-polymer/etools-modules-common/dist/mixins/model-changed-mixin';
 import {fireEvent} from '@unicef-polymer/etools-utils/dist/fire-event.util';
 import {GenericObject} from '@unicef-polymer/etools-types';
+import {divideWithExchangeRate} from '../../../../utils/utils';
 
 /**
  * @customElement
@@ -36,6 +37,11 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
   render() {
     return html`
       ${sharedStyles}
+      <style>
+        etools-currency::part(input) {
+          text-align: end;
+        }
+      </style>
       <etools-dialog
         id="financial-findings"
         no-padding
@@ -79,6 +85,7 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
             <div class="col-12 input-container col-lg-6 col-md-6">
               <!-- Amount (local) -->
               <etools-currency
+                id="ecFinancialFindingLocal"
                 class="w100 ${this._setRequired('financial_finding_set.local_amount', this.optionsData)} validate-input"
                 .value="${this.editedItem.local_amount}"
                 currency=""
@@ -89,8 +96,17 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
                 ?invalid="${this.errors.local_amount}"
                 .errorMessage="${this.errors.local_amount}"
                 @focus="${this._resetFieldError}"
-                @value-changed="${({detail}: CustomEvent) =>
-                  this.numberChanged(detail, 'local_amount', this.editedItem)}"
+                @value-changed="${({detail}: CustomEvent) => {
+                  if (this.priorFaceForms || Number(this.editedItem?.local_amount) === Number(detail?.value)) {
+                    return;
+                  }
+                  if (!this.validateFindingValue(detail.value)) {
+                    return;
+                  }
+                  this.numberChanged(detail, 'local_amount', this.editedItem);
+                  detail.value = divideWithExchangeRate(detail.value, this.editedItem.exchange_rate);
+                  this.numberChanged(detail, 'amount', this.editedItem);
+                }}"
               >
               </etools-currency>
             </div>
@@ -100,11 +116,9 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
               <etools-currency
                 class="w100 ${this._setRequired('financial_finding_set.amount', this.optionsData)} validate-input"
                 .value="${this.editedItem.amount}"
-                currency="$"
                 label="${this.getLabel('financial_finding_set.amount', this.optionsData)}"
                 placeholder="${this.getPlaceholderText('financial_finding_set.amount', this.optionsData)}"
-                ?required="${this._setRequired('financial_finding_set.amount', this.optionsData)}"
-                ?readonly="${this.requestInProcess}"
+                ?readonly="${!this.priorFaceForms || this.requestInProcess}"
                 ?invalid="${this.errors.amount}"
                 .errorMessage="${this.errors.amount}"
                 @focus="${this._resetFieldError}"
@@ -181,16 +195,56 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
   titleOptions: any[] = [];
 
   @property({type: Object})
+  engagement!: GenericObject;
+
+  @property({type: Object})
   opener!: GenericObject;
 
+  @property({type: Boolean})
+  priorFaceForms!: boolean;
+
+  @property({type: Boolean})
+  isStaffSc!: boolean;
+
+  @property({type: Number})
+  totalFinancialFindings = 0;
+
   set dialogData(data: any) {
-    const {optionsData, editedItem, opener, dialogTitle, titleOptions}: any = data;
+    const {optionsData, editedItem, opener, dialogTitle, titleOptions, priorFaceForms, engagement, isStaffSc}: any =
+      data;
 
     this.optionsData = optionsData;
     this.editedItem = editedItem;
     this.dialogTitle = dialogTitle;
+    this.priorFaceForms = priorFaceForms;
     this.opener = opener;
     this.titleOptions = titleOptions;
+    this.engagement = engagement;
+    this.isStaffSc = isStaffSc;
+
+    const financialFindingsArr = (this.engagement?.financial_finding_set || []).filter(
+      (x: any) => x.id !== this.editedItem?.id
+    );
+    this.totalFinancialFindings = financialFindingsArr.length
+      ? financialFindingsArr.map((x: any) => Number(x.local_amount)).reduce((a, b) => a + b)
+      : 0;
+  }
+
+  validateFindingValue(findingValue: number) {
+    const compareAgainst = this.isStaffSc
+      ? Number(this.engagement?.total_amount_tested_local || 0)
+      : Number(this.engagement?.audited_expenditure_local || 0);
+
+    if ((this.totalFinancialFindings + Number(findingValue) || 0) > compareAgainst) {
+      const msg = this.isStaffSc ? 'Total Amount Tested' : 'Audited Expenditure';
+      fireEvent(this, 'toast', {
+        text: `Amount of Financial Findings should not be higher than the ${msg}`
+      });
+      (this.shadowRoot?.querySelector('#ecFinancialFindingLocal') as HTMLInputElement).value =
+        this.editedItem?.local_amount || 0;
+      return false;
+    }
+    return true;
   }
 
   onSave() {

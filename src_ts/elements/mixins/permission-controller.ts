@@ -140,18 +140,6 @@ export function actionAllowed(options: AnyObject, action: string) {
   return !!~actions.indexOf(action);
 }
 
-// function noActionsAllowed(collection) {
-//   if (!collection) {
-//     return true;
-//   }
-//   if (typeof collection !== 'string') {
-//     throw new Error('Collection argument must be a string');
-//   }
-//   collection = _permissionCollection[collection];
-
-//   return !(collection && collection.allowed_actions && collection.allowed_actions.length);
-// }
-
 export function getActions(options: AnyObject) {
   if (!options) {
     return null;

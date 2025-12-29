@@ -52,6 +52,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
         }
         etools-content-panel::part(ecp-content) {
           padding: 0;
+          padding-block-end: 24px !important;
         }
       </style>
       <etools-media-query
@@ -63,6 +64,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('specific_procedures', this.optionsData)}"
+        show-expand-btn
         list
       >
         <div slot="panel-btns">
@@ -154,6 +156,12 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
   @property({type: Boolean, attribute: 'save-with-button'})
   saveWithButton = false;
 
+  @property({type: Object})
+  tabTexts = {
+    name: 'Specific Procedure To Be Performed',
+    fields: ['specific_procedures']
+  };
+
   @property({type: Boolean, attribute: 'readonly-tab'})
   readonlyTab = false;
 
@@ -176,7 +184,7 @@ export class SpecificProcedure extends CommonMethodsMixin(TableElementsMixin(Lit
     super.updated(changedProperties);
 
     if (changedProperties.has('errorObject')) {
-      this._errorHandler(this.errorObject?.specific_procedures, this.errorObject);
+      this._errorHandler(this.errorObject, this.errorObject);
       this._checkNonField(this.errorObject?.specific_procedures);
     }
   }

@@ -32,15 +32,22 @@ import {AnyObject} from '@unicef-polymer/etools-utils/dist/types/global.types';
 import '@unicef-polymer/etools-modules-common/dist/layout/are-you-sure';
 import './financial-findings-dialog.js';
 import {openDialog} from '@unicef-polymer/etools-utils/dist/dialog.util';
+import {EtoolsCurrency} from '@unicef-polymer/etools-unicef/src/mixins/currency.js';
+import {connect} from '@unicef-polymer/etools-utils/dist/pwa.utils';
+import {RootState, store} from '../../../../../redux/store';
+import {isJsonStrMatch} from '@unicef-polymer/etools-utils/dist/equality-comparisons.util';
+import {cloneDeep} from '@unicef-polymer/etools-utils/dist/general.util';
 
 /**
  * @customElement
- * @LitElement
  * @appliesMixin CommonMethodsMixin
  * @appliesMixin TableElementsMixin
+ * @appliesMixin EtoolsCurrency
  */
 @customElement('financial-findings')
-export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(ModelChangedMixin(LitElement))) {
+export class FinancialFindings extends connect(store)(
+  TableElementsMixin(CommonMethodsMixin(ModelChangedMixin(EtoolsCurrency(LitElement))))
+) {
   static get styles() {
     return [tabInputsStyles, tabLayoutStyles, moduleStyles, layoutStyles];
   }
@@ -77,6 +84,7 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
       <etools-content-panel
         class="content-section clearfix"
         .panelTitle="${this.getLabel('financial_finding_set', this.optionsData)}"
+        show-expand-btn
         list
       >
         <div slot="panel-btns">
@@ -89,35 +97,27 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
         </div>
 
         <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
-          <etools-data-table-column class="col-2">Finding Number</etools-data-table-column>
-          <etools-data-table-column class="col-4"
-            >${getHeadingLabel(
-              this.optionsData,
-              'financial_finding_set.title',
-              'Title (Category)'
-            )}</etools-data-table-column
+          <etools-data-table-column class="col-3">Finding Number</etools-data-table-column>
+          <etools-data-table-column class="col-4">
+          ${getHeadingLabel(
+            this.optionsData,
+            'financial_finding_set.title',
+            'Title (Category)'
+          )}</etools-data-table-column>
+          <etools-data-table-column class="col-2 align-center">
+            ${getHeadingLabel(this.optionsData, 'financial_finding_set.local_amount', 'Amount (local)')}
+          </etools-data-table-column>
+          <etools-data-table-column class="col-2 align-center">
+            ${getHeadingLabel(this.optionsData, 'financial_finding_set.amount', 'Amount USD')}</etools-data-table-column
           >
-          <etools-data-table-column class="col-3"
-            >${getHeadingLabel(
-              this.optionsData,
-              'financial_finding_set.local_amount',
-              'Amount (local)'
-            )}</etools-data-table-column
-          >
-          <etools-data-table-column class="col-3"
-            >${getHeadingLabel(
-              this.optionsData,
-              'financial_finding_set.amount',
-              'Amount USD'
-            )}</etools-data-table-column
-          >
-        </etools-data-table-header>
+        <etools-data-table-column class="col-1">
+        </etools-data-table-header></etools-data-table-column>
 
         ${(this.dataItems || []).map(
           (item, index) => html`
             <etools-data-table-row .lowResolutionLayout="${this.lowResolutionLayout}">
               <div slot="row-data" class="layout-horizontal editable-row">
-                <span class="col-data col-2" data-col-header-label="Finding Number"
+                <span class="col-data col-3" data-col-header-label="Finding Number"
                   >${getTableRowIndexText(index)}</span
                 >
                 <span
@@ -130,23 +130,24 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
                   >${item.title}</span
                 >
                 <span
-                  class="col-data col-3"
+                  class="col-data col-2 align-right"
                   data-col-header-label="${getHeadingLabel(
                     this.optionsData,
                     'financial_finding_set.local_amount',
                     'Amount (local)'
                   )}"
-                  >${item.local_amount}</span
+                  >${this.displayCurrencyAmount(item.local_amount, 0, 2)}</span
                 >
                 <span
-                  class="col-data col-1"
+                  class="col-data col-2 align-right"
                   data-col-header-label="${getHeadingLabel(
                     this.optionsData,
                     'financial_finding_set.amount',
                     'Amount USD'
                   )}"
-                  >${item.amount}</span
+                  >${this.displayCurrencyAmount(item.amount, 0, 2)}</span
                 >
+                <span class="col-data col-1"></span>
                 <div class="hover-block" ?hidden="${!this._canBeChanged(this.optionsData)}">
                   <etools-icon-button name="create" @click="${() => this.openEditDialog(index)}"></etools-icon-button>
                   <etools-icon-button name="delete" @click="${() => this.openDeleteDialog(index)}"></etools-icon-button>
@@ -191,6 +192,15 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
   @property({type: Array})
   dataItems!: any[];
 
+  @property({type: Number})
+  exchangeRate = 1;
+
+  @property({type: Boolean})
+  priorFaceForms = false;
+
+  @property({type: Boolean, attribute: 'is-staff-sc'})
+  isStaffSc = false;
+
   @property({type: String})
   mainProperty = 'financial_finding_set';
 
@@ -201,7 +211,8 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
     amount: '',
     description: '',
     recommendation: '',
-    ip_comments: ''
+    ip_comments: '',
+    exchange_rate: 1
   };
 
   @property({type: Object})
@@ -238,6 +249,12 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
     this.addEventListener('show-edit-dialog', this.openAddEditDialog as any);
   }
 
+  public stateChanged(state: RootState) {
+    if (state.engagement?.data && !isJsonStrMatch(this.engagementData, state.engagement.data)) {
+      this.engagementData = cloneDeep(state.engagement.data);
+    }
+  }
+
   updated(changedProperties: PropertyValues): void {
     super.updated(changedProperties);
 
@@ -251,14 +268,18 @@ export class FinancialFindings extends CommonMethodsMixin(TableElementsMixin(Mod
   }
 
   openAddEditDialog() {
+    this.editedItem.exchange_rate = this.exchangeRate;
     openDialog({
       dialog: this.dialogKey,
       dialogData: {
         optionsData: this.optionsData,
         editedItem: this.editedItem,
+        priorFaceForms: this.priorFaceForms,
         opener: this,
         dialogTitle: this.dialogTitle,
-        titleOptions: this.titleOptions
+        titleOptions: this.titleOptions,
+        engagement: this.engagementData,
+        isStaffSc: this.isStaffSc
       }
     }).then(() => (this.isAddDialogOpen = false));
   }

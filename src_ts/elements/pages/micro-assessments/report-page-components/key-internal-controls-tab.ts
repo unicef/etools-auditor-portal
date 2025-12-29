@@ -49,7 +49,7 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
           this.lowResolutionLayout = e.detail.value;
         }}"
       ></etools-media-query>
-      <etools-content-panel .panelTitle="${this.subjectAreas.header}" list>
+      <etools-content-panel .panelTitle="${this.subjectAreas.header}" list show-expand-btn>
         <etools-data-table-header no-title .lowResolutionLayout="${this.lowResolutionLayout}">
           <etools-data-table-column class="col-8">Subject area</etools-data-table-column>
           <etools-data-table-column class="col-4">Risk Assessment</etools-data-table-column>
@@ -229,10 +229,5 @@ export class KeyInternalControlsTab extends CommonMethodsMixin(LitElement) {
     this.editedArea = cloneDeep(editedArea);
     this.requestInProcess = true;
     fireEvent(this, 'action-activated', {type: 'save', quietAdding: true});
-    // @dci ? was ever getting here ???
-    // const data = cloneDeep(this.editedArea);
-    // data!.changed = true;
-    // this.subjectAreas.children.splice(this.editedAreaIndex, 1, data);
-    // this.dialogOpened = false;
   }
 }

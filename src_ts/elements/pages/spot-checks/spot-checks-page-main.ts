@@ -113,6 +113,15 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                       </etools-content-panel>`
                     : ``}
 
+                  <partner-details-tab
+                    .originalData="${this.originalData}"
+                    id="partnerDetails"
+                    .engagement="${this.engagement}"
+                    .errorObject="${this.errorObject}"
+                    .optionsData="${this.engagementOptions}"
+                  >
+                  </partner-details-tab>
+
                   <engagement-info-details
                     id="engagementDetails"
                     .data="${this.engagement}"
@@ -122,15 +131,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                     .isStaffSc="${this.isStaffSc}"
                   >
                   </engagement-info-details>
-
-                  <partner-details-tab
-                    .originalData="${this.originalData}"
-                    id="partnerDetails"
-                    .engagement="${this.engagement}"
-                    .errorObject="${this.errorObject}"
-                    .optionsData="${this.engagementOptions}"
-                  >
-                  </partner-details-tab>
 
                   <engagement-staff-members-tab
                     id="staffMembers"
@@ -164,6 +164,9 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
                         .engagement="${this.engagement}"
                         .optionsData="${this.engagementOptions}"
                         .apOptionsData="${this.apOptions}"
+                        @ap-loaded="${({detail}: CustomEvent) => {
+                          this.apItems = detail.data || [];
+                        }}"
                       >
                       </follow-up-main>
                     </div>`
@@ -197,7 +200,11 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
               </div>
 
               <div id="sidebar">
-                <status-tab-element .engagementData="${this.engagement}" .optionsData="${this.engagementOptions}">
+                <status-tab-element
+                  .engagementData="${this.engagement}"
+                  .optionsData="${this.engagementOptions}"
+                  .apItems="${this.apItems}"
+                >
                 </status-tab-element>
               </div>
             </div>
@@ -229,7 +236,6 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
       this.resetEngagementDataIfNeeded();
       return;
     }
-
     this.setEngagementDataFromRedux(state);
 
     if (state.app?.routeDetails && !isJsonStrMatch(this.routeDetails, state.app.routeDetails)) {
@@ -254,7 +260,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
   onEngagementLoaded() {
     if (this.engagementOptions && this.engagement && this.user) {
       this.tabsList = [
-        {tab: 'overview', tabLabel: 'Engagement Overview'},
+        {tab: 'overview', tabLabel: 'Engagement Details'},
         {tab: 'report', hidden: !this._showReportTabs(this.engagementOptions, this.engagement), tabLabel: 'Report'},
         {tab: 'follow-up', hidden: !this._showFollowUpTabs(this.apOptions), tabLabel: 'Follow-Up'},
         {tab: 'attachments', tabLabel: 'Attachments'}
@@ -282,6 +288,10 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
     data = data || {};
     // Rport data
     const reportPage = this.getElement('#report');
+    const financialFindingData = reportPage && reportPage.getFinancialFindingsData();
+    if (!isNull(financialFindingData)) {
+      data.financial_finding_set = financialFindingData;
+    }
 
     const findingData = reportPage && reportPage.getFindingsData();
     if (findingData) {
@@ -293,7 +303,7 @@ export class SpotChecksPageMain extends connect(store)(CommonMethodsMixin(Engage
       data.internal_controls = internalControlsData;
     }
 
-    const overviewData = (reportPage && reportPage.getOverviewData()) || {};
+    const overviewData = (reportPage && reportPage.getFindingsSummarySCData()) || {};
     assign(data, overviewData);
 
     // FollowUp data
