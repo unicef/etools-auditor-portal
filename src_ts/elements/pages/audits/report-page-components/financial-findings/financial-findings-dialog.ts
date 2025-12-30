@@ -97,13 +97,16 @@ export class FinancialFindingsDialog extends CommonMethodsMixin(TableElementsMix
                 .errorMessage="${this.errors.local_amount}"
                 @focus="${this._resetFieldError}"
                 @value-changed="${({detail}: CustomEvent) => {
-                  if (this.priorFaceForms || Number(this.editedItem?.local_amount) === Number(detail?.value)) {
+                  if (Number(this.editedItem?.local_amount) === Number(detail?.value)) {
                     return;
                   }
-                  if (!this.validateFindingValue(detail.value)) {
+                  if (!this.priorFaceForms && !this.validateFindingValue(detail.value)) {
                     return;
                   }
                   this.numberChanged(detail, 'local_amount', this.editedItem);
+                  if (this.priorFaceForms) {
+                    return;
+                  }
                   detail.value = divideWithExchangeRate(detail.value, this.editedItem.exchange_rate);
                   this.numberChanged(detail, 'amount', this.editedItem);
                 }}"

@@ -109,10 +109,10 @@ function TableElementsMixin<T extends Constructor<LitElement>>(baseClass: T) {
       if ((this.isAddDialogOpen || this.isConfirmDialogOpen) && !this.saveWithButton) {
         return this.getCurrentData();
       }
-      if (!this.originalTableData || !this.dataItems) {
-        throw Error('originalTableData  and dataItems arrays must exist');
-      }
-      if (!this.originalTableData.length && !this.dataItems.length) {
+      // if (!this.originalTableData || !this.dataItems) {
+      //   throw Error('originalTableData  and dataItems arrays must exist');
+      // }
+      if (!this.originalTableData?.length && !this.dataItems?.length) {
         return null;
       }
 
