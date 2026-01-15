@@ -9,5 +9,5 @@ dist/
 *.sublime-workspace
 src_ts/**/*.js
 .vscode/
-
-
+.secrets
+.github/events
