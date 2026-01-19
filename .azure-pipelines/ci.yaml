@@ -1,0 +1,126 @@
+trigger:
+  branches:
+    include:
+      - '*'
+
+pr:
+  branches:
+    include:
+      - '*'
+
+variables:
+  NODE_VERSION: '22.21.1'
+  DOCKER_IMAGE: 'unicef/etools-ap'
+
+stages:
+  - stage: Lint
+    displayName: Lint
+    jobs:
+      - job: Lint
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '$(NODE_VERSION)'
+            displayName: 'Use Node.js $(NODE_VERSION)'
+
+          - script: npm ci
+            displayName: Install dependencies
+
+          - script: npm run lint
+            displayName: Run ESLint
+
+  - stage: BuildAndPush
+    displayName: Build and Push Docker Image
+    dependsOn: Lint
+    condition: |
+      and(
+        succeeded(),
+        or(
+          startsWith(variables['Build.SourceBranch'], 'refs/tags/'),
+          eq(variables['Build.SourceBranchName'], 'master'),
+          eq(variables['Build.SourceBranchName'], 'staging'),
+          eq(variables['Build.SourceBranchName'], 'develop'),
+          eq(variables['Build.SourceBranchName'], 'face-linking')
+        )
+      )
+
+    jobs:
+      - job: Docker
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+            fetchDepth: 0
+
+          - script: |
+              SAFE_BRANCH=$(echo "$(Build.SourceBranchName)" \
+                | tr '/' '-' \
+                | tr -cd 'a-zA-Z0-9._-')
+              echo "##vso[task.setvariable variable=SAFE_BRANCH;isOutput=true]$SAFE_BRANCH"
+            name: sanitize
+            displayName: Sanitize branch name
+
+          - script: |
+              sed -i "0,/revNo/s//$(Build.SourceVersion)/" index.html
+              sed -i "0,/revNo/s//$(Build.SourceVersion)/" version.json
+              sed -i "0,/bDate/s//$(date -u +%F_%T)/" index.html
+              sed -i "0,/bDate/s//$(date -u +%F_%T)/" version.json
+            displayName: Inject build metadata
+
+          - task: Docker@2
+            displayName: Build and push image
+            inputs:
+              command: buildAndPush
+              repository: $(DOCKER_IMAGE)
+              dockerfile: Dockerfile
+              containerRegistry: dockerhub
+              tags: |
+                $(sanitize.SAFE_BRANCH)
+                $(Build.SourceVersion)
+
+  - stage: DeployDevelop
+    displayName: Deploy to Develop (Rancher)
+    dependsOn: BuildAndPush
+    condition: |
+      and(
+        succeeded(),
+        eq(variables['Build.SourceBranchName'], 'develop')
+      )
+
+    variables:
+      - group: rancher-develop-env
+      - name: SAFE_BRANCH
+        value: $[ stageDependencies.BuildAndPush.Docker.outputs['sanitize.SAFE_BRANCH'] ]
+
+    jobs:
+      - job: Deploy
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: KubectlInstaller@0
+            inputs:
+              kubectlVersion: 'v1.16.2'
+            displayName: Install kubectl
+
+          - script: echo "SAFE_BRANCH=$(SAFE_BRANCH)"
+
+          - script: |
+              mkdir -p ~/.kube
+              echo "$(KUBECONFIG_B64)" | base64 -d > ~/.kube/config
+              chmod 600 ~/.kube/config
+              kubectl config use-context rke-cluster-devtst
+            displayName: Configure kubeconfig
+
+          - script: |
+              kubectl -n etools-dev \
+                set image deployment/fam-dev \
+                fam-dev=unicef/etools-ap:$(SAFE_BRANCH)
+
+              kubectl rollout restart deployment/fam-dev -n etools-dev
+              kubectl rollout status deployment/fam-dev -n etools-dev
+            displayName: Deploy application
