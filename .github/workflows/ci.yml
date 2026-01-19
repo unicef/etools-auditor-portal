@@ -5,7 +5,7 @@ on:
     branches:
       - '**'
     tags:
-      - '*'    
+      - '*'
   pull_request:
 
 concurrency:
@@ -31,13 +31,15 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+
       - name: Install dependencies
         run: npm ci
+
       - name: Run ESLint
         run: npm run lint
-      
+
   build_and_push:
-    name: Build and Deploy Docker Image
+    name: Build and Push Docker Image
     needs: lint
     runs-on: ubuntu-latest
     if: |
@@ -48,6 +50,9 @@ jobs:
        github.ref_name == 'develop' ||
        github.ref_name == 'face-linking')
 
+    outputs:
+      image_tag: ${{ steps.branch.outputs.branch_name }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -57,10 +62,10 @@ jobs:
       - name: Sanitize branch name
         id: branch
         run: |
-          SAFE_BRANCH=$(echo "${GITHUB_REF_NAME}" | tr '/' '-' | tr -cd 'a-zA-Z0-9._-')
-          echo "branch_name=$SAFE_BRANCH" >> $GITHUB_OUTPUT          
+          SAFE_BRANCH=$(echo "$GITHUB_REF_NAME" | tr '/' '-' | tr -cd 'a-zA-Z0-9._-')
+          echo "branch_name=$SAFE_BRANCH" >> "$GITHUB_OUTPUT"
 
-      - name: Exporting revision number
+      - name: Export revision metadata
         run: |
           sed -i "0,/revNo/s//${GITHUB_SHA}/" index.html
           sed -i "0,/revNo/s//${GITHUB_SHA}/" version.json
@@ -84,3 +89,34 @@ jobs:
             ${{ env.DOCKER_IMAGE }}:${{ steps.branch.outputs.branch_name }}
             ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
             ${{ startsWith(github.ref, 'refs/tags/') && format('{0}:{1}', env.DOCKER_IMAGE, github.ref_name) || '' }}
+
+  deploy_develop:
+    name: Deploy to Develop (Rancher)
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' &&
+      github.ref_name == 'develop' &&
+      needs.build_and_push.outputs.image_tag != ''
+
+    steps:
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.29.3
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_B64 }}" | base64 -d > ~/.kube/config
+          chmod 600 ~/.kube/config
+          kubectl config use-context rke-cluster-devtst
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl -n etools-dev \
+            set image deployment/fam-dev \
+            fam-dev=${{ env.DOCKER_IMAGE }}:${{ needs.build_and_push.outputs.image_tag }}
+
+          kubectl rollout restart deployment/fam-dev -n etools-dev
+          kubectl rollout status deployment/fam-dev -n etools-dev
