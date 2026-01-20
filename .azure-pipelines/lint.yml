@@ -40,11 +40,11 @@ stages:
     condition: |
       and(
         succeeded(),
-        ne(variables['Build.Reason'], 'PullRequest'),
         or(
+          startsWith(variables['Build.SourceBranch'], 'refs/tags/'),
           eq(variables['Build.SourceBranchName'], 'master'),
           eq(variables['Build.SourceBranchName'], 'staging'),
-          eq(variables['Build.SourceBranchName'], 'feature/azure-pipelines'),
+          eq(variables['Build.SourceBranchName'], 'develop'),
           eq(variables['Build.SourceBranchName'], 'face-linking')
         )
       )
