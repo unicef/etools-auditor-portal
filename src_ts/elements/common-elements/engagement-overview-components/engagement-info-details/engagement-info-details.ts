@@ -716,7 +716,10 @@ export class EngagementInfoDetails extends connect(store)(
       return;
     }
     this.loadingFaceForms = true;
-    const url = getEndpoint('linkFace', {id: partnerId}).url;
+    let url = getEndpoint('linkFace', {id: partnerId}).url;
+    if (this.data?.id) {
+      url += `&engagement=${this.data.id}`;
+    }
     sendRequest({
       endpoint: {url}
     })
