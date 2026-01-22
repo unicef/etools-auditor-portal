@@ -176,7 +176,7 @@ export class ActionButtons extends LitElement {
       hasFinancialOrPriorityFindings = true;
       msg = 'Financial';
     }
-    if (this.engagementData?.findings?.length) {
+    if ((this.engagementData?.findings || []).some((x: any) => x.priority === 'high')) {
       hasFinancialOrPriorityFindings = true;
       msg += msg !== '' ? ' and Priority Findings' : 'Priority Findings';
     } else {
