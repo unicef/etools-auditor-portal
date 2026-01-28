@@ -24,9 +24,9 @@ stages:
             fetchDepth: 1
 
           - task: NodeTool@0
+            displayName: 'Use Node.js $(NODE_VERSION)'
             inputs:
               versionSpec: '$(NODE_VERSION)'
-            displayName: 'Use Node.js $(NODE_VERSION)'
 
           - script: npm ci
             displayName: Install dependencies
@@ -42,10 +42,10 @@ stages:
         succeeded(),
         or(
           startsWith(variables['Build.SourceBranch'], 'refs/tags/'),
-          eq(variables['Build.SourceBranchName'], 'master'),
-          eq(variables['Build.SourceBranchName'], 'staging'),
-          eq(variables['Build.SourceBranchName'], 'develop'),
-          eq(variables['Build.SourceBranchName'], 'face-linking')
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/staging'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/develop'),
+          eq(variables['Build.SourceBranch'], 'refs/heads/azure-pipeline')
         )
       )
 
@@ -89,13 +89,11 @@ stages:
     condition: |
       and(
         succeeded(),
-        eq(variables['Build.SourceBranchName'], 'develop')
+        eq(variables['Build.SourceBranch'], 'refs/heads/develop')
       )
 
     variables:
       - group: rancher-develop-env
-      - name: SAFE_BRANCH
-        value: $[ stageDependencies.BuildAndPush.Docker.outputs['sanitize.SAFE_BRANCH'] ]
 
     jobs:
       - job: Deploy
@@ -103,11 +101,9 @@ stages:
           vmImage: ubuntu-latest
         steps:
           - task: KubectlInstaller@0
+            displayName: Install kubectl
             inputs:
               kubectlVersion: 'v1.16.2'
-            displayName: Install kubectl
-
-          - script: echo "SAFE_BRANCH=$(SAFE_BRANCH)"
 
           - script: |
               mkdir -p ~/.kube
@@ -119,8 +115,11 @@ stages:
           - script: |
               kubectl -n etools-dev \
                 set image deployment/fam-dev \
-                fam-dev=unicef/etools-ap:$(SAFE_BRANCH)
-
-              kubectl rollout restart deployment/fam-dev -n etools-dev
-              kubectl rollout status deployment/fam-dev -n etools-dev
+                fam-dev=unicef/etools-ap:$(Build.SourceVersion)
             displayName: Deploy application
+
+          - script: |
+              kubectl rollout status deployment/fam-dev \
+                -n etools-dev \
+                --timeout=300s
+            displayName: Wait for pods to start
