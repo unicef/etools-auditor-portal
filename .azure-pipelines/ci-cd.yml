@@ -45,7 +45,6 @@ stages:
           eq(variables['Build.SourceBranch'], 'refs/heads/master'),
           eq(variables['Build.SourceBranch'], 'refs/heads/staging'),
           eq(variables['Build.SourceBranch'], 'refs/heads/develop'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/azure-pipeline')
         )
       )
 
@@ -89,7 +88,7 @@ stages:
     condition: |
       and(
         succeeded(),
-        eq(variables['Build.SourceBranch'], 'refs/heads/azure-pipeline')
+        eq(variables['Build.SourceBranch'], 'refs/heads/develop')
       )
 
     variables:
