@@ -1,0 +1,5 @@
+environment: dev
+replicaCount: 1
+
+image:
+  tag: develop

@@ -1,0 +1,11 @@
+appName: fam
+namespacePrefix: etools
+containerPort: 42
+
+image:
+  repository: unicef/etools-ap
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 42
