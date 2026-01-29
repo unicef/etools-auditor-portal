@@ -44,7 +44,6 @@ stages:
           startsWith(variables['Build.SourceBranch'], 'refs/tags/'),
           eq(variables['Build.SourceBranch'], 'refs/heads/master'),
           eq(variables['Build.SourceBranch'], 'refs/heads/staging'),
-          eq(variables['Build.SourceBranch'], 'refs/heads/azure-environments'),
           eq(variables['Build.SourceBranch'], 'refs/heads/develop')
         )
       )
@@ -89,7 +88,7 @@ stages:
     condition: |
       and(
         succeeded(),
-        eq(variables['Build.SourceBranch'], 'refs/heads/azure-environments')
+        eq(variables['Build.SourceBranch'], 'refs/heads/develop')
       )
 
     variables:
@@ -135,7 +134,7 @@ stages:
     condition: |
       and(
         succeeded(),
-        eq(variables['Build.SourceBranch'], 'refs/heads/azure-environments')
+        eq(variables['Build.SourceBranch'], 'refs/heads/staging')
       )
 
     variables:
@@ -163,14 +162,10 @@ stages:
                   kubectl config use-context rke-cluster-etstgtrn
                 displayName: Configure kubeconfig
 
-              # - script: |
-              #     kubectl -n etools-staging \
-              #       set image deployment/fam-staging \
-              #       fam-staging=unicef/etools-ap:$(Build.SourceVersion)
-              #   displayName: Deploy application
               - script: |
                   kubectl -n etools-staging \
-                    get pods
+                    set image deployment/fam-staging \
+                    fam-staging=unicef/etools-ap:$(Build.SourceVersion)
                 displayName: Deploy application
 
               - script: |
@@ -178,4 +173,3 @@ stages:
                     -n etools-staging \
                     --timeout=300s
                 displayName: Wait for pods to start
-                
