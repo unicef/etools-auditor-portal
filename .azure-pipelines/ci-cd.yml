@@ -92,33 +92,84 @@ stages:
       )
 
     variables:
-      - group: rancher-develop-env
+      - group: rke-cluster-devtst
 
     jobs:
-      - job: Deploy
-        pool:
-          vmImage: ubuntu-latest
-        steps:
-          - task: KubectlInstaller@0
-            displayName: Install kubectl
-            inputs:
-              kubectlVersion: 'v1.16.2'
+    - deployment: Deploy
+      displayName: Deploy to develop
+      environment: dev
+      pool:
+        vmImage: ubuntu-latest
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: KubectlInstaller@0
+                displayName: Install kubectl
+                inputs:
+                  kubectlVersion: 'v1.16.2'
 
-          - script: |
-              mkdir -p ~/.kube
-              echo "$(KUBECONFIG_B64)" | base64 -d > ~/.kube/config
-              chmod 600 ~/.kube/config
-              kubectl config use-context rke-cluster-devtst
-            displayName: Configure kubeconfig
+              - script: |
+                  mkdir -p ~/.kube
+                  echo "$(KUBECONFIG_B64)" | base64 -d > ~/.kube/config
+                  chmod 600 ~/.kube/config
+                  kubectl config use-context rke-cluster-devtst
+                displayName: Configure kubeconfig
 
-          - script: |
-              kubectl -n etools-dev \
-                set image deployment/fam-dev \
-                fam-dev=unicef/etools-ap:$(Build.SourceVersion)
-            displayName: Deploy application
+              - script: |
+                  kubectl -n etools-dev \
+                    set image deployment/fam-dev \
+                    fam-dev=unicef/etools-ap:$(Build.SourceVersion)
+                displayName: Deploy application
 
-          - script: |
-              kubectl rollout status deployment/fam-dev \
-                -n etools-dev \
-                --timeout=300s
-            displayName: Wait for pods to start
+              - script: |
+                  kubectl rollout status deployment/fam-dev \
+                    -n etools-dev \
+                    --timeout=300s
+                displayName: Wait for pods to start
+
+  - stage: DeployStaging
+    displayName: Deploy to Staging (Rancher)
+    dependsOn: BuildAndPush
+    condition: |
+      and(
+        succeeded(),
+        eq(variables['Build.SourceBranch'], 'refs/heads/staging')
+      )
+
+    variables:
+      - group: rke-cluster-etstgtrn
+
+    jobs:
+    - deployment: Deploy
+      displayName: Deploy to staging
+      environment: staging
+      pool:
+        vmImage: ubuntu-latest
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: KubectlInstaller@0
+                displayName: Install kubectl
+                inputs:
+                  kubectlVersion: 'v1.16.2'
+
+              - script: |
+                  mkdir -p ~/.kube
+                  echo "$(KUBECONFIG_B64)" | base64 -d > ~/.kube/config
+                  chmod 600 ~/.kube/config
+                  kubectl config use-context rke-cluster-etstgtrn
+                displayName: Configure kubeconfig
+
+              - script: |
+                  kubectl -n etools-staging \
+                    set image deployment/fam-staging \
+                    fam-staging=unicef/etools-ap:$(Build.SourceVersion)
+                displayName: Deploy application
+
+              - script: |
+                  kubectl rollout status deployment/fam-staging \
+                    -n etools-staging \
+                    --timeout=300s
+                displayName: Wait for pods to start
