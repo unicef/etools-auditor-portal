@@ -93,7 +93,7 @@ stages:
       )
 
     variables:
-      - group: rancher-develop-env
+      - group: rke-cluster-devtst
 
     jobs:
     - deployment: Deploy
