@@ -184,7 +184,7 @@ stages:
       )
 
     variables:
-      - group: rke-cluster-etprod
+      - group: rke-cluster-etools
 
     jobs:
     - deployment: Deploy
