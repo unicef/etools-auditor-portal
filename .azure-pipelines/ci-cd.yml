@@ -208,7 +208,7 @@ stages:
                   mkdir -p ~/.kube
                   echo "$(KUBECONFIG_B64)" | base64 -d > ~/.kube/config
                   chmod 600 ~/.kube/config
-                  kubectl config use-context rke-cluster-etprod
+                  kubectl config use-context rke-cluster-etools
                 displayName: Configure kubeconfig
 
               - script: |
