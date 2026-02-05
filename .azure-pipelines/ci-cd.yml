@@ -173,3 +173,49 @@ stages:
                     -n etools-staging \
                     --timeout=300s
                 displayName: Wait for pods to start
+
+  - stage: DeployProd
+    displayName: Deploy to Production (Rancher)
+    dependsOn: BuildAndPush
+    condition: |
+      and(
+        succeeded(),
+        startsWith(variables['Build.SourceBranch'], 'refs/tags/')
+      )
+
+    variables:
+      - group: rke-cluster-etprod
+
+    jobs:
+    - deployment: Deploy
+      displayName: Deploy to production
+      environment: prod
+      pool:
+        vmImage: ubuntu-latest
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: KubectlInstaller@0
+                displayName: Install kubectl
+                inputs:
+                  kubectlVersion: 'v1.16.2'
+
+              - script: |
+                  mkdir -p ~/.kube
+                  echo "$(KUBECONFIG_B64)" | base64 -d > ~/.kube/config
+                  chmod 600 ~/.kube/config
+                  kubectl config use-context rke-cluster-etprod
+                displayName: Configure kubeconfig
+
+              - script: |
+                  kubectl -n etools-prod \
+                    set image deployment/fam-prod \
+                    fam-prod=unicef/etools-ap:$(Build.SourceBranchName)
+                displayName: Deploy application
+
+              - script: |
+                  kubectl rollout status deployment/fam-prod \
+                    -n etools-prod \
+                    --timeout=300s
+                displayName: Wait for pods to start
