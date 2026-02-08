@@ -122,7 +122,7 @@ stages:
               - script: |
                   kubectl -n etools-dev \
                     set image deployment/fam-dev \
-                    fam-dev=unicef/etools-ap:$(Build.SourceVersion)
+                    fam-dev=$(DOCKER_IMAGE):$(Build.SourceVersion)
                 displayName: Deploy application
 
               - script: |
@@ -168,7 +168,7 @@ stages:
               - script: |
                   kubectl -n etools-staging \
                     set image deployment/fam-staging \
-                    fam-staging=unicef/etools-ap:$(Build.SourceVersion)
+                    fam-staging=$(DOCKER_IMAGE):$(Build.SourceVersion)
                 displayName: Deploy application
 
               - script: |
@@ -214,7 +214,7 @@ stages:
               - script: |
                   kubectl -n etools-prod \
                     set image deployment/fam-prod \
-                    fam-prod=unicef/etools-ap:$(Build.SourceBranchName)
+                    fam-prod=$(DOCKER_IMAGE):$(Build.SourceBranchName)
                 displayName: Deploy application
 
               - script: |
