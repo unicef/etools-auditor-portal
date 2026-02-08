@@ -38,7 +38,7 @@ stages:
           displayName: Run ESLint
 
 - stage: BuildAndPush
-  displayName: Build and Push Docker Image
+  displayName: Docker Image build and push
   dependsOn: Lint
   condition: |
     and(
@@ -59,6 +59,10 @@ stages:
         - checkout: self
           fetchDepth: 0
 
+        # SAFE_BRANCH is derived from Build.SourceBranchName.
+        # - On branch builds: it is the branch name (sanitized)
+        # - On tag builds: it is the *tag name* (sanitized)
+        # SAFE_BRANCH is used everywhere, so we NEVER use Build.SourceBranchName directly to avoid invalid Docker tags
         - script: |
             SAFE_BRANCH=$(echo "$(Build.SourceBranchName)" \
               | tr '/' '-' \
@@ -188,6 +192,8 @@ stages:
 
   variables:
     - group: rke-cluster-etools
+    - name: SAFE_BRANCH
+      value: $[ stageDependencies.BuildAndPush.Docker.outputs['sanitize.SAFE_BRANCH'] ]
 
   jobs:
   - deployment: Deploy
@@ -211,10 +217,11 @@ stages:
                 kubectl config use-context rke-cluster-etools
               displayName: Configure kubeconfig
 
+            # Deploy sanitized tag (SAFE_BRANCH). For tag-triggered runs, SAFE_BRANCH == sanitized Git tag
             - script: |
                 kubectl -n etools-prod \
                   set image deployment/fam-prod \
-                  fam-prod=$(DOCKER_IMAGE):$(Build.SourceBranchName)
+                  fam-prod=$(DOCKER_IMAGE):$(SAFE_BRANCH)
               displayName: Deploy application
 
             - script: |
