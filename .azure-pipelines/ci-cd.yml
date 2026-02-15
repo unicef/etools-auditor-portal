@@ -67,7 +67,10 @@ stages:
             SAFE_BRANCH=$(echo "$(Build.SourceBranchName)" \
               | tr '/' '-' \
               | tr -cd 'a-zA-Z0-9._-')
+            BUILD_DATE=$(date -u +%Y%m%d)
+            BRANCH_DATE_TAG="${SAFE_BRANCH}${BUILD_DATE}"
             echo "##vso[task.setvariable variable=SAFE_BRANCH;isOutput=true]$SAFE_BRANCH"
+            echo "##vso[task.setvariable variable=BRANCH_DATE_TAG;isOutput=true]$BRANCH_DATE_TAG"
           name: sanitize
           displayName: Sanitize branch name
 
@@ -87,6 +90,7 @@ stages:
             containerRegistry: dockerhub
             tags: |
               $(sanitize.SAFE_BRANCH)
+              $(sanitize.BRANCH_DATE_TAG)
               $(Build.SourceVersion)
 
 - stage: DeployDevelop
