@@ -20,7 +20,6 @@ variables:
 stages:
 - stage: Lint
   displayName: Lint
-  condition: eq(variables['Build.Reason'], 'PullRequest')
   jobs:
     - job: Lint
       pool:
