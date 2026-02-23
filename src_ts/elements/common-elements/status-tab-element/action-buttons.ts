@@ -205,11 +205,16 @@ export class ActionButtons extends LitElement {
   questionsAndReportHaveDifferentRating() {
     const questions = this.engagementData?.questionnaire?.children || [];
     const test_subject_areas = this.engagementData?.test_subject_areas?.children || [];
-    const ratingIsDifferent = Array.from(questions).some((question: any, index) => {
-      String(question.risk_rating).toLowerCase() !==
-        String(test_subject_areas[index]?.blueprints?.[0]?.risk?.value_display || '').toLowerCase();
-    });
-    console.log(ratingIsDifferent);
+    let ratingIsDifferent = false;
+    for (let i = 0; i < questions.length; i++) {
+      if (
+        String(questions[i].risk_rating).toLowerCase() !==
+        String(test_subject_areas[i]?.blueprints?.[0]?.risk?.value_display || '').toLowerCase()
+      ) {
+        ratingIsDifferent = true;
+        break;
+      }
+    }
     return ratingIsDifferent;
   }
 
