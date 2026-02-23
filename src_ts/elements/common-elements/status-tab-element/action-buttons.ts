@@ -170,6 +170,13 @@ export class ActionButtons extends LitElement {
   }
 
   async onFinalize() {
+    if (this.questionsAndReportHaveDifferentRating()) {
+      fireEvent(this, 'toast', {
+        text: `Cannot finalize engagement. There are differences between Report and Questionnaire risk ratings.`
+      });
+      return;
+    }
+
     let msg = '';
     let hasFinancialOrPriorityFindings = false;
     if (this.engagementData?.financial_finding_set?.length) {
@@ -193,6 +200,16 @@ export class ActionButtons extends LitElement {
     } else {
       this.fireActionActivated('finalize');
     }
+  }
+
+  questionsAndReportHaveDifferentRating() {
+    const questions = this.engagementData?.questionnaire?.children || [];
+    const test_subject_areas = this.engagementData?.test_subject_areas?.children || [];
+    const ratingIsDifferent = questions.some((question, index) => {
+      String(question.risk_rating).toLowerCase() !==
+        String(test_subject_areas[index]?.blueprints?.[0]?.risk?.value_display || '').toLowerCase();
+    });
+    return ratingIsDifferent;
   }
 
   submitConfirmationClosed(confirmed: boolean) {
