@@ -207,12 +207,16 @@ export class ActionButtons extends LitElement {
     const test_subject_areas = this.engagementData?.test_subject_areas?.children || [];
     let ratingIsDifferent = false;
     for (let i = 0; i < questions.length; i++) {
+      //  this is in case we have no ratings or are N/A, and it's tricky to check..
+      if (Number(questions[i].risk_rating) === 0) {
+        if (!(Number(test_subject_areas[i]?.blueprints?.[0]?.risk?.value?.value) === 0)) {
+          ratingIsDifferent = true;
+          break;
+        }
+      }
       if (
-        //  we need the first one in case we have no ratings or are N/A, it is tricky..
-        (Number(questions[i].risk_rating) === 0 &&
-          !(Number(test_subject_areas[i]?.blueprints?.[0]?.risk?.value?.value) === 0)) ||
         String(questions[i].risk_rating).toLowerCase() !==
-          String(test_subject_areas[i]?.blueprints?.[0]?.risk?.value_display || '').toLowerCase()
+        String(test_subject_areas[i]?.blueprints?.[0]?.risk?.value_display || '').toLowerCase()
       ) {
         ratingIsDifferent = true;
         break;
