@@ -213,8 +213,7 @@ export class ActionButtons extends LitElement {
           ratingIsDifferent = true;
           break;
         }
-      }
-      if (
+      } else if (
         String(questions[i].risk_rating).toLowerCase() !==
         String(test_subject_areas[i]?.blueprints?.[0]?.risk?.value_display || '').toLowerCase()
       ) {
