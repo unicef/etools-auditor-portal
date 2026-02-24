@@ -172,7 +172,7 @@ export class ActionButtons extends LitElement {
   async onFinalize() {
     if (this.questionsAndReportHaveDifferentRating()) {
       fireEvent(this, 'toast', {
-        text: `Cannot finalize engagement. There are differences between Report and Questionnaire risk ratings.`
+        text: `Risk rating mismatch between Questionnaire and Report tab. Please review and correct before finalizing.`
       });
       return;
     }
