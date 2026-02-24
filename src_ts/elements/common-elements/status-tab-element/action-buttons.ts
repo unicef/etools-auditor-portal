@@ -208,9 +208,9 @@ export class ActionButtons extends LitElement {
     let ratingIsDifferent = false;
     for (let i = 0; i < questions.length; i++) {
       if (
-        //  we need the first one in case we have no ratings or are N/A
+        //  we need the first one in case we have no ratings or are N/A, it is tricky..
         (Number(questions[i].risk_rating) === 0 &&
-          !(Number(test_subject_areas[i]?.blueprints?.[0]?.risk?.value) === 0)) ||
+          !(Number(test_subject_areas[i]?.blueprints?.[0]?.risk?.value?.value) === 0)) ||
         String(questions[i].risk_rating).toLowerCase() !==
           String(test_subject_areas[i]?.blueprints?.[0]?.risk?.value_display || '').toLowerCase()
       ) {
