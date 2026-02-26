@@ -170,6 +170,13 @@ export class ActionButtons extends LitElement {
   }
 
   async onFinalize() {
+    if (this.questionsAndReportHaveDifferentRating()) {
+      fireEvent(this, 'toast', {
+        text: `Risk rating mismatch between Questionnaire and Report tab. Please review and correct before finalizing.`
+      });
+      return;
+    }
+
     let msg = '';
     let hasFinancialOrPriorityFindings = false;
     if (this.engagementData?.financial_finding_set?.length) {
@@ -193,6 +200,28 @@ export class ActionButtons extends LitElement {
     } else {
       this.fireActionActivated('finalize');
     }
+  }
+
+  questionsAndReportHaveDifferentRating() {
+    const questions = this.engagementData?.questionnaire?.children || [];
+    const test_subject_areas = this.engagementData?.test_subject_areas?.children || [];
+    let ratingIsDifferent = false;
+    for (let i = 0; i < questions.length; i++) {
+      //  this is in case we have no ratings or are N/A, and it's tricky to check..
+      if (Number(questions[i].risk_rating) === 0) {
+        if (!(Number(test_subject_areas[i]?.blueprints?.[0]?.risk?.value?.value) === 0)) {
+          ratingIsDifferent = true;
+          break;
+        }
+      } else if (
+        String(questions[i].risk_rating).toLowerCase() !==
+        String(test_subject_areas[i]?.blueprints?.[0]?.risk?.value_display || '').toLowerCase()
+      ) {
+        ratingIsDifferent = true;
+        break;
+      }
+    }
+    return ratingIsDifferent;
   }
 
   submitConfirmationClosed(confirmed: boolean) {

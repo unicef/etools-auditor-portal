@@ -206,7 +206,7 @@ export class RiskTab extends CommonMethodsMixin(LitElement) {
 
   @property({type: Object})
   riskRatingOptions = {
-    na: 'N/A',
+    0: 'N/A',
     low: 'Low',
     medium: 'Medium',
     significant: 'Significant',

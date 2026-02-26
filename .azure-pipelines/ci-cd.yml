@@ -1,7 +1,9 @@
 trigger:
   branches:
     include:
-      - '*'
+      - develop
+      - staging
+      - master
   tags:
     include:
       - '*'
@@ -43,12 +45,7 @@ stages:
   condition: |
     and(
       succeeded(),
-      or(
-        startsWith(variables['Build.SourceBranch'], 'refs/tags/'),
-        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-        eq(variables['Build.SourceBranch'], 'refs/heads/staging'),
-        eq(variables['Build.SourceBranch'], 'refs/heads/develop')
-      )
+      ne(variables['Build.Reason'], 'PullRequest')
     )
 
   jobs:
