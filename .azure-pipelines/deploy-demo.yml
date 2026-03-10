@@ -48,9 +48,13 @@ stages:
               displayName: Configure kubeconfig
 
             - script: |
+                IMAGE="$(DOCKER_IMAGE):${{ parameters.imageTag }}"
+                echo "Deploying image: $IMAGE"
                 kubectl -n etools-demo \
                   set image deployment/fam-demo \
-                  fam-demo=$(DOCKER_IMAGE):${{ parameters.imageTag }}
+                  fam-demo=$IMAGE
+                kubectl -n etools-demo \
+                  rollout restart deployment/fam-demo
               displayName: Deploy application
 
             - script: |
